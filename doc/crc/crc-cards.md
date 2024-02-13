@@ -1,3 +1,15 @@
+# User
+
+| Responsibilities                     | Collaborators                             |
+| ------------------------------------ | ----------------------------------------- |
+| disable/enable geolocation tracking  | [Attendee](#attendee) (inherit)           |
+| hold information common to all users | [Organizer](#organizer) (inherit)         |
+|                                      | [Administrator](#administrator) (inherit) |
+
+| Details                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------ |
+| This class will be extended by [Attendee](#attendee), [Organizer](#organizer) and [Administrator](#administrator) class. |
+
 # Organizer
 
 | Responsibilities                  | Collaborators                         |
@@ -10,14 +22,92 @@
 | ------------------------------------------- |
 | This class will extend [User](#user) class. |
 
-# User
+# Attendee
 
-| Responsibilities                                   | Collaborators                         |
-| ---------------------------------------------------| ------------------------------------- |
-| disable/enable geolocation tracking                | [Attendee](#attendee) (inherit)       |
-| hold information common to all users               | [Organizer](#organizer) (inherit)     |
-|                                                    | [Administrator](#administrator) (inherit)  |
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
 
-| Details                                             |
-| --------------------------------------------------- |
-| This class will be extended by [Attendee](#attendee), [Organizer](#organizer) and [Administrator](#administrator) class. |
+| Details |
+| ------- |
+|         |
+
+# Administrator
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# Event
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# Event View
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# Attendee Settings
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# Attende View
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# Organizer View
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# Administrator View
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
+
+# QR Fragment
+
+| Responsibilities | Collaborators |
+| ---------------- | ------------- |
+| some text        | some text     |
+
+| Details |
+| ------- |
+|         |
