@@ -24,9 +24,9 @@
 
 # Attendee
 
-| Responsibilities | Collaborators |
-| ---------------- | ------------- |
-| some text        | some text     |
+| Responsibilities                                      | Collaborators                      |
+| ----------------------------------------------------- | ---------------------------------- |
+| keeps track of attendee information (like attendance) | [Organizer](#organizer) (can view) |
 
 | Details |
 | ------- |
@@ -94,9 +94,11 @@
 
 # Administrator View
 
-| Responsibilities | Collaborators |
-| ---------------- | ------------- |
-| some text        | some text     |
+| Responsibilities    | Collaborators                      |
+| ------------------- | ---------------------------------- |
+| can delete Event    | [Event](#event) (can delete)       |
+| can delete profiles | [Attendee](#attendee) (can delete) |
+| can delete images   |                                    |
 
 | Details |
 | ------- |
