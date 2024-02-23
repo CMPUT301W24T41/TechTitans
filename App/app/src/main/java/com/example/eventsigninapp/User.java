@@ -1,12 +1,12 @@
 package com.example.eventsigninapp;
 
 public abstract class User {
-    private int id;
+    private String id;
     private String firstName;
     private String lastName;
 
-    protected User() {
-        this.id = 0;
+    protected User(String id) {
+        this.id = id;
         firstName = "";
         lastName = "";
     }
