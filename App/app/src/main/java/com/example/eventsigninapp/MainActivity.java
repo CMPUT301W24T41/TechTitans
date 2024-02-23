@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseApp.initializeApp(this);
+       FirebaseApp.initializeApp(this);
         db = FirebaseFirestore.getInstance();
 
         super.onCreate(savedInstanceState);

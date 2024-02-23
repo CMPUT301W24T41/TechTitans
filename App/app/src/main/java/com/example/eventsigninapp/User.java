@@ -1,25 +1,25 @@
 package com.example.eventsigninapp;
 
 public abstract class User {
-    private int id;
+    private String id;
     private String firstName;
     private String lastName;
 
     protected User() {
-        this(0);
+        this(String.valueOf(0));
     }
 
-    protected User(int id) {
+    protected User(String id) {
         this.id = id;
         firstName = "";
         lastName = "";
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
