@@ -32,13 +32,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    @Override
-    public void onUserInteraction() {
-        super.onUserInteraction();
-
-        db = FirebaseFirestore.getInstance();
-        FirebaseApp.initializeApp(this);
-        user.put("name", "test");
-        db.collection("testDoc").add(user);
-    }
+    //Testing Database
+//    @Override
+//    public void onUserInteraction() {
+//        super.onUserInteraction();
+//
+//        db = FirebaseFirestore.getInstance();
+//        FirebaseApp.initializeApp(this);
+//        user.put("name", "test");
+//        db.collection("testDoc").add(user);
+//    }
 }
