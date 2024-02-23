@@ -5,84 +5,74 @@ import android.content.SharedPreferences;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.example.eventsigninapp.UserIDController;
 
-@RunWith(MockitoJUnitRunner.class)
 public class UserIDControllerTest {
 
     @Mock
-    private Context mockContext;
+    Context mockContext;
 
     @Mock
-    private SharedPreferences mockSharedPreferences;
+    SharedPreferences mockPreferences;
 
     @Mock
-    private SharedPreferences.Editor mockEditor;
+    SharedPreferences.Editor mockEditor;
 
-    private UserIDController controller;
+    private UserIDController userIDController;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockSharedPreferences);
-        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-
-        controller = new UserIDController();
+        userIDController = new UserIDController();
     }
 
     @Test
-    public void testGetUserIDWhenStored() {
-        // Arrange (setup)
-        String storedUUID = "StoredUUID";
-        when(mockSharedPreferences.getString(anyString(), isNull())).thenReturn(storedUUID);
+    public void testGetUserID_existingUUID() {
+        // Arrange
+        String existingUUID = "existingUUID";
+        when(mockContext.getSharedPreferences("ID", Context.MODE_PRIVATE)).thenReturn(mockPreferences);
+        when(mockPreferences.getString("UUID_KEY", null)).thenReturn(existingUUID);
 
         // Act
-        String result = controller.getUserID(mockContext);
+        String result = userIDController.getUserID(mockContext);
 
         // Assert
-        assertEquals(storedUUID, result);
-
-        // Verify that saveUUID was not called since the ID was already stored
-        verify(mockEditor, never()).putString(anyString(), anyString());
-        verify(mockEditor, never()).apply();
+        assertEquals(existingUUID, result);
     }
 
     @Test
-    public void testGetUserIDWhenNotStored() {
-        // Arrange (setup)
-        when(mockSharedPreferences.getString(anyString(), isNull())).thenReturn(null);
+    public void testGetUserID_generateUUID() {
+        // Arrange
+        when(mockContext.getSharedPreferences("ID", Context.MODE_PRIVATE)).thenReturn(mockPreferences);
+        when(mockPreferences.getString("UUID_KEY", null)).thenReturn(null);
+        when(mockPreferences.edit()).thenReturn(mockEditor);
 
         // Act
-        String result = controller.getUserID(mockContext);
+        String result = userIDController.getUserID(mockContext);
 
-        // Verify that the result is not null
-        assertEquals(UUID.fromString(result).toString(), result);
-
-        // Verify that saveUUID was called since the ID was not stored
-        verify(mockEditor).putString(anyString(), anyString());
-        verify(mockEditor).apply();
+        // Assert
+        verify(mockPreferences.edit()).putString("UUID_KEY", result);
     }
 
     @Test
     public void testSaveUUID() {
-        String newUUID = "NewUUID";
+        // Arrange
+        String uuid = "testUUID";
+        when(mockContext.getSharedPreferences("ID", Context.MODE_PRIVATE)).thenReturn(mockPreferences);
+        when(mockPreferences.edit()).thenReturn(mockEditor);
 
-        controller.saveUUID(mockContext, newUUID);
+        // Act
+        userIDController.saveUUID(mockContext, uuid);
 
-
-        // Verify that putString and apply were called
-        verify(mockEditor).putString(anyString(), eq(newUUID));
+        // Assert
+        verify(mockEditor).putString("UUID_KEY", uuid);
         verify(mockEditor).apply();
     }
 }

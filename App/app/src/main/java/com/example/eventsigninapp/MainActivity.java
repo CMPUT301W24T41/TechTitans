@@ -5,8 +5,10 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     Map<String, Object> user = new HashMap<>();
     FirebaseFirestore db;
+    private UserIDController userIDController;
+    TextView idText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +34,26 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userIDController = new UserIDController();
+
+        //checking if userid is acquired correctly
+        String userID = userIDController.getUserID(getApplicationContext());
+        idText = findViewById(R.id.user_id);
+        idText.setText(userID);
+
     }
 
     //Testing Database
 //    @Override
 //    public void onUserInteraction() {
+
+
 //        super.onUserInteraction();
 //
 //        db = FirebaseFirestore.getInstance();
 //        FirebaseApp.initializeApp(this);
 //        user.put("name", "test");
 //        db.collection("testDoc").add(user);
-//    }
+//}
 }
