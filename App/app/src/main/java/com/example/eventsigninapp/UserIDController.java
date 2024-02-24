@@ -77,7 +77,7 @@ public class UserIDController {
                 });
     }
 
-    public User getAttendeeFromFirestore(String id) {
+    public Attendee getAttendeeFromFirestore(String id) {
         final Attendee[] attendee = {null};
 
         db.collection("users")
@@ -87,6 +87,9 @@ public class UserIDController {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                          attendee[0] = new Attendee(document.getString(uuidKey));
+                    }else{
+                        // failsafe for when the id has already been generated but does not exist in the database
+                        addFirestoreEntry(id);
                     }
                 });
 

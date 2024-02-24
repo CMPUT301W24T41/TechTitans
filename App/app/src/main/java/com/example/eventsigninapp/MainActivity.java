@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         idText = findViewById(R.id.user_id);
         idText.setText(userID);
 
+        Attendee attendee = userIDController.getAttendeeFromFirestore(userID);
+
     }
 
     //Testing Database

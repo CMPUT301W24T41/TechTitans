@@ -15,6 +15,12 @@ public abstract class User {
         lastName = "";
     }
 
+    protected User(String id, String first, String last) {
+        this.id = id;
+        this.firstName = first;
+        this.lastName = last;
+    }
+
     public String getId() {
         return id;
     }

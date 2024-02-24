@@ -13,7 +13,7 @@ public class EventTest {
      * @return a mock Attendee object
      */
     private Attendee mockAttendee() {
-        return new Attendee();
+        return new Attendee("1");
     }
 
     /**
