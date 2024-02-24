@@ -11,11 +11,16 @@ import java.util.Map;
 import java.util.UUID;
 
 
+
 /**
  * This class should help control and fetch the users unique UID and acquire their information
  * from the the database
  */
 public class UserIDController {
+    public interface userCallback {
+        void onCallback(Attendee attendee);
+    }
+
 
     private static final String uuidKey = "UUID_KEY";
     private static final String prefName = "ID";
@@ -63,7 +68,7 @@ public class UserIDController {
     public void addFirestoreEntry(String id) {
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
-        userData.put("id", id);
+        userData.put(uuidKey, id);
         userData.put("firstName", "");
         userData.put("lastName", "");
 
@@ -77,24 +82,33 @@ public class UserIDController {
                 });
     }
 
-    public Attendee getAttendeeFromFirestore(String id) {
-        final Attendee[] attendee = {null};
 
+
+    public void getAttendeeFromFirestore(String id, userCallback callback) {
+        Attendee attendee = new Attendee(id);
+
+        //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
                 .whereEqualTo(uuidKey, id)
                 .get()
                 .addOnCompleteListener(task -> {
+                    // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                         attendee[0] = new Attendee(document.getString(uuidKey));
-                    }else{
+
+                        attendee.setFirstName(document.getString("firstName"));
+                        attendee.setLastName(document.getString("lastName"));
+                    } else {
                         // failsafe for when the id has already been generated but does not exist in the database
                         addFirestoreEntry(id);
                     }
-                });
 
-        return attendee[0];
+                    // Invoke the callback with the result
+                    callback.onCallback(attendee);
+                });
     }
+
+
 }
 
 

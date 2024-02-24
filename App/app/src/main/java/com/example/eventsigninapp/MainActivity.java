@@ -39,12 +39,20 @@ public class MainActivity extends AppCompatActivity {
 
         //checking if userid is acquired correctly
         String userID = userIDController.getUserID(getApplicationContext());
+        //userIDController.addFirestoreAttendee(userID);
         idText = findViewById(R.id.user_id);
         idText.setText(userID);
 
-        Attendee attendee = userIDController.getAttendeeFromFirestore(userID);
+        userIDController.getAttendeeFromFirestore(userID, new UserIDController.userCallback() {
+
+            public void onCallback(Attendee attendee) {
+                idText.setText(attendee.getFirstName());
+
+            }
+        });
 
     }
+
 
     //Testing Database
 //    @Override

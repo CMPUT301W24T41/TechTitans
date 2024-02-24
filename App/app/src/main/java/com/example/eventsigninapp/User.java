@@ -6,7 +6,6 @@ public abstract class User {
     private String lastName;
 
     protected User() {
-        this(String.valueOf(0));
     }
 
     protected User(String id) {
