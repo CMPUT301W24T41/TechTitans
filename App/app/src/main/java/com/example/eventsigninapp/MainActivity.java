@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
         idText = findViewById(R.id.user_id);
         idText.setText(userID);
 
-        userIDController.getAttendeeFromFirestore(userID, new UserIDController.userCallback() {
+        userIDController.getUserFromFirestore(userID, new UserIDController.userCallback() {
 
-            public void onCallback(Attendee attendee) {
-                idText.setText(attendee.getFirstName());
+            public void onCallback(User user) {
+                idText.setText(user.getFirstName());
 
             }
         });

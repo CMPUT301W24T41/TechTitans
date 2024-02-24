@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 public class UserIDController {
     public interface userCallback {
-        void onCallback(Attendee attendee);
+        void onCallback(User user);
     }
 
 
@@ -44,7 +44,7 @@ public class UserIDController {
         //generates a uuid if the user does not have a uuid
         if (uuidString == null) {
             uuidString = UUID.randomUUID().toString();
-            addFirestoreEntry(uuidString);
+            addFirestoreEntry(uuidString, "attendee");
             saveUUID(context, uuidString);
         }
 
@@ -65,9 +65,10 @@ public class UserIDController {
         editor.apply();
     }
 
-    public void addFirestoreEntry(String id) {
+    public void addFirestoreEntry(String id, String role) {
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
+        userData.put("role", role);
         userData.put(uuidKey, id);
         userData.put("firstName", "");
         userData.put("lastName", "");
@@ -84,8 +85,8 @@ public class UserIDController {
 
 
 
-    public void getAttendeeFromFirestore(String id, userCallback callback) {
-        Attendee attendee = new Attendee(id);
+    public void getUserFromFirestore(String id, userCallback callback) {
+
 
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
@@ -95,16 +96,20 @@ public class UserIDController {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-
-                        attendee.setFirstName(document.getString("firstName"));
-                        attendee.setLastName(document.getString("lastName"));
+                        if(document.getString("role").equals("attendee")) {
+                            Attendee attendee = new Attendee(id, document.getString("firstName"), document.getString("lastName"));
+                            callback.onCallback(attendee);
+                        }else{
+                            Organizer organizer = new Organizer(id);
+                            callback.onCallback(organizer);
+                        }
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
-                        addFirestoreEntry(id);
+                        addFirestoreEntry(id, "attendee");
                     }
 
                     // Invoke the callback with the result
-                    callback.onCallback(attendee);
+
                 });
     }
 
