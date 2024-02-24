@@ -3,19 +3,27 @@ package com.example.eventsigninapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+
 /**
- * This class should help control and fetch the users unique UID to later use to find the UID
+ * This class should help control and fetch the users unique UID and acquire their information
+ * from the the database
  */
 public class UserIDController {
 
     private static final String uuidKey = "UUID_KEY";
     private static final String prefName = "ID";
+    private FirebaseFirestore db;
 
-    public UserIDController(){}
+    public UserIDController(){
+        db = FirebaseFirestore.getInstance();
+    }
 
     /**
      * Gets the user's UUID if it exists, otherwise generates a new one and saves it
@@ -31,8 +39,10 @@ public class UserIDController {
         //generates a uuid if the user does not have a uuid
         if (uuidString == null) {
             uuidString = UUID.randomUUID().toString();
+            addFirestoreEntry(uuidString);
             saveUUID(context, uuidString);
         }
+
 
         //returns the uuid of the user
         return uuidString;
@@ -48,6 +58,39 @@ public class UserIDController {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(uuidKey, uuid);
         editor.apply();
+    }
+
+    public void addFirestoreEntry(String id) {
+        // Add the new user to Firestore
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("id", id);
+        userData.put("firstName", "");
+        userData.put("lastName", "");
+
+        db.collection("users")
+                .add(userData)
+                .addOnSuccessListener(documentReference -> {
+                    // success
+                })
+                .addOnFailureListener(e -> {
+                    // failure
+                });
+    }
+
+    public User getAttendeeFromFirestore(String id) {
+        final Attendee[] attendee = {null};
+
+        db.collection("users")
+                .whereEqualTo(uuidKey, id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                         attendee[0] = new Attendee(document.getString(uuidKey));
+                    }
+                });
+
+        return attendee[0];
     }
 }
 
