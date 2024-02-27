@@ -37,19 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         userIDController = new UserIDController();
 
-        //checking if userid is acquired correctly
-        String userID = userIDController.getUserID(getApplicationContext());
-        //userIDController.addFirestoreAttendee(userID);
-        idText = findViewById(R.id.user_id);
-        idText.setText(userID);
-
-        userIDController.getUserFromFirestore(userID, new UserIDController.userCallback() {
-
-            public void onCallback(User user) {
-                idText.setText(user.getFirstName());
-
-            }
-        });
 
     }
 
