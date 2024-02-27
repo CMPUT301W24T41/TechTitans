@@ -11,8 +11,13 @@ public class Attendee extends User {
     private Object homepage;
     private Object picture;
 
-    public Attendee() {
-        super();
+    public Attendee(String id, String first, String last) {
+        super(id, first ,last);
+        events = new HashSet<>();
+    }
+
+    public Attendee(String id) {
+        super(id);
         events = new HashSet<>();
     }
 

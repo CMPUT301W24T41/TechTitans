@@ -13,7 +13,7 @@ public class AttendeeTest {
      * @return a mock Attendee object
      */
     private Attendee mockAttendee() {
-        return new Attendee();
+        return new Attendee("1");
     }
 
     /**
@@ -29,7 +29,7 @@ public class AttendeeTest {
      */
     @Test
     public void testGetSetContact() {
-        Attendee attendee = new Attendee();
+        Attendee attendee = new Attendee("1");
 
         assertNull(attendee.getContact()); // should be null
 
@@ -60,7 +60,7 @@ public class AttendeeTest {
      */
     @Test
     public void testGetEvents() {
-        Attendee attendee = new Attendee();
+        Attendee attendee = new Attendee("1");
 
         assertNotNull(attendee.getEvents()); // should not be null
         assertEquals(0, attendee.getEvents().size()); // should be empty

@@ -13,7 +13,7 @@ public class EventTest {
      * @return a mock Attendee object
      */
     private Attendee mockAttendee() {
-        return new Attendee();
+        return new Attendee("1");
     }
 
     /**
@@ -74,7 +74,7 @@ public class EventTest {
 
         for (int i = 0; i < 3; i++) {
             Attendee mockAttendee = mockAttendee();
-            mockAttendee.setId(i);
+            mockAttendee.setId(String.valueOf(i));
             try {
                 event.signUpAttendee(mockAttendee());
             } catch (Event.EventFullException e) {
@@ -125,7 +125,7 @@ public class EventTest {
         assertEquals(0, event.getCheckedInAttendees().size()); // should be empty
 
         Attendee attendee = mockAttendee();
-        attendee.setId(1);
+        attendee.setId(String.valueOf(1));
 
         // check in an attendee
         try {
@@ -149,7 +149,7 @@ public class EventTest {
 
         // check in another attendee
         Attendee anotherAttendee = mockAttendee();
-        anotherAttendee.setId(2);
+        anotherAttendee.setId(String.valueOf(2));
 
         try {
             event.checkInAttendee(anotherAttendee);
