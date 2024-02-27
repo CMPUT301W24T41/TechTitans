@@ -4,7 +4,7 @@ public class Organizer extends User{
 
     private Object events;
 
-    protected Organizer(String id) {
+    protected Organizer(int id) {
         super(id);
     }
 }
