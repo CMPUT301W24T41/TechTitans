@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         userIDController = new UserIDController();
 
-
     }
 
 

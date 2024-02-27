@@ -84,7 +84,17 @@ public class UserIDController {
     }
 
 
-
+    /**
+     *         userIDController.getUserFromFirestore(userID, new UserIDController.userCallback() {
+     *
+     *             public void onCallback(User user) {
+     *                 idText.setText(user.getFirstName());
+     *
+     *             }
+     *         });
+     * @param id
+     * @param callback
+     */
     public void getUserFromFirestore(String id, userCallback callback) {
 
 
