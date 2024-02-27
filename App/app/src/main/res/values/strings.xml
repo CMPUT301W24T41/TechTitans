@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">EventSignInApp</string>
+    <string name="welcome">Welcome!\nCheck in seamlessly\nwith your QR code.</string>
+    <string name="check_in_first_name">First Name:</string>
+    <string name="check_in_host_event">Host Event</string>
+    <string name="check_in_last_name">Last Name:</string>
+    <string name="check_in">Tap to check in with a QR code</string>
+    <string name="example_qr_code_content_description">Example QR Code</string>
 </resources>
