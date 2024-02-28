@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,6 +66,11 @@ public class UserIDController {
         editor.apply();
     }
 
+    /**
+     * Adds a new user to the database with a blank first and last name
+     * @param id: the unique id of the user
+     * @param role: the role the user will have
+     */
     public void addFirestoreEntry(String id, String role) {
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
@@ -77,23 +83,25 @@ public class UserIDController {
                 .add(userData)
                 .addOnSuccessListener(documentReference -> {
                     // success
+
                 })
                 .addOnFailureListener(e -> {
                     // failure
+                    Log.e("Database", "addFirestoreEntry: Error,new user data not added to database");
                 });
     }
 
 
-    /**
-     *         userIDController.getUserFromFirestore(userID, new UserIDController.userCallback() {
+    /** Finds a user based on their unique id in the database and fetches it from the database
+     * @param id: the unique id of the user to be fetched
+     * @param callback: due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
+     *  to access a user fetched from the database, use the following code:
+     *      userIDController.getUserFromFirestore(userID, new UserIDController.userCallback() {
+     *                   public void onCallback(User user) {
+     *                       // code to use returned user in here
      *
-     *             public void onCallback(User user) {
-     *                 idText.setText(user.getFirstName());
-     *
-     *             }
-     *         });
-     * @param id
-     * @param callback
+     *                   }
+     *               });
      */
     public void getUserFromFirestore(String id, userCallback callback) {
 
@@ -116,9 +124,10 @@ public class UserIDController {
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
                         addFirestoreEntry(id, "attendee");
+                        Attendee newUser = new Attendee(id);
+                        callback.onCallback(newUser);
                     }
 
-                    // Invoke the callback with the result
 
                 });
     }
