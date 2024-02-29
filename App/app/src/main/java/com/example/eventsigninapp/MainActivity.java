@@ -3,6 +3,9 @@ package com.example.eventsigninapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         User user = new User("temp", "f", "l");
         userIdController.putUserToFirestore(user);
 
+        getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.mainFragmentContainer, new ExampleFragment()).commit();
     }
 
 
