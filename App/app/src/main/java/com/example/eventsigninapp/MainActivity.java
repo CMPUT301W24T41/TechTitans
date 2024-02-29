@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
         userIDController = new UserIDController();
 
+        getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.mainFragmentContainer, new ExampleFragment()).commit();
     }
 
 
