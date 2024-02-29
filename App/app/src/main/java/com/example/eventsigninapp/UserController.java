@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -72,23 +73,23 @@ public class UserController {
      * @param firstName: user's firstName
      * @param lastName: user's lastName
      */
-    public void addUserToFirestore(String id, String firstName, String lastName) {
+    public void addNewUserToFirestore(String id, String firstName, String lastName) {
         db = FirebaseFirestore.getInstance();
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
-        userData.put(uuidKey, id);
-        userData.put(firstName, "");
-        userData.put(lastName, "");
+        userData.put("id", id);
+        userData.put("firstName", firstName);
+        userData.put("lastName", lastName);
 
-        db.collection("users")
-                .add(userData)
-                .addOnSuccessListener(documentReference -> {
-                    // success
+        DocumentReference userDocument = db.collection("users").document(id);
 
+        userDocument.set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    // Success
                 })
                 .addOnFailureListener(e -> {
-                    // failure
-                    Log.e("Database", "addFirestoreEntry: Error,new user data not added to database");
+                    // Failure
+                    Log.e("Database", "addUserToFirestore: Error, new user data not added to database", e);
                 });
     }
 
