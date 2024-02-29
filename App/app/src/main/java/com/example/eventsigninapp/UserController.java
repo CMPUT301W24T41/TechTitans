@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -18,12 +19,13 @@ import java.util.UUID;
  * from the the database
  */
 public class UserController {
+
     public interface userCallback {
         void onCallback(User user);
     }
 
 
-    private static final String uuidKey = "UUID_KEY";
+    private static final String deafaultUUID = "UUID_Default";
     private static final String prefName = "ID";
     private FirebaseFirestore db;
 
@@ -40,7 +42,7 @@ public class UserController {
     public String getUserID(Context context){
         //Gets a Shared Preference for correctly logging in the user
         SharedPreferences preferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        String uuidString = preferences.getString(uuidKey, null);
+        String uuidString = preferences.getString(deafaultUUID, null);
 
         //generates a uuid if the user does not have a uuid
         if (uuidString == null) {
@@ -62,7 +64,7 @@ public class UserController {
     public void saveUUID(Context context, String uuid) {
         SharedPreferences preferences = context.getSharedPreferences("ID", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(uuidKey, uuid);
+        editor.putString(deafaultUUID, uuid);
         editor.apply();
     }
 
@@ -72,23 +74,23 @@ public class UserController {
      * @param firstName: user's firstName
      * @param lastName: user's lastName
      */
-    public void addUserToFirestore(String id, String firstName, String lastName) {
+    public void addNewUserToFirestore(String id, String firstName, String lastName) {
         db = FirebaseFirestore.getInstance();
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
-        userData.put(uuidKey, id);
-        userData.put(firstName, "");
-        userData.put(lastName, "");
+        userData.put("id", id);
+        userData.put("firstName", firstName);
+        userData.put("lastName", lastName);
 
-        db.collection("users")
-                .add(userData)
-                .addOnSuccessListener(documentReference -> {
-                    // success
+        DocumentReference userDocument = db.collection("users").document(id);
 
+        userDocument.set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    // Success
                 })
                 .addOnFailureListener(e -> {
-                    // failure
-                    Log.e("Database", "addFirestoreEntry: Error,new user data not added to database");
+                    // Failure
+                    Log.e("Database", "addUserToFirestore: Error, new user data not added to database", e);
                 });
     }
 
@@ -109,7 +111,7 @@ public class UserController {
 
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
-                .whereEqualTo(uuidKey, id)
+                .whereEqualTo(deafaultUUID, id)
                 .get()
                 .addOnCompleteListener(task -> {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
@@ -126,6 +128,14 @@ public class UserController {
 
 
                 });
+    }
+
+    public void updateUser(User user){
+        db = FirebaseFirestore.getInstance();
+
+        db.collection("users").document();
+
+
     }
 
 
