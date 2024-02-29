@@ -5,13 +5,18 @@ import android.content.SharedPreferences;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.firebase.FirebaseApp;
+
+@RunWith(RobolectricTestRunner.class)
 public class UserControllerTest {
 
 
@@ -24,6 +29,7 @@ public class UserControllerTest {
 
     @Mock
     SharedPreferences.Editor mockEditor;
+
 
     private UserController userController;
 

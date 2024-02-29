@@ -64,7 +64,7 @@ public class User {
     public Collection<Event> getAttendingEvents() {
         return attendingEvents;
     }
-    
+
 
     public Collection<Event> getHostedEvents() {
         return hostedEvents;

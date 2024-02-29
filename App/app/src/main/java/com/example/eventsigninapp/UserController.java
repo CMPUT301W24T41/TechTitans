@@ -28,7 +28,7 @@ public class UserController {
     private FirebaseFirestore db;
 
     public UserController(){
-        db = FirebaseFirestore.getInstance();
+
     }
 
     /**
@@ -73,6 +73,7 @@ public class UserController {
      * @param lastName: user's lastName
      */
     public void addUserToFirestore(String id, String firstName, String lastName) {
+        db = FirebaseFirestore.getInstance();
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
         userData.put(uuidKey, id);
@@ -104,7 +105,7 @@ public class UserController {
      *               });
      */
     public void getUserFromFirestore(String id, userCallback callback) {
-
+        db = FirebaseFirestore.getInstance();
 
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
