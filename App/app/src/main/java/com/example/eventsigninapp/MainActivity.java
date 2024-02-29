@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         userController = new UserController();
-        userController.addNewUserToFirestore("1", "test", "user");
+        User user = new User("temp", "f", "l");
+        userController.putUserToFirestore(user);
 
     }
 

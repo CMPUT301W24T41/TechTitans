@@ -69,20 +69,19 @@ public class UserController {
     }
 
     /**
-     * Adds a new user to the database with a blank first and last name
-     * @param id: the unique id of the user
-     * @param firstName: user's firstName
-     * @param lastName: user's lastName
+     * Adds a new user to the database or updates an existing one.
+     * @param user: the user object to add or modify to the database
      */
-    public void addNewUserToFirestore(String id, String firstName, String lastName) {
+    public void putUserToFirestore(User user) {
         db = FirebaseFirestore.getInstance();
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
-        userData.put("id", id);
-        userData.put("firstName", firstName);
-        userData.put("lastName", lastName);
+        userData.put("id", user.getId());
+        userData.put("firstName", user.getFirstName());
+        userData.put("lastName", user.getLastName());
+        userData.put("contact", user.getContact());
 
-        DocumentReference userDocument = db.collection("users").document(id);
+        DocumentReference userDocument = db.collection("users").document(user.getId());
 
         userDocument.set(userData)
                 .addOnSuccessListener(aVoid -> {
@@ -117,7 +116,7 @@ public class UserController {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User user = new User(id, document.getString("firstName"), document.getString("lastName"));
+                        User user = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         callback.onCallback(user);
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
@@ -130,13 +129,6 @@ public class UserController {
                 });
     }
 
-    public void updateUser(User user){
-        db = FirebaseFirestore.getInstance();
-
-        db.collection("users").document();
-
-
-    }
 
 
 }

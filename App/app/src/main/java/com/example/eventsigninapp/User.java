@@ -23,9 +23,10 @@ public class User {
 
     protected User(String id) {
         this.id = id;
-        firstName = "";
-        lastName = "";
-        attendingEvents = new HashSet<>();
+        this.firstName = "";
+        this.lastName = "";
+        this.contact = "";
+        this.attendingEvents = new HashSet<>();
 
     }
 
@@ -33,7 +34,16 @@ public class User {
         this.id = id;
         this.firstName = first;
         this.lastName = last;
-        attendingEvents = new HashSet<>();
+        this.contact = "";
+        this.attendingEvents = new HashSet<>();
+    }
+
+    protected User(String id, String first, String last, String contact) {
+        this.id = id;
+        this.firstName = first;
+        this.lastName = last;
+        this.contact = contact;
+        this.attendingEvents = new HashSet<>();
 
     }
 
@@ -126,5 +136,7 @@ public class User {
             System.out.println(e.getMessage()); // print error message
         }
     }
+
+
 
 }
