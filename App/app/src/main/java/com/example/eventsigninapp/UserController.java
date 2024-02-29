@@ -129,6 +129,10 @@ public class UserController {
                 });
     }
 
+    public void updateUserPicture(){
+    //TODO use photopicker
+    }
+
 
 
 }
