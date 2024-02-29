@@ -10,8 +10,8 @@ public class Event {
 
     // The capacity of the event, 0 if uncapped
     private int capacity;
-    private Collection<Attendee> signedUpAttendees; // collection of signed up attendees
-    private Collection<Attendee> checkedInAttendees; // collection of checked in attendees
+    private Collection<User> signedUpAttendees; // collection of signed up attendees
+    private Collection<User> checkedInAttendees; // collection of checked in attendees
     private Object eventPoster;
     private Object Location;
     private Date date;
@@ -19,8 +19,8 @@ public class Event {
     public Event() {
         //TODO: generate a unique id on creation
         id = 0;
-        checkedInAttendees = new HashSet<Attendee>();
-        signedUpAttendees = new HashSet<Attendee>();
+        checkedInAttendees = new HashSet<User>();
+        signedUpAttendees = new HashSet<User>();
         capacity = 0;
     }
 
@@ -65,7 +65,7 @@ public class Event {
      * @param attendee the attendee to check in
      * @throws AlreadyCheckedInException if the attendee is already checked in to the event
      */
-    public void checkInAttendee(Attendee attendee) throws AlreadyCheckedInException {
+    public void checkInAttendee(User attendee) throws AlreadyCheckedInException {
         if (checkedInAttendees.contains(attendee)) {
             throw new AlreadyCheckedInException("Attendee is already checked in to the event");
         }
@@ -75,9 +75,10 @@ public class Event {
 
     /**
      * This method should be used to get the checked in attendees for an event
+     *
      * @return the checked in attendees for the event
      */
-    public Collection<Attendee> getCheckedInAttendees() {
+    public Collection<User> getCheckedInAttendees() {
         return checkedInAttendees;
     }
 
@@ -85,7 +86,7 @@ public class Event {
      * This method should be used to check if an attendee is checked in for an event
      * @return a boolean indicating if the attendee is checked in for the event
      */
-    public boolean isAttendeeCheckedIn(Attendee attendee) {
+    public boolean isAttendeeCheckedIn(User attendee) {
         return checkedInAttendees.contains(attendee);
     }
 
@@ -95,7 +96,7 @@ public class Event {
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException if the attendee is already signed up for the event
      */
-    public void signUpAttendee(Attendee attendee) throws EventFullException, AlreadySignedUpException {
+    public void signUpAttendee(User attendee) throws EventFullException, AlreadySignedUpException {
         if (isCapped() && signedUpAttendees.size() >= capacity) {
             throw new EventFullException("Event is full");
         }
@@ -111,7 +112,7 @@ public class Event {
      * This method should be used to get the signed up attendees for an event
      * @return the signed up attendees for the event
      */
-    public Collection<Attendee> getSignedUpAttendees() {
+    public Collection<User> getSignedUpAttendees() {
         return signedUpAttendees;
     }
 
@@ -119,7 +120,7 @@ public class Event {
      * This method should be used to check if an attendee is signed up for an event
      * @return the signed up attendees for the event
      */
-    public boolean isAttendeeSignedUp(Attendee attendee) {
+    public boolean isAttendeeSignedUp(User attendee) {
         return signedUpAttendees.contains(attendee);
     }
 

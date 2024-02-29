@@ -114,18 +114,13 @@ public class UserController {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        if(document.getString("role").equals("attendee")) {
-                            Attendee attendee = new Attendee(id, document.getString("firstName"), document.getString("lastName"));
-                            callback.onCallback(attendee);
-                        }else{
-                            Organizer organizer = new Organizer(id);
-                            callback.onCallback(organizer);
-                        }
+                        User user = new User(id, document.getString("firstName"), document.getString("lastName"));
+                        callback.onCallback(user);
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
                         //addUserToFirestore(id, "");
-                        Attendee newUser = new Attendee(id);
-                        callback.onCallback(newUser);
+                        User emptyUser = new User(id);
+                        callback.onCallback(emptyUser);
                     }
 
 
