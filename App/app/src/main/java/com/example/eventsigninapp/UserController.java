@@ -45,7 +45,7 @@ public class UserController {
         //generates a uuid if the user does not have a uuid
         if (uuidString == null) {
             uuidString = UUID.randomUUID().toString();
-            addFirestoreEntry(uuidString, "attendee");
+            //addUserToFirestore(uuidString, "attendee");
             saveUUID(context, uuidString);
         }
 
@@ -69,15 +69,15 @@ public class UserController {
     /**
      * Adds a new user to the database with a blank first and last name
      * @param id: the unique id of the user
-     * @param role: the role the user will have
+     * @param firstName: user's firstName
+     * @param lastName: user's lastName
      */
-    public void addFirestoreEntry(String id, String role) {
+    public void addUserToFirestore(String id, String firstName, String lastName) {
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
-        userData.put("role", role);
         userData.put(uuidKey, id);
-        userData.put("firstName", "");
-        userData.put("lastName", "");
+        userData.put(firstName, "");
+        userData.put(lastName, "");
 
         db.collection("users")
                 .add(userData)
@@ -123,7 +123,7 @@ public class UserController {
                         }
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
-                        addFirestoreEntry(id, "attendee");
+                        //addUserToFirestore(id, "");
                         Attendee newUser = new Attendee(id);
                         callback.onCallback(newUser);
                     }
