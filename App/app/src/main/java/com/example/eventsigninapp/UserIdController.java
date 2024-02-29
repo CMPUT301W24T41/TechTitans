@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -17,18 +18,19 @@ import java.util.UUID;
  * This class should help control and fetch the users unique UID and acquire their information
  * from the the database
  */
-public class UserIDController {
+public class UserIdController {
+
     public interface userCallback {
         void onCallback(User user);
     }
 
 
-    private static final String uuidKey = "UUID_KEY";
+    private static final String deafaultUUID = "UUID_Default";
     private static final String prefName = "ID";
     private FirebaseFirestore db;
 
-    public UserIDController(){
-        db = FirebaseFirestore.getInstance();
+    public UserIdController(){
+
     }
 
     /**
@@ -40,12 +42,12 @@ public class UserIDController {
     public String getUserID(Context context){
         //Gets a Shared Preference for correctly logging in the user
         SharedPreferences preferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        String uuidString = preferences.getString(uuidKey, null);
+        String uuidString = preferences.getString(deafaultUUID, null);
 
         //generates a uuid if the user does not have a uuid
         if (uuidString == null) {
             uuidString = UUID.randomUUID().toString();
-            addFirestoreEntry(uuidString, "attendee");
+            //addUserToFirestore(uuidString, "attendee");
             saveUUID(context, uuidString);
         }
 
@@ -62,32 +64,32 @@ public class UserIDController {
     public void saveUUID(Context context, String uuid) {
         SharedPreferences preferences = context.getSharedPreferences("ID", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(uuidKey, uuid);
+        editor.putString(deafaultUUID, uuid);
         editor.apply();
     }
 
     /**
-     * Adds a new user to the database with a blank first and last name
-     * @param id: the unique id of the user
-     * @param role: the role the user will have
+     * Adds a new user to the database or updates an existing one.
+     * @param user: the user object to add or modify to the database
      */
-    public void addFirestoreEntry(String id, String role) {
+    public void putUserToFirestore(User user) {
+        db = FirebaseFirestore.getInstance();
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
-        userData.put("role", role);
-        userData.put(uuidKey, id);
-        userData.put("firstName", "");
-        userData.put("lastName", "");
+        userData.put("id", user.getId());
+        userData.put("firstName", user.getFirstName());
+        userData.put("lastName", user.getLastName());
+        userData.put("contact", user.getContact());
 
-        db.collection("users")
-                .add(userData)
-                .addOnSuccessListener(documentReference -> {
-                    // success
+        DocumentReference userDocument = db.collection("users").document(user.getId());
 
+        userDocument.set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    // Success
                 })
                 .addOnFailureListener(e -> {
-                    // failure
-                    Log.e("Database", "addFirestoreEntry: Error,new user data not added to database");
+                    // Failure
+                    Log.e("Database", "addUserToFirestore: Error, new user data not added to database", e);
                 });
     }
 
@@ -104,28 +106,23 @@ public class UserIDController {
      *               });
      */
     public void getUserFromFirestore(String id, userCallback callback) {
-
+        db = FirebaseFirestore.getInstance();
 
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
-                .whereEqualTo(uuidKey, id)
+                .whereEqualTo("id", id)
                 .get()
                 .addOnCompleteListener(task -> {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        if(document.getString("role").equals("attendee")) {
-                            Attendee attendee = new Attendee(id, document.getString("firstName"), document.getString("lastName"));
-                            callback.onCallback(attendee);
-                        }else{
-                            Organizer organizer = new Organizer(id);
-                            callback.onCallback(organizer);
-                        }
+                        User user = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        callback.onCallback(user);
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
-                        addFirestoreEntry(id, "attendee");
-                        Attendee newUser = new Attendee(id);
-                        callback.onCallback(newUser);
+                        //addUserToFirestore(id, "");
+                        User emptyUser = new User(id);
+                        callback.onCallback(emptyUser);
                     }
 
 

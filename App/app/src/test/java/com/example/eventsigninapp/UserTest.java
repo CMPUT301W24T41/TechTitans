@@ -7,13 +7,13 @@ import org.junit.Test;
 /**
  * This class tests the Attendee class.
  */
-public class AttendeeTest {
+public class UserTest {
     /**
      * This method creates a mock Attendee object.
      * @return a mock Attendee object
      */
-    private Attendee mockAttendee() {
-        return new Attendee("1");
+    private User mockUser() {
+        return new User("1");
     }
 
     /**
@@ -29,7 +29,7 @@ public class AttendeeTest {
      */
     @Test
     public void testGetSetContact() {
-        Attendee attendee = new Attendee("1");
+        User attendee = new User("1");
 
         assertNull(attendee.getContact()); // should be null
 
@@ -47,7 +47,7 @@ public class AttendeeTest {
      */
     @Test
     public void testCheckIn() {
-        Attendee attendee = mockAttendee();
+        User attendee = mockUser();
         Event event = mockEvent();
         attendee.checkIn(event);
 
@@ -60,7 +60,7 @@ public class AttendeeTest {
      */
     @Test
     public void testGetEvents() {
-        Attendee attendee = new Attendee("1");
+        User attendee = new User("1");
 
         assertNotNull(attendee.getEvents()); // should not be null
         assertEquals(0, attendee.getEvents().size()); // should be empty
@@ -71,7 +71,7 @@ public class AttendeeTest {
      */
     @Test
     public void testSignUp() {
-        Attendee attendee = mockAttendee();
+        User attendee = mockUser();
         Event event = mockEvent();
         attendee.signUp(event);
 

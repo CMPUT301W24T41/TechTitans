@@ -1,21 +1,15 @@
 package com.example.eventsigninapp;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentReference;
 
 
 import java.util.HashMap;
@@ -25,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     Map<String, Object> user = new HashMap<>();
     FirebaseFirestore db;
-    private UserIDController userIDController;
+    private UserIdController userIdController;
     TextView idText;
 
     @Override
@@ -36,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userIDController = new UserIDController();
+        userIdController = new UserIdController();
+        User user = new User("temp", "f", "l");
+        userIdController.putUserToFirestore(user);
 
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
 
