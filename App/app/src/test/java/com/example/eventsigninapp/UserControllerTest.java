@@ -14,8 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.firebase.FirebaseApp;
-
 @RunWith(RobolectricTestRunner.class)
 public class UserControllerTest {
 
@@ -31,12 +29,12 @@ public class UserControllerTest {
     SharedPreferences.Editor mockEditor;
 
 
-    private UserController userController;
+    private UserIdController userController;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userController = new UserController();
+        userController = new UserIdController();
     }
 
     @Test
