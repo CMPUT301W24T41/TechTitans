@@ -16,7 +16,7 @@ import java.util.UUID;
 
 /**
  * This class should help control and fetch the users unique UID and acquire their information
- * from the the database and update information to the databse
+ * from the the database and update information to the database
  */
 public class UserIdController {
     public interface userCallback {
@@ -110,7 +110,7 @@ public class UserIdController {
 
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
-                .whereEqualTo(uuidKey, id)
+                .whereEqualTo("id", id)
                 .get()
                 .addOnCompleteListener(task -> {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
