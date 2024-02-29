@@ -17,7 +17,7 @@ import java.util.UUID;
  * This class should help control and fetch the users unique UID and acquire their information
  * from the the database
  */
-public class UserIDController {
+public class UserController {
     public interface userCallback {
         void onCallback(User user);
     }
@@ -27,7 +27,7 @@ public class UserIDController {
     private static final String prefName = "ID";
     private FirebaseFirestore db;
 
-    public UserIDController(){
+    public UserController(){
         db = FirebaseFirestore.getInstance();
     }
 

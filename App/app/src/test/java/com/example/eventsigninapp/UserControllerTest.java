@@ -12,10 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.eventsigninapp.UserIDController;
-import com.google.errorprone.annotations.DoNotMock;
-
-public class UserIDControllerTest {
+public class UserControllerTest {
 
 
 
@@ -28,12 +25,12 @@ public class UserIDControllerTest {
     @Mock
     SharedPreferences.Editor mockEditor;
 
-    private UserIDController userIDController;
+    private UserController userController;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userIDController = new UserIDController();
+        userController = new UserController();
     }
 
     @Test
@@ -45,7 +42,7 @@ public class UserIDControllerTest {
         when(mockPreferences.getString("UUID_KEY", null)).thenReturn(existingUUID);
 
         //Perform this using the function
-        String result = userIDController.getUserID(mockContext);
+        String result = userController.getUserID(mockContext);
 
         //check if we acquire the same result
         assertEquals(existingUUID, result);
@@ -59,7 +56,7 @@ public class UserIDControllerTest {
         when(mockPreferences.edit()).thenReturn(mockEditor);
 
         // check if the function performs the necessary action
-        String result = userIDController.getUserID(mockContext);
+        String result = userController.getUserID(mockContext);
 
         // see if the the result was saved to the preference
         verify(mockPreferences.edit()).putString("UUID_KEY", result);
@@ -73,7 +70,7 @@ public class UserIDControllerTest {
         when(mockPreferences.edit()).thenReturn(mockEditor);
 
         // attempt to do so with the function
-        userIDController.saveUUID(mockContext, uuid);
+        userController.saveUUID(mockContext, uuid);
 
         // see if the result is added then saved and committed
         verify(mockEditor).putString("UUID_KEY", uuid);
