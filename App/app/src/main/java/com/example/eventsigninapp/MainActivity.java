@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     Map<String, Object> user = new HashMap<>();
     FirebaseFirestore db;
-    private UserController userController;
+    private UserIdController userIdController;
     TextView idText;
 
     @Override
@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userController = new UserController();
+        userIdController = new UserIdController();
         User user = new User("temp", "f", "l");
-        userController.putUserToFirestore(user);
+        userIdController.putUserToFirestore(user);
 
     }
 

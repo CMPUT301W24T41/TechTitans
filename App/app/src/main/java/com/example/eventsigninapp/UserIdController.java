@@ -18,7 +18,7 @@ import java.util.UUID;
  * This class should help control and fetch the users unique UID and acquire their information
  * from the the database
  */
-public class UserController {
+public class UserIdController {
 
     public interface userCallback {
         void onCallback(User user);
@@ -29,7 +29,7 @@ public class UserController {
     private static final String prefName = "ID";
     private FirebaseFirestore db;
 
-    public UserController(){
+    public UserIdController(){
 
     }
 
@@ -110,7 +110,7 @@ public class UserController {
 
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
-                .whereEqualTo(deafaultUUID, id)
+                .whereEqualTo("id", id)
                 .get()
                 .addOnCompleteListener(task -> {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
@@ -128,11 +128,6 @@ public class UserController {
 
                 });
     }
-
-    public void updateUserPicture(){
-    //TODO use photopicker
-    }
-
 
 
 }
