@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
         userController = new UserIdController();
 
+        getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.mainFragmentContainer, new ExampleFragment()).commit();
     }
 
 
