@@ -9,11 +9,11 @@ import org.junit.Test;
  */
 public class EventTest {
     /**
-     * This method creates a mock Attendee object.
-     * @return a mock Attendee object
+     * This method creates a mock User object.
+     * @return a mock User object
      */
-    private Attendee mockAttendee() {
-        return new Attendee("1");
+    private User mockUser() {
+        return new User("1");
     }
 
     /**
@@ -46,6 +46,35 @@ public class EventTest {
     }
 
     /**
+     * This method tests the getId and setId method of the Event class.
+     */
+    @Test
+    public void testGetSetId() {
+        Event event = mockEvent();
+
+        assertEquals("", event.getId()); // should be empty
+
+        event.setId("Test");
+        assertEquals("Test", event.getId()); // should be "Test"
+
+        event.setId("Overwrite");
+        assertEquals("Overwrite", event.getId()); // should be "Overwrite"
+    }
+
+    @Test
+    public void testGetSetName() {
+        Event event = mockEvent();
+
+        assertEquals("", event.getName()); // should be empty
+
+        event.setName("Test");
+        assertEquals("Test", event.getName()); // should be "Test"
+
+        event.setName("Overwrite");
+        assertEquals("Overwrite", event.getName()); // should be "Overwrite"
+    }
+
+    /**
      * This method tests the isCapped method of the Event class.
      */
     @Test
@@ -73,10 +102,10 @@ public class EventTest {
         assertFalse(event.isFull()); // should not be full
 
         for (int i = 0; i < 3; i++) {
-            Attendee mockAttendee = mockAttendee();
-            mockAttendee.setId(String.valueOf(i));
+            User mockUser = mockUser();
+            mockUser.setId(String.valueOf(i));
             try {
-                event.signUpAttendee(mockAttendee());
+                event.signUpUser(mockUser());
             } catch (Event.EventFullException e) {
                 fail("Should not throw EventFullException");
             } catch (Event.AlreadySignedUpException e) {
@@ -88,174 +117,174 @@ public class EventTest {
     }
 
     /**
-     * This method tests the checkInAttendee method of the Event class.
+     * This method tests the checkInUser method of the Event class.
      */
     @Test
-    public void testCheckInAttendee() {
+    public void testCheckInUser() {
         Event event = mockEvent();
-        Attendee attendee = mockAttendee();
+        User user = mockUser();
 
         try {
-            event.checkInAttendee(attendee);
+            event.checkInUser(user);
         } catch (Event.AlreadyCheckedInException e) {
             fail("Should not throw AlreadyCheckedInException");
         }
 
-        assertEquals(1, event.getCheckedInAttendees().size()); // should have 1 attendee
-        assertTrue(event.getCheckedInAttendees().contains(attendee)); // should contain the attendee
+        assertEquals(1, event.getCheckedInUsers().size()); // should have 1 attendee
+        assertTrue(event.getCheckedInUsers().contains(user)); // should contain the attendee
 
         try {
-            event.checkInAttendee(attendee);
+            event.checkInUser(user);
             fail("Should throw AlreadyCheckedInException");
         } catch (Event.AlreadyCheckedInException e) {
             assertNotNull(e);
         }
 
-        assertEquals(1, event.getCheckedInAttendees().size()); // should still have 1 attendee
+        assertEquals(1, event.getCheckedInUsers().size()); // should still have 1 attendee
     }
 
     /**
-     * This method tests the getCheckedInAttendees method of the Event class.
+     * This method tests the getCheckedInUsers method of the Event class.
      */
     @Test
-    public void testGetCheckedInAttendees() {
+    public void testGetCheckedInUsers() {
         Event event = new Event();
 
-        assertNotNull(event.getCheckedInAttendees()); // should not be null
-        assertEquals(0, event.getCheckedInAttendees().size()); // should be empty
+        assertNotNull(event.getCheckedInUsers()); // should not be null
+        assertEquals(0, event.getCheckedInUsers().size()); // should be empty
 
-        Attendee attendee = mockAttendee();
+        User attendee = mockUser();
         attendee.setId(String.valueOf(1));
 
         // check in an attendee
         try {
-            event.checkInAttendee(attendee);
+            event.checkInUser(attendee);
         } catch (Event.AlreadyCheckedInException e) {
             fail("Should not throw AlreadyCheckedInException");
         }
 
-        assertEquals(1, event.getCheckedInAttendees().size()); // should have 1 attendee
-        assertTrue(event.getCheckedInAttendees().contains(attendee)); // should contain the attendee
+        assertEquals(1, event.getCheckedInUsers().size()); // should have 1 attendee
+        assertTrue(event.getCheckedInUsers().contains(attendee)); // should contain the attendee
 
         // check in the same attendee again
         try {
-            event.checkInAttendee(attendee);
+            event.checkInUser(attendee);
             fail("Should throw AlreadyCheckedInException");
         } catch (Event.AlreadyCheckedInException e) {
             assertNotNull(e);
         }
 
-        assertEquals(1, event.getCheckedInAttendees().size()); // should still have 1 attendee
+        assertEquals(1, event.getCheckedInUsers().size()); // should still have 1 attendee
 
         // check in another attendee
-        Attendee anotherAttendee = mockAttendee();
-        anotherAttendee.setId(String.valueOf(2));
+        User anotherUser = mockUser();
+        anotherUser.setId(String.valueOf(2));
 
         try {
-            event.checkInAttendee(anotherAttendee);
+            event.checkInUser(anotherUser);
         } catch (Event.AlreadyCheckedInException e) {
             fail("Should not throw AlreadyCheckedInException");
         }
 
-        assertEquals(2, event.getCheckedInAttendees().size()); // should have 2 attendees
-        assertTrue(event.getCheckedInAttendees().contains(anotherAttendee)); // should contain the other attendee
-        assertTrue(event.getCheckedInAttendees().contains(attendee)); // should still contain the first attendee
+        assertEquals(2, event.getCheckedInUsers().size()); // should have 2 attendees
+        assertTrue(event.getCheckedInUsers().contains(anotherUser)); // should contain the other attendee
+        assertTrue(event.getCheckedInUsers().contains(attendee)); // should still contain the first attendee
     }
 
     /**
-     * This method tests the isAttendeeCheckedIn method of the Event class.
+     * This method tests the isUserCheckedIn method of the Event class.
      */
     @Test
-    public void testIsAttendeeCheckedIn() {
+    public void testIsUserCheckedIn() {
         Event event = mockEvent();
-        Attendee attendee = mockAttendee();
+        User user = mockUser();
 
-        // check in the attendee
+        // check in the user
         try {
-            event.checkInAttendee(attendee);
+            event.checkInUser(user);
         } catch (Event.AlreadyCheckedInException e) {
             fail("Should not throw AlreadyCheckedInException");
         }
 
-        assertTrue(event.isAttendeeCheckedIn(attendee)); // should be checked in
+        assertTrue(event.isUserCheckedIn(user)); // should be checked in
 
-        // check in the same attendee again
+        // check in the same user again
         try {
-            event.checkInAttendee(attendee);
+            event.checkInUser(user);
             fail("Should throw AlreadyCheckedInException");
         } catch (Event.AlreadyCheckedInException e) {
             assertNotNull(e);
         }
 
-        assertTrue(event.isAttendeeCheckedIn(attendee)); // should still be checked in
+        assertTrue(event.isUserCheckedIn(user)); // should still be checked in
     }
 
     /**
-     * This method tests the getSignedUpAttendees method of the Event class.
+     * This method tests the getSignedUpUsers method of the Event class.
      */
     @Test
-    public void testGetSignedUpAttendees() {
+    public void testGetSignedUpUsers() {
         Event event = new Event();
 
-        assertNotNull(event.getSignedUpAttendees()); // should not be null
-        assertEquals(0, event.getSignedUpAttendees().size()); // should be empty
+        assertNotNull(event.getSignedUpUsers()); // should not be null
+        assertEquals(0, event.getSignedUpUsers().size()); // should be empty
 
         // sign up an attendee
-        Attendee attendee = mockAttendee();
+        User user = mockUser();
 
         try {
-            event.signUpAttendee(attendee);
+            event.signUpUser(user);
         } catch (Event.EventFullException e) {
             fail("Should not throw EventFullException");
         } catch (Event.AlreadySignedUpException e) {
             fail("Should not throw AlreadySignedUpException");
         }
 
-        assertEquals(1, event.getSignedUpAttendees().size()); // should have 1 attendee
-        assertTrue(event.getSignedUpAttendees().contains(attendee)); // should contain the attendee
+        assertEquals(1, event.getSignedUpUsers().size()); // should have 1 attendee
+        assertTrue(event.getSignedUpUsers().contains(user)); // should contain the attendee
     }
 
     /**
-     * This method tests the isAttendeeSignedUp method of the Event class.
+     * This method tests the isUserSignedUp method of the Event class.
      */
     @Test
-    public void testIsAttendeeSignedUp() {
+    public void testIsUserSignedUp() {
         Event event = mockEvent();
-        Attendee attendee = mockAttendee();
+        User user = mockUser();
 
-        assertFalse(event.isAttendeeSignedUp(attendee)); // should not be signed up
+        assertFalse(event.isUserSignedUp(user)); // should not be signed up
 
-        // sign up the attendee
+        // sign up the user
         try {
-            event.signUpAttendee(attendee);
+            event.signUpUser(user);
         } catch (Event.EventFullException e) {
             fail("Should not throw EventFullException");
         } catch (Event.AlreadySignedUpException e) {
             fail("Should not throw AlreadySignedUpException");
         }
 
-        assertTrue(event.isAttendeeSignedUp(attendee)); // should be signed up
+        assertTrue(event.isUserSignedUp(user)); // should be signed up
     }
 
     @Test
-    public void testSignUpAttendee() {
+    public void testSignUpUser() {
         Event event = mockEvent();
-        Attendee attendee = mockAttendee();
+        User user = mockUser();
 
         try {
-            event.signUpAttendee(attendee);
+            event.signUpUser(user);
         } catch (Event.EventFullException e) {
             fail("Should not throw EventFullException");
         } catch (Event.AlreadySignedUpException e) {
             fail("Should not throw AlreadySignedUpException");
         }
 
-        assertTrue(event.getSignedUpAttendees().contains(attendee)); // should contain the attendee
-        assertEquals(1, event.getSignedUpAttendees().size()); // should have 1 attendee
+        assertTrue(event.getSignedUpUsers().contains(user)); // should contain the user
+        assertEquals(1, event.getSignedUpUsers().size()); // should have 1 user
 
-        // sign up the same attendee again
+        // sign up the same user again
         try {
-            event.signUpAttendee(attendee);
+            event.signUpUser(user);
             fail("Should throw AlreadySignedUpException");
         } catch (Event.EventFullException e) {
             fail("Should not throw EventFullException");
@@ -263,29 +292,29 @@ public class EventTest {
             assertNotNull(e);
         }
 
-        assertTrue(event.getSignedUpAttendees().contains(attendee)); // should still contain the attendee
-        assertEquals(1, event.getSignedUpAttendees().size()); // should still have 1 attendee
+        assertTrue(event.getSignedUpUsers().contains(user)); // should still contain the user
+        assertEquals(1, event.getSignedUpUsers().size()); // should still have 1 user
 
-        // sign up another attendee
-        Attendee anotherAttendee = mockAttendee();
+        // sign up another user
+        User anotherUser = mockUser();
 
         try {
-            event.signUpAttendee(anotherAttendee);
+            event.signUpUser(anotherUser);
         } catch (Event.EventFullException e) {
             fail("Should not throw EventFullException");
         } catch (Event.AlreadySignedUpException e) {
             fail("Should not throw AlreadySignedUpException");
         }
 
-        assertTrue(event.getSignedUpAttendees().contains(anotherAttendee)); // should contain the other attendee
-        assertEquals(2, event.getSignedUpAttendees().size()); // should have 2 attendees
+        assertTrue(event.getSignedUpUsers().contains(anotherUser)); // should contain the other user
+        assertEquals(2, event.getSignedUpUsers().size()); // should have 2 attendees
 
-        // sign up another attendee when event is full
+        // sign up another user when event is full
         event.setCapacity(2);
-        Attendee fullAttendee = mockAttendee();
+        User fullUser = mockUser();
 
         try {
-            event.signUpAttendee(fullAttendee);
+            event.signUpUser(fullUser);
             fail("Should throw EventFullException");
         } catch (Event.EventFullException e) {
             assertNotNull(e);
@@ -293,7 +322,7 @@ public class EventTest {
             fail("Should not throw AlreadySignedUpException");
         }
 
-        assertFalse(event.getSignedUpAttendees().contains(fullAttendee)); // should not contain the full attendee
-        assertEquals(2, event.getSignedUpAttendees().size()); // should still have 2 attendees
+        assertFalse(event.getSignedUpUsers().contains(fullUser)); // should not contain the full user
+        assertEquals(2, event.getSignedUpUsers().size()); // should still have 2 attendees
     }
 }
