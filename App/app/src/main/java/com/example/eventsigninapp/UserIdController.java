@@ -43,10 +43,7 @@ public class UserIdController {
      * a user must be loaded first or this function throws an error 
      * @return the current user of the controller
      */
-    public User getUser() throws InstantiationException {
-        if(user == null) {
-            throw new InstantiationException("There is no user stored inside the controller");
-        }
+    public User getUser(){
         return user;
     }
 

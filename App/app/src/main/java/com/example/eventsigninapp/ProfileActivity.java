@@ -2,6 +2,8 @@ package com.example.eventsigninapp;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,11 +32,20 @@ public class ProfileActivity extends AppCompatActivity {
         TextView firstName = findViewById(R.id.user_first_name);
         TextView lastName = findViewById(R.id.user_last_name);
         TextView phoneNumber = findViewById(R.id.user_number);
+
+        firstName.setText(userIdController.getUser().getFirstName());
+        lastName.setText(userIdController.getUser().getLastName());
+        phoneNumber.setText(userIdController.getUser().getContact());
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 UserIdController.selectImage(ProfileActivity.this);
+                EditProfileFragment editProfileFragment = new EditProfileFragment();
+
+                editProfileFragment.show(getSupportFragmentManager(), "profileEditDialog");
+
             }
+
+
         });
 
     }
@@ -45,11 +56,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
-            try {
-                userIdController.getUser().setPicture(uri);
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            }
+
+            userIdController.getUser().setPicture(uri);
+
         }
 
 

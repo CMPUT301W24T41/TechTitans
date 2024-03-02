@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileActivity"
-    android:background="#176B87">
+    android:background="#EEF5FF">
 
 
     <RelativeLayout
@@ -26,6 +26,8 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_default_profile"
             android:contentDescription="@string/profile_picture_of_user">
         </ImageView>
 
@@ -100,16 +102,21 @@
 
         </TextView>
 
+
         <Button
             android:id="@+id/editButton"
             android:layout_width="100dp"
             android:layout_height="48dp"
             android:backgroundTint="#176B87"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
+            android:layout_above="@id/settingsButton"
+            android:layout_centerInParent="true"
             android:layout_marginRight="10dp"
-            android:text="Edit">
+            android:text="Edit"
+            android:textSize="13sp">
+
         </Button>
+
+
 
 
 
