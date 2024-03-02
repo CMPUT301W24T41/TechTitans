@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EventSignInApp</string>
+    <string name="event_title_text">Event title</string>
 </resources>
