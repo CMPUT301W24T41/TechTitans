@@ -81,7 +81,7 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="20dp"
-            android:text="@string/email"
+            android:text="@string/number"
             android:layout_below="@id/user_first_name"
             android:id="@+id/number"
             android:layout_marginStart="8dp"
@@ -96,9 +96,20 @@
             android:text="user number"
             android:layout_below="@id/number"
             android:layout_marginHorizontal="8dp"
-            android:id="@+id/user_email">
+            android:id="@+id/user_number">
 
         </TextView>
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:backgroundTint="#176B87"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:text="Edit">
+        </Button>
 
 
 

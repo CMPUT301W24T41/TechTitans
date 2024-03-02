@@ -18,21 +18,22 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     Map<String, Object> user = new HashMap<>();
-    FirebaseFirestore db;
-    private UserIdController userIdController;
+    FirebaseFirestore db  = FirebaseFirestore.getInstance();;
     TextView idText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        FirebaseApp.initializeApp(this);
-        db = FirebaseFirestore.getInstance();
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userIdController = new UserIdController();
-        User user = new User("temp", "f", "l");
-        userIdController.putUserToFirestore(user);
+
+        UserIdController userIdController = new UserIdController();
+        User user = new User("usr", "fname", "lname", "123456789");
+        userIdController.setUser(user);
+        userIdController.putUserToFirestore();
 
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
 

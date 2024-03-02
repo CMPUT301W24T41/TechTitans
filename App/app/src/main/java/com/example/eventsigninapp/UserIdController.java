@@ -1,12 +1,17 @@
 package com.example.eventsigninapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +29,35 @@ public class UserIdController {
         void onCallback(User user);
     }
 
+    private static User user = new User();
+
 
     private static final String deafaultUUID = "UUID_Default";
     private static final String prefName = "ID";
     private FirebaseFirestore db;
 
-    public UserIdController(){
+    public UserIdController(){}
 
+    /**
+     * getter for acquiring locally stored user from the controller, 
+     * a user must be loaded first or this function throws an error 
+     * @return the current user of the controller
+     */
+    public User getUser() throws InstantiationException {
+        if(user == null) {
+            throw new InstantiationException("There is no user stored inside the controller");
+        }
+        return user;
     }
+
+
+    /**
+     * setter for setting locally stored user for the controller
+     */
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
     /**
      * Gets the user's UUID if it exists, otherwise generates a new one and saves it
@@ -59,20 +85,19 @@ public class UserIdController {
     /**
      * Updates the users UUID in the shared preference of the provided context
      * @param context: the target context
-     * @param uuid: the new string value of the uuid
+     * @param id: the new string value of the id
      */
-    public void saveUUID(Context context, String uuid) {
+    public void saveUUID(Context context, String id) {
         SharedPreferences preferences = context.getSharedPreferences("ID", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(deafaultUUID, uuid);
+        editor.putString(deafaultUUID, id);
         editor.apply();
     }
 
     /**
-     * Adds a new user to the database or updates an existing one.
-     * @param user: the user object to add or modify to the database
+     * Adds a user to the database or updates an existing one based on the current user in the controller.
      */
-    public void putUserToFirestore(User user) {
+    public void putUserToFirestore() {
         db = FirebaseFirestore.getInstance();
         // Add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
@@ -83,7 +108,7 @@ public class UserIdController {
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
 
-        userDocument.set(userData)
+        userDocument.set(userData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     // Success
                 })
@@ -94,7 +119,8 @@ public class UserIdController {
     }
 
 
-    /** Finds a user based on their unique id in the database and fetches it from the database
+    /** Finds a user based on their unique id in the database and fetches it from the database, setting
+     * the controllers current user to the new user
      * @param id: the unique id of the user to be fetched
      * @param callback: due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
      *  to access a user fetched from the database, use the following code:
@@ -116,13 +142,13 @@ public class UserIdController {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User user = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        user = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         callback.onCallback(user);
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
-                        //addUserToFirestore(id, "");
-                        User emptyUser = new User(id);
-                        callback.onCallback(emptyUser);
+                        user = new User(id);
+                        putUserToFirestore();
+                        callback.onCallback(user);
                     }
 
 
@@ -130,6 +156,52 @@ public class UserIdController {
     }
 
 
+
+    /**
+     *
+     *
+     * @param activity
+     *
+     * ImagePicker library by Dhaval Sodha Parmar
+     * Github: github.com/dhaval2404/imagePicker
+     */
+    public static void selectImage(Activity activity){
+        ImagePicker.with(activity)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1028, 1028)
+                .start();
+    }
+
+    /**
+     * This method should be used to edit the profile information of the user.
+     * @param firstName the new first name
+     * @param lastName the new last name
+     * @param contact the new contact information
+     * @param pictureUri the new profile picture URI
+     */
+    public void editProfile(String firstName, String lastName, String contact, Uri pictureUri) {
+        if (firstName != null && !firstName.isEmpty()) {
+            user.setFirstName(firstName);
+        }
+
+        if (lastName != null && !lastName.isEmpty()) {
+            user.setLastName(lastName);
+        }
+
+        if (contact != null) {
+            user.setContact(contact);
+        }
+
+        if (pictureUri != null) {
+            user.setPicture(pictureUri);
+        }
+
+        putUserToFirestore();
+    }
+
+
 }
+
 
 

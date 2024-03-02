@@ -1,5 +1,7 @@
 package com.example.eventsigninapp;
 
+import android.net.Uri;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -15,7 +17,8 @@ public class User {
 
     private Collection<Event> hostedEvents;
 
-    private Object picture;
+
+    private Uri picture;
 
 
     protected User() {
@@ -51,9 +54,7 @@ public class User {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) {this.id = id; }
 
     public String getFirstName() {
         return firstName;
@@ -81,6 +82,13 @@ public class User {
     }
 
 
+    public Uri getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Uri picture) {
+        this.picture = picture;
+    }
 
     /**
      * This method should be used to get the contact information of the attendee

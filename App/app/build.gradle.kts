@@ -3,6 +3,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
+
 android {
     namespace = "com.example.eventsigninapp"
     compileSdk = 34
@@ -31,8 +33,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-
 }
+
+
 
 dependencies {
     implementation("com.google.firebase:firebase-analytics")
@@ -41,11 +44,13 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.google.android.gms:play-services-cast-framework:21.4.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     testImplementation("org.mockito:mockito-core:3.11.2")
     androidTestImplementation("org.mockito:mockito-android:3.11.2")
     testImplementation("org.robolectric:robolectric:4.8.1")
+    implementation("com.github.dhaval2404:imagepicker:2.1")
 
 }

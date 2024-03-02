@@ -4,6 +4,6 @@
     <string name="Last_name">Last Name\n</string>
     <string name="user_first_name">User First Name</string>
     <string name="user_last_name">user last name</string>
-    <string name="email">Email</string>
+    <string name="number">Contact:</string>
     <string name="profile_picture_of_user">profile picture of user</string>
 </resources>
