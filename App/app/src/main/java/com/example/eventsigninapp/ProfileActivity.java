@@ -3,7 +3,6 @@ package com.example.eventsigninapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import android.content.Intent;
 import androidx.annotation.Nullable;
 
-import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.squareup.picasso.Picasso;
 
 
@@ -24,7 +22,7 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
     TextView contact;
 
     ImageView profPic;
-    UserIdController userIdController = new UserIdController();
+    UserController userController = new UserController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +39,15 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
 
 
 
-        firstName.setText(userIdController.getUser().getFirstName());
-        lastName.setText(userIdController.getUser().getLastName());
-        contact.setText(userIdController.getUser().getContact());
-        Picasso.get().load(userIdController.getUser().getPicture()).into(profPic);
+        firstName.setText(userController.getUser().getFirstName());
+        lastName.setText(userController.getUser().getLastName());
+        contact.setText(userController.getUser().getContact());
+        Picasso.get().load(userController.getUser().getPicture()).into(profPic);
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                UserIdController.selectImage(ProfileActivity.this);
+                UserController.selectImage(ProfileActivity.this);
             }
 
 
@@ -75,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
 
             Uri imageUri = data.getData();
 
-            userIdController.uploadProfilePicture(imageUri);
+            userController.uploadProfilePicture(imageUri);
             Picasso.get().load(imageUri).into(profPic);
 
 

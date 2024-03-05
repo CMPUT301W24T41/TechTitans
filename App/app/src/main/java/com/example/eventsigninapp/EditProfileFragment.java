@@ -1,10 +1,8 @@
 package com.example.eventsigninapp;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
@@ -37,7 +33,7 @@ public class EditProfileFragment extends DialogFragment {
     }
     private EditText firstName, lastName, contact;
     private ImageView profPic;
-    UserIdController userIdController = new UserIdController();
+    UserController userController = new UserController();
 
     public EditProfileFragment(){}
 
@@ -46,7 +42,7 @@ public class EditProfileFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         // Initialize UserIdController (you may want to pass it as an argument to the fragment)
-        userIdController = new UserIdController();
+        userController = new UserController();
     }
 
     @Override
@@ -62,15 +58,15 @@ public class EditProfileFragment extends DialogFragment {
         Button saveButton = view.findViewById(R.id.buttonSave);
 
 
-        firstName.setText(userIdController.getUser().getFirstName());
-        lastName.setText(userIdController.getUser().getLastName());
-        contact.setText(userIdController.getUser().getContact());
-        Picasso.get().load(userIdController.getUser().getPicture()).into(profPic);
+        firstName.setText(userController.getUser().getFirstName());
+        lastName.setText(userController.getUser().getLastName());
+        contact.setText(userController.getUser().getContact());
+        Picasso.get().load(userController.getUser().getPicture()).into(profPic);
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                UserIdController.selectImage(EditProfileFragment.this);
+                UserController.selectImage(EditProfileFragment.this);
             }
 
 
@@ -83,13 +79,13 @@ public class EditProfileFragment extends DialogFragment {
                 String newFirstName = firstName.getText().toString();
                 String newLastName = lastName.getText().toString();
                 String newContact = contact.getText().toString();
-                Uri newProf = userIdController.getUser().getPicture();
+                Uri newProf = userController.getUser().getPicture();
 
 
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
 
-                userIdController.editProfile(newFirstName, newLastName, newContact, newProf);
+                userController.editProfile(newFirstName, newLastName, newContact, newProf);
                 dismiss();
 
             }
@@ -105,7 +101,7 @@ public class EditProfileFragment extends DialogFragment {
         if (resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
 
-            userIdController.uploadProfilePicture(imageUri);
+            userController.uploadProfilePicture(imageUri);
             Picasso.get().load(imageUri).into(profPic);
 
 

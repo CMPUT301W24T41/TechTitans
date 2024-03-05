@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -30,7 +29,7 @@ import java.util.UUID;
  * This class should help control and fetch the users unique UID and acquire
  * their information from the the database
  */
-public class UserIdController {
+public class UserController {
 
 
     /**
@@ -42,7 +41,7 @@ public class UserIdController {
     }
 
     /**
-     * this interface allows user objects to be fetched and retrieved
+     * This interface allows users to be retrieved
      */
     public interface userCallback {
         void onCallback(User user);
@@ -54,25 +53,31 @@ public class UserIdController {
     private static User user = new User();
 
 
+    //this represents the key to the default id of the user
     private static final String deafaultUUID = "UUID_Default";
+
+    //this represents the name to the preference that stores the id
     private static final String prefName = "ID";
     private final FirebaseFirestore db;
     private final FirebaseStorage storage;
 
-    public UserIdController(){
+    /**
+     * creates a new UserController object and gets an instance of firestore and storage
+     */
+    public UserController(){
         db = FirebaseFirestore.getInstance();
         storage =  FirebaseStorage.getInstance();
     }
 
-    public UserIdController(FirebaseFirestore db, FirebaseStorage storage){
+    //this constructor is made for testing only
+    public UserController(FirebaseFirestore db, FirebaseStorage storage){
         this.db = db;
-        this.storage =storage;
+        this.storage = storage;
     }
 
     /**
      * getter for acquiring locally stored user from the controller,
      * a user must be loaded first or this function throws an error
-     *
      * @return the current user of the controller
      */
     public User getUser() {
@@ -84,7 +89,7 @@ public class UserIdController {
      * setter for setting locally stored user for the controller
      */
     public void setUser(User user) {
-        UserIdController.user = user;
+        UserController.user = user;
     }
 
 
@@ -92,7 +97,7 @@ public class UserIdController {
      * Gets the user's UUID if it exists, otherwise generates a new one and saves it
      * by using a shared preference from the context provided
      *
-     * @param context: the target context to pull the shared preference from
+     * @param context: the target context to pull the shared preference from, this is intended to be used in MainActivity
      * @return A string representing the User's UUID
      */
     public String getUserID(Context context) {
@@ -113,8 +118,8 @@ public class UserIdController {
     }
 
     /**
-     * Updates the users UUID in the shared preference of the provided context
-     *
+     * Updates the users UUID in the shared preference of the provided context,
+     * saving it for the next time the app is opened
      * @param context: the target context
      * @param id:      the new string value of the id
      */
@@ -141,6 +146,8 @@ public class UserIdController {
         userDocument.set(userData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     //Success, updating profile
+                    Log.d("Database", "addUserToFirestore: user data successfully updated");
+
                 })
                 .addOnFailureListener(e -> {
                     // Failure
@@ -148,6 +155,12 @@ public class UserIdController {
                 });
     }
 
+
+    /**
+     * This function gets a user from the database using the given id and updates the current user of this class to the acquired user from the database,
+     * if the task fails, this creates a new user insteat
+     * @param id the id of the user to acquire
+     */
     public void getUserFromFirestore(String id) {
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
@@ -170,16 +183,15 @@ public class UserIdController {
     }
 
 
-    /** Finds a user based on their unique id in the database and fetches it from the database, setting
-     * the controllers current user to the new user
+    /**Finds a user based on their unique id in the database and fetches it from the database,
+     * returning the user in a callback
      *
      * @param id:       the unique id of the user to be fetched
      * @param callback: due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
      *                  to access a user fetched from the database, use the following code:
-     *                  userIDController.getUserFromFirestore(userID, new UserIDController.userCallback() {
+     *                  userIDController.getOtherUserFromFirestore(userID, new UserIDController.userCallback() {
      *                  public void onCallback(User user) {
-     *                  // code to use returned user in here
-     *                  <p>
+     *
      *                  }
      *                  });
      */
@@ -205,9 +217,8 @@ public class UserIdController {
 
 
     /**
-     *
-     *
-     * @param activity
+     * This creates a instance of imagepicker when called in the given activity
+     * @param activity the activity that calls the imagepicker
      *
      * ImagePicker library by Dhaval Sodha Parmar
      * Github: github.com/dhaval2404/imagePicker
@@ -220,6 +231,14 @@ public class UserIdController {
                 .start();
     }
 
+
+    /**
+     * This creates a instance of imagepicker when called in the given fragment
+     * @param fragment the fragment that calls the imagepicker
+     *
+     * ImagePicker library by Dhaval Sodha Parmar
+     * Github: github.com/dhaval2404/imagePicker
+     */
     public static void selectImage(Fragment fragment){
         ImagePicker.with(fragment)
                 .crop()
@@ -229,11 +248,13 @@ public class UserIdController {
     }
 
     /**
-     * This method should be used to edit the profile information of the user.
+     * This method edits the parameters of each of the users profile information
+     * and updates the database with the new info
      *
      * @param firstName the new first name
      * @param lastName  the new last name
      * @param contact   the new contact information
+     * @param pictureUri the new URI of the profile picture
      */
     public void editProfile(String firstName, String lastName, String contact, Uri pictureUri) {
         if (firstName != null && !firstName.isEmpty()) {
@@ -257,6 +278,10 @@ public class UserIdController {
     }
 
 
+    /**
+     * This method uploads the given picture uri to the storage for the current user in the controller class
+     * @param picture the picture to upload
+     */
     public void uploadProfilePicture(Uri picture) {
         StorageReference storageRef = storage.getReference();
 
@@ -280,7 +305,9 @@ public class UserIdController {
     }
 
 
-
+    /**
+     * This updates/fetches the current users profile picture stored in the storage online
+     */
     public void updateWithProfPictureFromWeb() {
         StorageReference storageRef = storage.getReferenceFromUrl(user.getImgUrl());
 
@@ -301,8 +328,14 @@ public class UserIdController {
 
     /**
      * fetches the profile picture of other users on the platform using a callback
-     * @param userID
-     * @param callback
+     * @param userID the id of the user's picture to fetch
+     * @param callback due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
+     *      *                  to access a user fetched from the database, use the following code:
+     *      *                  userIDController.getOtherUserProfilePicture(userID, new UserIDController.userCallback() {
+     *      *                  public void onCallback(Uri picture) {
+     *      *
+     *      *                  }
+     *      *                  });
      */
 
     public void getOtherUserProfilePicture(String userID, ImageUriCallback callback) {

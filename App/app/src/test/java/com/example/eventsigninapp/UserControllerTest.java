@@ -11,8 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -40,7 +37,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.Collections;
 
 @RunWith(RobolectricTestRunner.class)
-public class UserIdControllerTest {
+public class UserControllerTest {
     @Mock
     private Context mockContext;
 
@@ -89,18 +86,18 @@ public class UserIdControllerTest {
     private UploadTask mockUploadTask;
 
     @Mock
-    private UserIdController.ImageUriCallback mockImageUriCallback;
+    private UserController.ImageUriCallback mockImageUriCallback;
 
     @Mock
-    private UserIdController.userCallback mockUserCallback;
+    private UserController.userCallback mockUserCallback;
 
-    private UserIdController userIdController;
+    private UserController userController;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 //        FirebaseApp.initializeApp(RuntimeEnvironment.getApplication());
-        userIdController = new UserIdController(mockFirestore, mockFirebaseStorage);
+        userController = new UserController(mockFirestore, mockFirebaseStorage);
     }
 
     @Test
@@ -112,7 +109,7 @@ public class UserIdControllerTest {
         when(mockPreferences.getString("UUID_Default", null)).thenReturn(existingUUID);
 
         //Perform this using the function
-        String result = userIdController.getUserID(mockContext);
+        String result = userController.getUserID(mockContext);
 
         //check if we acquire the same result
         assertEquals(existingUUID, result);
@@ -126,7 +123,7 @@ public class UserIdControllerTest {
         when(mockPreferences.edit()).thenReturn(mockEditor);
 
         // check if the function performs the necessary action
-        String result = userIdController.getUserID(mockContext);
+        String result = userController.getUserID(mockContext);
 
         // see if the the result was saved to the preference
         verify(mockPreferences.edit()).putString("UUID_Default", result);
@@ -140,7 +137,7 @@ public class UserIdControllerTest {
         when(mockPreferences.edit()).thenReturn(mockEditor);
 
         // attempt to do so with the function
-        userIdController.saveUUID(mockContext, uuid);
+        userController.saveUUID(mockContext, uuid);
 
         // see if the result is added then saved and committed
         verify(mockEditor).putString("UUID_Default", uuid);
@@ -159,9 +156,10 @@ public class UserIdControllerTest {
         DocumentSnapshot mockDocumentSnapshot = mock(DocumentSnapshot.class);
         when(mockDocumentSnapshot.getString(anyString())).thenReturn("John");
 
-        userIdController.getUserFromFirestore("existingUserID");
+        userController.getUserFromFirestore("existingUserID");
 
-        assertEquals("John", userIdController.getUser().getFirstName());
+
+        assertEquals("John", userController.getUser().getFirstName());
     }
 
     @Test
@@ -171,8 +169,8 @@ public class UserIdControllerTest {
         when(mockCollectionReference.document(anyString())).thenReturn(mockDocumentReference);
         when(mockDocumentReference.set(anyMap())).thenReturn(mockVoidTask);
 
-        userIdController.setUser(mockUser);
-        userIdController.putUserToFirestore();
+        userController.setUser(mockUser);
+        userController.putUserToFirestore();
 
         verify(mockDocumentReference).set(anyMap());
     }
@@ -191,7 +189,7 @@ public class UserIdControllerTest {
         when(mockDocumentSnapshot.getString(anyString())).thenReturn("Jane");
 
         // Perform the function
-        userIdController.getOtherUserFromFirestore("existingUserID", mockUserCallback);
+        userController.getOtherUserFromFirestore("existingUserID", mockUserCallback);
 
         // Verify that the callback is invoked with the correct user
         verify(mockUserCallback).onCallback(any(User.class));
@@ -204,13 +202,13 @@ public class UserIdControllerTest {
         when(mockCollectionReference.document(anyString())).thenReturn(mockDocumentReference);
         when(mockDocumentReference.set(anyMap())).thenReturn(mockVoidTask);
 
-        userIdController.setUser(mockUser);
+        userController.setUser(mockUser);
 
-        userIdController.editProfile("Jane", "Smith", "789012", null);
+        userController.editProfile("Jane", "Smith", "789012", null);
 
-        assertEquals("Jane", userIdController.getUser().getFirstName());
-        assertEquals("Smith", userIdController.getUser().getLastName());
-        assertEquals("789012", userIdController.getUser().getContact());
+        assertEquals("Jane", userController.getUser().getFirstName());
+        assertEquals("Smith", userController.getUser().getLastName());
+        assertEquals("789012", userController.getUser().getContact());
         verify(mockDocumentReference).set(anyMap());
     }
 
@@ -223,7 +221,7 @@ public class UserIdControllerTest {
         when(mockUploadTask.addOnSuccessListener(any())).thenReturn(mockUploadTask);
         when(mockUploadTask.addOnFailureListener(any())).thenReturn(mockUploadTask);
 
-        userIdController.uploadProfilePicture(mockUri);
+        userController.uploadProfilePicture(mockUri);
 
         verify(mockStorageReference).putFile(any(Uri.class));
     }
@@ -233,9 +231,9 @@ public class UserIdControllerTest {
         when(mockFirebaseStorage.getReferenceFromUrl(anyString())).thenReturn(mockStorageReference);
         when(mockStorageReference.getDownloadUrl()).thenReturn(mockUriTask);
 
-        userIdController.updateWithProfPictureFromWeb();
+        userController.updateWithProfPictureFromWeb();
 
-        assertNotNull(userIdController.getUser().getPicture());
+        assertNotNull(userController.getUser().getPicture());
     }
 
     @Test
@@ -244,7 +242,7 @@ public class UserIdControllerTest {
         when(mockStorageReference.child(anyString())).thenReturn(mockStorageReference);
         when(mockStorageReference.getDownloadUrl()).thenReturn(mockUriTask);
 
-        userIdController.getOtherUserProfilePicture("otherUserID", mockImageUriCallback);
+        userController.getOtherUserProfilePicture("otherUserID", mockImageUriCallback);
 
         verify(mockImageUriCallback).onImageUriCallback(any(Uri.class));
     }

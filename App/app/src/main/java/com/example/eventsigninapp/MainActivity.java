@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
@@ -20,7 +18,7 @@ public class MainActivity extends AppCompatActivity{
     Map<String, Object> user = new HashMap<>();
     FirebaseFirestore db  = FirebaseFirestore.getInstance();;
     TextView idText;
-    UserIdController userIdController = new UserIdController();
+    UserController userController = new UserController();
 
 
     @Override
@@ -33,9 +31,9 @@ public class MainActivity extends AppCompatActivity{
 
         //testing with a test user
         User user = new User("usr", "fname", "lname", "123456789");
-        userIdController.setUser(user);
-        userIdController.updateWithProfPictureFromWeb();
-        userIdController.putUserToFirestore();
+        userController.setUser(user);
+        userController.updateWithProfPictureFromWeb();
+        userController.putUserToFirestore();
 
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
 
