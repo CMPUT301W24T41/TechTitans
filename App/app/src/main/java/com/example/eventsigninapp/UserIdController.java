@@ -27,8 +27,8 @@ import java.util.UUID;
 
 
 /**
- * This class should help control and fetch the users unique UID and acquire their information
- * from the the database
+ * This class should help control and fetch the users unique UID and acquire
+ * their information from the the database
  */
 public class UserIdController {
 
@@ -140,6 +140,29 @@ public class UserIdController {
                 });
     }
 
+    public void getUserFromFirestore(String id) {
+        db = FirebaseFirestore.getInstance();
+
+        //fetch from the database where the document ID is equal to the UUID
+        db.collection("users")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    // Checks if the task is successful and if the document does not exist, defaults to creating a new one
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        this.setUser(pulledUser);
+                    } else {
+                        // user does not exist
+                        User createdUser = new User(id);
+                        this.setUser(createdUser);
+                    }
+
+
+                });
+    }
+
 
     /** Finds a user based on their unique id in the database and fetches it from the database, setting
      * the controllers current user to the new user
@@ -154,7 +177,7 @@ public class UserIdController {
      *                  }
      *                  });
      */
-    public void getUserFromFirestore(String id, userCallback callback) {
+    public void getOtherUserFromFirestore(String id, userCallback callback) {
         db = FirebaseFirestore.getInstance();
 
         //fetch from the database where the document ID is equal to the UUID

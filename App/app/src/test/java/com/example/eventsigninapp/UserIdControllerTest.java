@@ -14,20 +14,39 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 @RunWith(RobolectricTestRunner.class)
 public class UserIdControllerTest {
-
-
+    @Mock
+    private Context mockContext;
 
     @Mock
-    Context mockContext;
+    private SharedPreferences mockPreferences;
 
     @Mock
-    SharedPreferences mockPreferences;
+    private SharedPreferences.Editor mockEditor;
 
     @Mock
-    SharedPreferences.Editor mockEditor;
+    private FirebaseFirestore mockFirestore;
 
+    @Mock
+    private StorageReference mockStorageReference;
+
+    @Mock
+    private FirebaseStorage mockFirebaseStorage;
+
+    @Mock
+    private ImagePicker mockImagePicker;
+
+    @Mock
+    private UserIdController.ImageUriCallback mockImageUriCallback;
+
+    @Mock
+    private UserIdController.userCallback mockUserCallback;
 
     private UserIdController userIdController;
 
