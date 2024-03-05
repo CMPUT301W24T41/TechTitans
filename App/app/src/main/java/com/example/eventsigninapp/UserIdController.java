@@ -17,6 +17,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,9 +55,9 @@ public class UserIdController {
     private static final String deafaultUUID = "UUID_Default";
     private static final String prefName = "ID";
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
 
-    public UserIdController() {
-    }
+    public UserIdController(){}
 
     /**
      * getter for acquiring locally stored user from the controller,
@@ -138,7 +140,6 @@ public class UserIdController {
     }
 
 
-
     /** Finds a user based on their unique id in the database and fetches it from the database, setting
      * the controllers current user to the new user
      *
@@ -178,8 +179,12 @@ public class UserIdController {
 
 
     /**
-     * @param activity ImagePicker library by Dhaval Sodha Parmar
-     *                 Github: github.com/dhaval2404/imagePicker
+     *
+     *
+     * @param activity
+     *
+     * ImagePicker library by Dhaval Sodha Parmar
+     * Github: github.com/dhaval2404/imagePicker
      */
     public static void selectImage(Activity activity) {
         ImagePicker.with(activity)
@@ -188,7 +193,6 @@ public class UserIdController {
                 .maxResultSize(1028, 1028)
                 .start();
     }
-
 
     public static void selectImage(Fragment fragment){
         ImagePicker.with(fragment)
@@ -205,7 +209,7 @@ public class UserIdController {
      * @param lastName  the new last name
      * @param contact   the new contact information
      */
-    public void editProfile(String firstName, String lastName, String contact) {
+    public void editProfile(String firstName, String lastName, String contact, Uri pictureUri) {
         if (firstName != null && !firstName.isEmpty()) {
             user.setFirstName(firstName);
         }
@@ -218,8 +222,9 @@ public class UserIdController {
             user.setContact(contact);
         }
 
-
-
+        if (pictureUri != null) {
+            user.setPicture(pictureUri);
+        }
 
         if (onProfileUpdateListener != null) {
             onProfileUpdateListener.onProfileUpdate(firstName, lastName, contact);

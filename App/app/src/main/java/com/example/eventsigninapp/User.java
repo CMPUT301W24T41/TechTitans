@@ -21,6 +21,7 @@ public class User {
 
 
     private String imgUrl;
+    private Uri Picture;
 
 
     protected User() {
@@ -149,5 +150,11 @@ public class User {
     }
 
 
+    public Uri getPicture() {
+        return Picture;
+    }
 
+    public void setPicture(Uri picture) {
+        Picture = picture;
+    }
 }

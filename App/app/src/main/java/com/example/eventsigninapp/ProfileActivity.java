@@ -13,7 +13,6 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.squareup.picasso.Picasso;
 
 
 public class ProfileActivity extends AppCompatActivity implements EditProfileFragment.OnProfileUpdateListener{
@@ -44,9 +43,6 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         lastName.setText(userIdController.getUser().getLastName());
         phoneNumber.setText(userIdController.getUser().getContact());
 
-        Picasso.get().load(userIdController.getUser().getImgUrl()).into(profPic);
-
-
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -73,8 +69,11 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            Uri image = data.getData();
-            userIdController.uploadProfilePicture(image);
+
+            Uri imageUri = data.getData();
+
+            userIdController.getUser().setPicture(imageUri);
+            profPic.setImageURI(imageUri);
 
 
         }
@@ -84,11 +83,11 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
 
 
     @Override
-    public void onProfileUpdate(String newFirstName, String newLastName, String newContact) {
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri newPicture) {
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         phoneNumber.setText(newContact);
-        Picasso.get().load(userIdController.getUser().getImgUrl()).into(profPic);
+        profPic.setImageURI(newPicture);
 
     }
 }

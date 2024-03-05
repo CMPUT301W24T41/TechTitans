@@ -1,5 +1,4 @@
 package com.example.eventsigninapp;
-import com.squareup.picasso.Picasso;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
@@ -25,7 +24,7 @@ public class EditProfileFragment extends DialogFragment {
 
 
     public interface OnProfileUpdateListener {
-        void onProfileUpdate(String newFirstName, String newLastName, String newContact);
+        void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri newPicture);
     }
 
 
@@ -64,8 +63,7 @@ public class EditProfileFragment extends DialogFragment {
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         contact.setText(userIdController.getUser().getContact());
-        Picasso.get().load(userIdController.getUser().getImgUrl()).into(profPic);
-
+        profPic.setImageURI(userIdController.getUser().getPicture());
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -83,16 +81,13 @@ public class EditProfileFragment extends DialogFragment {
                 String newFirstName = firstName.getText().toString();
                 String newLastName = lastName.getText().toString();
                 String newContact = contact.getText().toString();
-                String newProf = userIdController.getUser().getImgUrl();
+                Uri newProf = userIdController.getUser().getPicture();
                 
 
-                profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact);
+                profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
-                userIdController.editProfile(newFirstName, newLastName, newContact);
-                if (profileUpdateListener != null) {
-                    profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
-                }
-                userIdController.editProfile(newFirstName, newLastName, newContact, userIdController.getUser().getPicture());
+
+                userIdController.editProfile(newFirstName, newLastName, newContact, newProf);
                 dismiss();
 
             }
@@ -110,9 +105,6 @@ public class EditProfileFragment extends DialogFragment {
             userIdController.uploadProfilePicture(image);
 
             //TODO
-            //userIdController.getUser().setImgUrl();
-            Picasso.get().load(image).into(profPic);
-
         }
     }
 
