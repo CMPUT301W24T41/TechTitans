@@ -32,6 +32,7 @@ import java.util.UUID;
  */
 public class UserIdController {
 
+
     /**
      * This interface allows images to be retrieved
      */
@@ -55,10 +56,18 @@ public class UserIdController {
 
     private static final String deafaultUUID = "UUID_Default";
     private static final String prefName = "ID";
-    private FirebaseFirestore db;
-    private FirebaseStorage storage;
+    private final FirebaseFirestore db;
+    private final FirebaseStorage storage;
 
-    public UserIdController(){}
+    public UserIdController(){
+        db = FirebaseFirestore.getInstance();
+        storage =  FirebaseStorage.getInstance();
+    }
+
+    public UserIdController(FirebaseFirestore db, FirebaseStorage storage){
+        this.db = db;
+        this.storage =storage;
+    }
 
     /**
      * getter for acquiring locally stored user from the controller,
@@ -120,7 +129,6 @@ public class UserIdController {
      * Adds current user to the database or updates an existing one based on the current user in the controller.
      */
     public void putUserToFirestore() {
-        db = FirebaseFirestore.getInstance();
         //add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
         userData.put("id", user.getId());
@@ -141,8 +149,6 @@ public class UserIdController {
     }
 
     public void getUserFromFirestore(String id) {
-        db = FirebaseFirestore.getInstance();
-
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
                 .whereEqualTo("id", id)
@@ -178,8 +184,6 @@ public class UserIdController {
      *                  });
      */
     public void getOtherUserFromFirestore(String id, userCallback callback) {
-        db = FirebaseFirestore.getInstance();
-
         //fetch from the database where the document ID is equal to the UUID
         db.collection("users")
                 .whereEqualTo("id", id)
@@ -254,7 +258,6 @@ public class UserIdController {
 
 
     public void uploadProfilePicture(Uri picture) {
-        storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
         //reference to store the image
@@ -279,7 +282,7 @@ public class UserIdController {
 
 
     public void updateWithProfPictureFromWeb() {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(user.getImgUrl());
+        StorageReference storageRef = storage.getReferenceFromUrl(user.getImgUrl());
 
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -303,7 +306,7 @@ public class UserIdController {
      */
 
     public void getOtherUserProfilePicture(String userID, ImageUriCallback callback) {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference storageRef = storage.getReference();
         StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
 
         profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
