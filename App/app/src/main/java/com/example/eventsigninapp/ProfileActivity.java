@@ -43,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         phoneNumber.setText(userIdController.getUser().getContact());
+        profPic.setImageURI(userIdController.getUser().getPicture());
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -73,7 +74,9 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
             Uri imageUri = data.getData();
 
             userIdController.getUser().setPicture(imageUri);
+            userIdController.uploadProfilePicture();
             profPic.setImageURI(imageUri);
+
 
 
         }

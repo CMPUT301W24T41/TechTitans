@@ -52,5 +52,7 @@ dependencies {
     androidTestImplementation("org.mockito:mockito-android:3.11.2")
     testImplementation("org.robolectric:robolectric:4.8.1")
     implementation("com.github.dhaval2404:imagepicker:2.1")
+    implementation("com.google.firebase:firebase-storage")
+
 
 }

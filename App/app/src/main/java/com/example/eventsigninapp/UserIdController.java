@@ -14,6 +14,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,19 +29,6 @@ import java.util.UUID;
  */
 public class UserIdController {
 
-    /**
-     * This interface alerts views to update when the profile information is updated
-     */
-    public interface OnProfileUpdateListener {
-        void onProfileUpdate(String newFirstName, String newLastName, String newContact);
-    }
-
-    private OnProfileUpdateListener onProfileUpdateListener;
-
-    public void setOnProfileUpdateListener(OnProfileUpdateListener listener) {
-        this.onProfileUpdateListener = listener;
-    }
-
     public interface userCallback {
         void onCallback(User user);
     }
@@ -50,6 +39,8 @@ public class UserIdController {
     private static final String deafaultUUID = "UUID_Default";
     private static final String prefName = "ID";
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
+
 
     public UserIdController(){}
 
@@ -131,6 +122,8 @@ public class UserIdController {
     }
 
 
+
+
     /** Finds a user based on their unique id in the database and fetches it from the database, setting
      * the controllers current user to the new user
      * @param id: the unique id of the user to be fetched
@@ -170,8 +163,6 @@ public class UserIdController {
 
 
     /**
-     *
-     *
      * @param activity
      *
      * ImagePicker library by Dhaval Sodha Parmar
@@ -185,6 +176,13 @@ public class UserIdController {
                 .start();
     }
 
+
+    /**
+     * @param fragment
+     *
+     * ImagePicker library by Dhaval Sodha Parmar
+     * Github: github.com/dhaval2404/imagePicker
+     */
     public static void selectImage(Fragment fragment){
         ImagePicker.with(fragment)
                 .crop()
@@ -213,18 +211,39 @@ public class UserIdController {
             user.setContact(contact);
         }
 
-        if (pictureUri != null) {
+        if (pictureUri != null || pictureUri != user.getPicture()) {
             user.setPicture(pictureUri);
+            uploadProfilePicture();
         }
 
-        if (onProfileUpdateListener != null) {
-            onProfileUpdateListener.onProfileUpdate(firstName, lastName, contact);
-        }
+
         putUserToFirestore();
+
 
     }
 
+    public void uploadProfilePicture() {
+            storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
 
+            // Create a reference to the location where you want to store the image
+            StorageReference profilePicRef = storageRef.child("profile_pictures/" + user.getId());
+
+            // Upload file to Firebase Storage
+            profilePicRef.putFile(user.getPicture())
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Image uploaded successfully, get the download URL
+                        profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+
+                        }).addOnFailureListener(e -> {
+                            Log.e("Database", "addImageToStorage: Error, failure to get uri data", e);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle failure to upload the image
+                        Log.e("Database", "addImageToStorage: Error, failure to upload image", e);
+                    });
+        }
 }
 
 
