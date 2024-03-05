@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
+
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -177,6 +179,14 @@ public class UserIdController {
      */
     public static void selectImage(Activity activity){
         ImagePicker.with(activity)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1028, 1028)
+                .start();
+    }
+
+    public static void selectImage(Fragment fragment){
+        ImagePicker.with(fragment)
                 .crop()
                 .compress(1024)
                 .maxResultSize(1028, 1028)

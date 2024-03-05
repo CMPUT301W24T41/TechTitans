@@ -83,11 +83,11 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
 
 
     @Override
-    public void onProfileUpdate(String newFirstName, String newLastName, String newContact) {
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri imageUri) {
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         phoneNumber.setText(newContact);
-
+        profPic.setImageURI(imageUri);
 
     }
 }
