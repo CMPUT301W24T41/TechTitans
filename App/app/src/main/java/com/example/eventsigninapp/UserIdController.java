@@ -25,6 +25,19 @@ import java.util.UUID;
  */
 public class UserIdController {
 
+    /**
+     * This interface alerts views to update when the profile information is updated
+     */
+    public interface OnProfileUpdateListener {
+        void onProfileUpdate(String newFirstName, String newLastName, String newContact);
+    }
+
+    private OnProfileUpdateListener onProfileUpdateListener;
+
+    public void setOnProfileUpdateListener(OnProfileUpdateListener listener) {
+        this.onProfileUpdateListener = listener;
+    }
+
     public interface userCallback {
         void onCallback(User user);
     }
@@ -107,7 +120,7 @@ public class UserIdController {
 
         userDocument.set(userData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    // Success
+                    // Success, updating profile
                 })
                 .addOnFailureListener(e -> {
                     // Failure
@@ -139,13 +152,13 @@ public class UserIdController {
                     // Checks if the task is successful and if the document does not exist, defaults to creating a new one
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        user = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
-                        callback.onCallback(user);
+                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        callback.onCallback(pulledUser);
                     } else {
                         // failsafe for when the id has already been generated but does not exist in the database
-                        user = new User(id);
+                        User newUser  = new User(id);
                         putUserToFirestore();
-                        callback.onCallback(user);
+                        callback.onCallback(newUser);
                     }
 
 
@@ -194,7 +207,11 @@ public class UserIdController {
             user.setPicture(pictureUri);
         }
 
+        if (onProfileUpdateListener != null) {
+            onProfileUpdateListener.onProfileUpdate(firstName, lastName, contact);
+        }
         putUserToFirestore();
+
     }
 
 

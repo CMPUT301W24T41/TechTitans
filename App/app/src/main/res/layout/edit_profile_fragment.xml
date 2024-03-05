@@ -5,7 +5,7 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/imageViewProfile"
+        android:id="@+id/editProfileImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
@@ -13,26 +13,26 @@
         android:layout_marginBottom="16dp"/>
 
     <EditText
-        android:id="@+id/editTextFirstName"
+        android:id="@+id/editFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageViewProfile"
+        android:layout_below="@id/editProfileImage"
         android:layout_marginTop="16dp"
         android:hint="First Name" />
 
     <EditText
-        android:id="@+id/editTextLastName"
+        android:id="@+id/editLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextFirstName"
+        android:layout_below="@id/editFirstName"
         android:layout_marginTop="8dp"
         android:hint="Last Name" />
 
     <EditText
-        android:id="@+id/editTextContact"
+        android:id="@+id/editContact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextLastName"
+        android:layout_below="@id/editLastName"
         android:layout_marginTop="8dp"
         android:hint="Contact Information" />
 
@@ -40,7 +40,7 @@
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextContact"
+        android:layout_below="@id/editContact"
         android:layout_marginTop="16dp"
         android:text="Save" />
 </RelativeLayout>

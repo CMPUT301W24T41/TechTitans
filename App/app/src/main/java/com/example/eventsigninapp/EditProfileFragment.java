@@ -8,13 +8,24 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 /**
  */
 public class EditProfileFragment extends DialogFragment {
-    private EditText firstNameEditText, lastNameEditText, contactEditText;
-    UserIdController userIdController;
+
+
+
+    public interface OnProfileUpdateListener {
+        void onProfileUpdate(String newFirstName, String newLastName, String newContact);
+    }
+
+    private OnProfileUpdateListener profileUpdateListener;
+
+    public void setOnProfileUpdateListener(OnProfileUpdateListener listener) {
+        this.profileUpdateListener = listener;
+    }
+    private EditText firstName, lastName, contact;
+    UserIdController userIdController = new UserIdController();
 
     public EditProfileFragment(){}
 
@@ -27,27 +38,33 @@ public class EditProfileFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        View view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
 
         // Find views
-        firstNameEditText = view.findViewById(R.id.editTextFirstName);
-        lastNameEditText = view.findViewById(R.id.editTextLastName);
-        contactEditText = view.findViewById(R.id.editTextContact);
+        firstName = view.findViewById(R.id.editFirstName);
+        lastName = view.findViewById(R.id.editLastName);
+        contact = view.findViewById(R.id.editContact);
         Button saveButton = view.findViewById(R.id.buttonSave);
+
+        firstName.setText(userIdController.getUser().getFirstName());
+        lastName.setText(userIdController.getUser().getLastName());
+        contact.setText(userIdController.getUser().getContact());
 
         // Set click listener for saveButton
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newFirstName = firstNameEditText.getText().toString();
-                String newLastName = lastNameEditText.getText().toString();
-                String newContact = contactEditText.getText().toString();
+                String newFirstName = firstName.getText().toString();
+                String newLastName = lastName.getText().toString();
+                String newContact = contact.getText().toString();
 
+                if (profileUpdateListener != null) {
+                    profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact);
+                }
                 userIdController.editProfile(newFirstName, newLastName, newContact, userIdController.getUser().getPicture());
-
+                //notify();
                 dismiss();
 
             }

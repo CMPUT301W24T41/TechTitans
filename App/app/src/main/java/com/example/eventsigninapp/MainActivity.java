@@ -15,11 +15,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     Map<String, Object> user = new HashMap<>();
     FirebaseFirestore db  = FirebaseFirestore.getInstance();;
     TextView idText;
+    UserIdController userIdController = new UserIdController();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        UserIdController userIdController = new UserIdController();
         User user = new User("usr", "fname", "lname", "123456789");
         userIdController.setUser(user);
         userIdController.putUserToFirestore();

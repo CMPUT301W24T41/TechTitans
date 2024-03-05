@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements EditProfileFragment.OnProfileUpdateListener{
 
-
+    TextView firstName;
+    TextView lastName;
+    TextView phoneNumber;
 
     UserIdController userIdController = new UserIdController();
 
@@ -29,17 +31,21 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
 
         Button editButton = findViewById(R.id.editButton);
-        TextView firstName = findViewById(R.id.user_first_name);
-        TextView lastName = findViewById(R.id.user_last_name);
-        TextView phoneNumber = findViewById(R.id.user_number);
+        firstName = findViewById(R.id.user_first_name);
+        lastName = findViewById(R.id.user_last_name);
+        phoneNumber = findViewById(R.id.user_number);
 
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         phoneNumber.setText(userIdController.getUser().getContact());
+
+
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditProfileFragment editProfileFragment = new EditProfileFragment();
+                editProfileFragment.setOnProfileUpdateListener(ProfileActivity.this);
+
 
                 editProfileFragment.show(getSupportFragmentManager(), "profileEditDialog");
 
@@ -50,18 +56,27 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            Uri uri = data.getData();
-
-            userIdController.getUser().setPicture(uri);
-
-        }
-
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact) {
+        firstName.setText(newFirstName);
+        lastName.setText(newLastName);
+        phoneNumber.setText(newContact);
 
     }
-
 }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (resultCode == Activity.RESULT_OK) {
+//            Uri uri = data.getData();
+//
+//            userIdController.getUser().setPicture(uri);
+//
+//        }
+//
+//
+//    }
