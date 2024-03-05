@@ -1,19 +1,20 @@
 package com.example.eventsigninapp;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.content.Intent;
+import androidx.annotation.Nullable;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+
+
 
 public class ProfileActivity extends AppCompatActivity implements EditProfileFragment.OnProfileUpdateListener{
 
@@ -21,6 +22,7 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
     TextView lastName;
     TextView phoneNumber;
 
+    ImageView profPic;
     UserIdController userIdController = new UserIdController();
 
     @Override
@@ -34,18 +36,27 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         firstName = findViewById(R.id.user_first_name);
         lastName = findViewById(R.id.user_last_name);
         phoneNumber = findViewById(R.id.user_number);
+        profPic = findViewById(R.id.profilePicture);
+
+
 
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         phoneNumber.setText(userIdController.getUser().getContact());
 
+        profPic.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                UserIdController.selectImage(ProfileActivity.this);
+            }
 
+
+        });
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditProfileFragment editProfileFragment = new EditProfileFragment();
                 editProfileFragment.setOnProfileUpdateListener(ProfileActivity.this);
-
 
                 editProfileFragment.show(getSupportFragmentManager(), "profileEditDialog");
 
@@ -55,6 +66,19 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         });
 
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            Uri imageUri = data.getData();
+
+            userIdController.getUser().setPicture(imageUri);
+            profPic.setImageURI(imageUri);
+
+
+        }
+    }
+
 
 
 
@@ -64,19 +88,7 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         lastName.setText(newLastName);
         phoneNumber.setText(newContact);
 
+
     }
 }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (resultCode == Activity.RESULT_OK) {
-//            Uri uri = data.getData();
-//
-//            userIdController.getUser().setPicture(uri);
-//
-//        }
-//
-//
-//    }
