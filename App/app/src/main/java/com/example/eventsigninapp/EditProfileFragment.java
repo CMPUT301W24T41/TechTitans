@@ -93,7 +93,6 @@ public class EditProfileFragment extends DialogFragment {
                     profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
                 }
                 userIdController.editProfile(newFirstName, newLastName, newContact, userIdController.getUser().getPicture());
-
                 dismiss();
 
             }

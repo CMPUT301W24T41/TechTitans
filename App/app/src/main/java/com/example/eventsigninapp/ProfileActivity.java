@@ -43,13 +43,9 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         phoneNumber.setText(userIdController.getUser().getContact());
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         Picasso.get().load(userIdController.getUser().getImgUrl()).into(profPic);
-=======
->>>>>>> parent of 7bada02 (added uploading to storage)
-=======
->>>>>>> parent of 7bada02 (added uploading to storage)
+
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -80,12 +76,6 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
             Uri image = data.getData();
             userIdController.uploadProfilePicture(image);
 
-<<<<<<< HEAD
-            Picasso.get().load(image).into(profPic);
-=======
-            userIdController.getUser().setPicture(imageUri);
-            profPic.setImageURI(imageUri);
->>>>>>> parent of 7bada02 (added uploading to storage)
 
         }
     }

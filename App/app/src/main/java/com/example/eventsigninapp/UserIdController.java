@@ -138,8 +138,8 @@ public class UserIdController {
     }
 
 
-    /**
-     * Finds a user based on their unique id in the database and fetches it from the database, setting
+
+    /** Finds a user based on their unique id in the database and fetches it from the database, setting
      * the controllers current user to the new user
      *
      * @param id:       the unique id of the user to be fetched
@@ -189,7 +189,8 @@ public class UserIdController {
                 .start();
     }
 
-    public static void selectImage(Fragment fragment) {
+
+    public static void selectImage(Fragment fragment){
         ImagePicker.with(fragment)
                 .crop()
                 .compress(1024)
@@ -217,15 +218,8 @@ public class UserIdController {
             user.setContact(contact);
         }
 
-<<<<<<<HEAD
-                <<<<<<<HEAD
-                =======
-=======
->>>>>>>parent of 7 bada02(added uploading to storage)
-        if (pictureUri != null) {
-            user.setPicture(pictureUri);
-        }
->>>>>>>parent of 7 bada02(added uploading to storage)
+
+
 
         if (onProfileUpdateListener != null) {
             onProfileUpdateListener.onProfileUpdate(firstName, lastName, contact);
