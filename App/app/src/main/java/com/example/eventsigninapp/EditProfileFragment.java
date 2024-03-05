@@ -106,7 +106,6 @@ public class EditProfileFragment extends DialogFragment {
             Uri imageUri = data.getData();
 
             userIdController.uploadProfilePicture(imageUri);
-            userIdController.updateWithProfPictureFromWeb();
             Picasso.get().load(imageUri).into(profPic);
 
 

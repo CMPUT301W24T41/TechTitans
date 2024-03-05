@@ -3,6 +3,7 @@ package com.example.eventsigninapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -75,7 +76,6 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
             Uri imageUri = data.getData();
 
             userIdController.uploadProfilePicture(imageUri);
-            userIdController.updateWithProfPictureFromWeb();
             Picasso.get().load(imageUri).into(profPic);
 
 

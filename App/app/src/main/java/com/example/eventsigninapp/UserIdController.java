@@ -33,22 +33,23 @@ import java.util.UUID;
 public class UserIdController {
 
     /**
-     * This interface alerts views to update when the profile information is updated
+     * This interface allows images to be retrieved
      */
-    public interface OnProfileUpdateListener {
-        void onProfileUpdate(String newFirstName, String newLastName, String newContact);
+    public interface ImageUriCallback {
+        void onImageUriCallback(Uri imageUri);
+        void onError(Exception e);
     }
 
-    private OnProfileUpdateListener onProfileUpdateListener;
-
-    public void setOnProfileUpdateListener(OnProfileUpdateListener listener) {
-        this.onProfileUpdateListener = listener;
-    }
-
+    /**
+     * this interface allows user objects to be fetched and retrieved
+     */
     public interface userCallback {
         void onCallback(User user);
+
+        void onError(Exception e);
     }
 
+    // this represents the current user
     private static User user = new User();
 
 
@@ -74,7 +75,7 @@ public class UserIdController {
      * setter for setting locally stored user for the controller
      */
     public void setUser(User user) {
-        this.user = user;
+        UserIdController.user = user;
     }
 
 
@@ -116,11 +117,11 @@ public class UserIdController {
     }
 
     /**
-     * Adds a user to the database or updates an existing one based on the current user in the controller.
+     * Adds current user to the database or updates an existing one based on the current user in the controller.
      */
     public void putUserToFirestore() {
         db = FirebaseFirestore.getInstance();
-        // Add the new user to Firestore
+        //add the new user to Firestore
         Map<String, Object> userData = new HashMap<>();
         userData.put("id", user.getId());
         userData.put("firstName", user.getFirstName());
@@ -131,7 +132,7 @@ public class UserIdController {
 
         userDocument.set(userData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    // Success, updating profile
+                    //Success, updating profile
                 })
                 .addOnFailureListener(e -> {
                     // Failure
@@ -167,10 +168,8 @@ public class UserIdController {
                         User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         callback.onCallback(pulledUser);
                     } else {
-                        // failsafe for when the id has already been generated but does not exist in the database
-                        User newUser = new User(id);
-                        putUserToFirestore();
-                        callback.onCallback(newUser);
+                        // user does not exist
+                        callback.onError(new Exception("failed to retrieve user"));
                     }
 
 
@@ -226,9 +225,6 @@ public class UserIdController {
             user.setPicture(pictureUri);
         }
 
-        if (onProfileUpdateListener != null) {
-            onProfileUpdateListener.onProfileUpdate(firstName, lastName, contact);
-        }
         putUserToFirestore();
 
     }
@@ -245,6 +241,8 @@ public class UserIdController {
         profilePicRef.putFile(picture)
                 .addOnSuccessListener(taskSnapshot -> {
                     profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        //update upon successfully completion
+                        this.updateWithProfPictureFromWeb();
 
                     }).addOnFailureListener(e -> {
                         Log.e("Database", "addImageToStorage: Error, failure to get url data", e);
@@ -259,7 +257,6 @@ public class UserIdController {
 
     public void updateWithProfPictureFromWeb() {
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(user.getImgUrl());
-
 
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -276,6 +273,30 @@ public class UserIdController {
         });
     }
 
+    /**
+     * fetches the profile picture of other users on the platform using a callback
+     * @param userID
+     * @param callback
+     */
 
+    public void getOtherUserProfilePicture(String userID, ImageUriCallback callback) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
+
+        profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("database", "Image download URL: " + uri.toString());
+                callback.onImageUriCallback(uri);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("database", "failedImageRetrieval: failed to get image");
+                callback.onError(e);
+            }
+        });
+
+    }
 }
 
