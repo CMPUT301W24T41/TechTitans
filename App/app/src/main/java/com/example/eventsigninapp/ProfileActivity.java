@@ -13,7 +13,7 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-
+import com.squareup.picasso.Picasso;
 
 
 public class ProfileActivity extends AppCompatActivity implements EditProfileFragment.OnProfileUpdateListener{
@@ -43,7 +43,13 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         phoneNumber.setText(userIdController.getUser().getContact());
-        profPic.setImageURI(userIdController.getUser().getPicture());
+<<<<<<< HEAD
+<<<<<<< HEAD
+        Picasso.get().load(userIdController.getUser().getImgUrl()).into(profPic);
+=======
+>>>>>>> parent of 7bada02 (added uploading to storage)
+=======
+>>>>>>> parent of 7bada02 (added uploading to storage)
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -71,13 +77,15 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri image = data.getData();
+            userIdController.uploadProfilePicture(image);
 
+<<<<<<< HEAD
+            Picasso.get().load(image).into(profPic);
+=======
             userIdController.getUser().setPicture(imageUri);
-            userIdController.uploadProfilePicture();
             profPic.setImageURI(imageUri);
-
-
+>>>>>>> parent of 7bada02 (added uploading to storage)
 
         }
     }
@@ -86,11 +94,11 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
 
 
     @Override
-    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri imageUri) {
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact) {
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         phoneNumber.setText(newContact);
-        profPic.setImageURI(imageUri);
+        Picasso.get().load(userIdController.getUser().getImgUrl()).into(profPic);
 
     }
 }
