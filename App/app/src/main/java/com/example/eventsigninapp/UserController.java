@@ -172,6 +172,7 @@ public class UserController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         this.setUser(pulledUser);
+                        updateWithProfPictureFromWeb();
                     } else {
                         // user does not exist
                         User createdUser = new User(id);

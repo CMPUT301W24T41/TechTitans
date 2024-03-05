@@ -16,7 +16,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity{
 
     Map<String, Object> user = new HashMap<>();
-    FirebaseFirestore db  = FirebaseFirestore.getInstance();;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView idText;
     UserController userController = new UserController();
 
@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         //testing with a test user
-        User user = new User("usr", "fname", "lname", "123456789");
-        userController.setUser(user);
-        userController.updateWithProfPictureFromWeb();
-        userController.putUserToFirestore();
+        //User user = new User("usr", "fname", "lname", "123456789");
+        //userController.setUser(user);
+        userController.getUserFromFirestore("usr");
+        //userController.putUserToFirestore();
+
 
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
 
