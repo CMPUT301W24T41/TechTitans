@@ -48,4 +48,6 @@ public class MainActivity extends AppCompatActivity {
 //        user.put("name", "test");
 //        db.collection("testDoc").add(user);
 //}
+
+
 }
