@@ -33,7 +33,7 @@ public class User {
         this.lastName = "";
         this.contact = "";
         this.attendingEvents = new HashSet<>();
-        this.imgUrl = profBaseUrl + id + ".jpg";
+        this.imgUrl = profBaseUrl + id;
     }
 
     protected User(String id, String first, String last) {
@@ -42,7 +42,7 @@ public class User {
         this.lastName = last;
         this.contact = "";
         this.attendingEvents = new HashSet<>();
-        this.imgUrl = profBaseUrl + id + ".jpg";
+        this.imgUrl = profBaseUrl + id;
     }
 
     protected User(String id, String first, String last, String contact) {
@@ -51,7 +51,7 @@ public class User {
         this.lastName = last;
         this.contact = contact;
         this.attendingEvents = new HashSet<>();
-        this.imgUrl = profBaseUrl + id + ".jpg";
+        this.imgUrl = profBaseUrl + id;
     }
 
     public String getId() {

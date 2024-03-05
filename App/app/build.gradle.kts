@@ -53,6 +53,7 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.8.1")
     implementation("com.github.dhaval2404:imagepicker:2.1")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.squareup.picasso:picasso:2.8")
 
 
 }

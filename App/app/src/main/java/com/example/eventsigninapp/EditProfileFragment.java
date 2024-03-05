@@ -17,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.squareup.picasso.Picasso;
+
 /**
  */
 public class EditProfileFragment extends DialogFragment {
@@ -63,7 +65,7 @@ public class EditProfileFragment extends DialogFragment {
         firstName.setText(userIdController.getUser().getFirstName());
         lastName.setText(userIdController.getUser().getLastName());
         contact.setText(userIdController.getUser().getContact());
-        profPic.setImageURI(userIdController.getUser().getPicture());
+        Picasso.get().load(userIdController.getUser().getPicture()).into(profPic);
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -82,7 +84,7 @@ public class EditProfileFragment extends DialogFragment {
                 String newLastName = lastName.getText().toString();
                 String newContact = contact.getText().toString();
                 Uri newProf = userIdController.getUser().getPicture();
-                
+
 
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
@@ -101,10 +103,13 @@ public class EditProfileFragment extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            Uri image = data.getData();
-            userIdController.uploadProfilePicture(image);
+            Uri imageUri = data.getData();
 
-            //TODO
+            userIdController.uploadProfilePicture(imageUri);
+            userIdController.updateWithProfPictureFromWeb();
+            Picasso.get().load(imageUri).into(profPic);
+
+
         }
     }
 

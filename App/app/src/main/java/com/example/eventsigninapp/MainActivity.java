@@ -31,9 +31,10 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //testing with a test user
         User user = new User("usr", "fname", "lname", "123456789");
         userIdController.setUser(user);
+        userIdController.updateWithProfPictureFromWeb();
         userIdController.putUserToFirestore();
 
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();

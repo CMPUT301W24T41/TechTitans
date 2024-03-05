@@ -256,5 +256,26 @@ public class UserIdController {
     }
 
 
+
+    public void updateWithProfPictureFromWeb() {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(user.getImgUrl());
+
+
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("database", "Image download URL: " + uri.toString());
+                user.setPicture(uri);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle failure to retrieve the URL
+                Log.e("database", "failedImageRetrieval: ");
+            }
+        });
+    }
+
+
 }
 
