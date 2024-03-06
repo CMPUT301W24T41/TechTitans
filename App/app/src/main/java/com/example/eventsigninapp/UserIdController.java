@@ -68,7 +68,7 @@ public class UserIdController {
     }
 
     /**
-     * Adds a new user to the database with a blank first and last name
+     * Adds a new user to the database with a first and last name
      * @param id: the unique id of the user
      * @param firstName: user's firstName
      * @param lastName: user's lastName

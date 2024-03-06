@@ -26,6 +26,11 @@ public class User {
     private String contact;
 
     /**
+     * This variable stores the events location if required
+     */
+    private String location;
+
+    /**
      * This variable stores the events that the user has signed up for
      */
     private final Collection<Event> attendingEvents;
@@ -48,6 +53,7 @@ public class User {
         firstName = "";
         lastName = "";
         contact = "";
+        location = "";
     }
 
     protected User(String id) {

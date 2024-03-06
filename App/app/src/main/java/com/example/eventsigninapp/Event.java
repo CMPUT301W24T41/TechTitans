@@ -1,8 +1,15 @@
 package com.example.eventsigninapp;
 
+import android.util.Log;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class Event {
     private String id;
@@ -13,6 +20,7 @@ public class Event {
     private final Collection<User> signedUpUsers; // collection of signed up users
     private final Collection<User> checkedInUsers; // collection of checked in users
     private Object eventPoster;
+    private Object qrCode;
     private Object location;
     private Date date;
 
@@ -20,12 +28,13 @@ public class Event {
         //TODO: generate a unique id on creation
         id = "";
         name = "";
-        checkedInUsers = new HashSet<User>();
-        signedUpUsers = new HashSet<User>();
+        checkedInUsers = new ArrayList<User>();
+        signedUpUsers = new ArrayList<User>();
         eventPoster = null;
+        qrCode = null;
         location = null;
         date = null;
-        capacity = 0;
+        capacity = 10000000;
     }
 
     /**
@@ -59,6 +68,15 @@ public class Event {
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * This method should be used to set the location of the event
+     * @param location the name of the event
+     */
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
 
     /**
      * This method should be used to get the capacity of the event
@@ -186,4 +204,39 @@ public class Event {
             super(message);
         }
     }
+
+
+    /**
+     * Creates a new event and adds it to the Firestore database.
+     *
+     * @param userId       The UUID of the user who is creating the event.
+     * @param eventName    The name of the event.
+     */
+
+
+    public void createEvent(String userId, String eventName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Create an Event object
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("eventName", eventName);
+        eventData.put("checkedInUsers", getSignedUpUsers());
+        eventData.put("signedUpUsers", getCheckedInUsers());
+        eventData.put("eventCreator", userId); // Use the user's UUID as the event creator
+
+        // Add the event to Firestore
+        // Add the event to a subcollection under the user's document
+        db.collection("Users (latest)").document(userId).collection("Events").add(eventData)
+
+                .addOnSuccessListener(documentReference -> {
+                    // Event saved successfully
+                    Log.e("Database","Event saved");
+                })
+                .addOnFailureListener(e -> {
+                    // Error occurred while saving event
+                    Log.e("Database", "addEventToFirestore: Error, new event data not added to database", e);
+                });
+    }
+
+
 }

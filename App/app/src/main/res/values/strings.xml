@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">EventSignInApp</string>
+
+    <string name="CheckInMessage">Welcome! \nCheck in seamlessly\nwith your QR code.</string>
+    <string name="lastName">Last Name</string>
+    <string name="firstName">First Name</string>
+    <string name="check_in">Check In With Qr Code</string>
+    <string name="host_event">Host Event</string>
+    <string name="confirm">Confirm</string>
+    <string name="attendee_limit">Attendee limit - Optional:</string>
+    <string name="upload_poster_text">Click on image to upload a Poster</string>
+    <string name="description_of_event">Description of Event:</string>
+    <string name="titile_of_even">Titile of Event:</string>
+    <string name="main_page"><![CDATA[<—Main Page]]></string>
+    <string name="create_your_own_event">Create Your Own Event</string>
+    <string name="event_poster">Event Poster</string>
+    <string name="upload_poster">Upload Poster</string>
+    <string name="cancel">cancel</string>
+    <string name="Share">Share</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="check_in_fragment">Check In Fragment</string>
+
 </resources>

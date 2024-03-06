@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lastName"
+    android:orientation="vertical"
+    android:background="@color/lightBlue"
+    tools:context=".EventFragment">
+
+
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/create_your_own_event"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/titleOfEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="50"
+        android:inputType="text"
+        android:hint="@string/titile_of_even"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:layout_marginBottom="15dp"/>
+
+
+    <EditText
+        android:id="@+id/descriptionOfEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="50"
+        android:inputType="text"
+        android:hint="@string/description_of_event"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:layout_marginBottom="15dp"/>
+
+
+    <EditText
+        android:id="@+id/attendeeLimit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:hint="@string/attendee_limit"
+        android:inputType="number"
+        android:textSize="24sp" />
+
+
+    <ImageButton
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="286dp"
+        android:background="@color/lightBlue"
+        android:contentDescription="@string/event_poster"
+        android:contextClickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:src="@drawable/event_image" />
+
+    <Button
+        android:id="@+id/imageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_poster"
+        android:textSize="20sp"
+        android:background="@color/blue"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="1dp"/>
+
+
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm"
+        android:textSize="20sp"
+        android:background="@color/blue"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="35dp"/>
+
+
+</LinearLayout>
