@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,17 +7,23 @@
     android:id="@+id/map_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#86b6f6">
 
     <TextView
         android:id="@+id/event_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingBottom="16dp"
-        android:paddingTop="100dp"
+        android:layout_marginTop="44dp"
+        android:background="#b4d4ff"
+        android:padding="50dp"
         android:text="@string/event_title_text"
-        android:textSize="50sp" />
+
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map_fragment"
@@ -25,7 +31,13 @@
         android:layout_width="400dp"
         android:layout_height="400dp"
         android:layout_gravity="center"
-        tools:context="com.example.eventsigninapp.MapActivity"/>
+        android:background="@drawable/border"
 
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_title"
+        tools:context="com.example.eventsigninapp.MapActivity" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
