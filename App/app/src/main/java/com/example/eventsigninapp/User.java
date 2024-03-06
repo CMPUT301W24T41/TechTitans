@@ -7,6 +7,8 @@ import java.util.HashSet;
 
 public class User {
 
+    private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures";
+
     /**
      * This variable stores the id of the user
      */
@@ -40,7 +42,8 @@ public class User {
     /**
      * This variable stores the picture of the user
      */
-    private Object picture;
+    private Uri picture;
+    private String imgUrl;
 
     protected User() {
         attendingEvents = new HashSet<>();
@@ -50,6 +53,7 @@ public class User {
         firstName = "";
         lastName = "";
         contact = "";
+        imgUrl = profilePicpath + id;
     }
 
     protected User(String id) {
@@ -61,6 +65,13 @@ public class User {
         this(id);
         this.firstName = first;
         this.lastName = last;
+    }
+
+    protected User(String id, String first, String last, String contact) {
+        this(id);
+        this.firstName = first;
+        this.lastName = last;
+        this.contact = contact;
     }
 
     /**
@@ -176,10 +187,18 @@ public class User {
 
 
     public Uri getPicture() {
-        return Picture;
+        return this.picture;
     }
 
     public void setPicture(Uri picture) {
-        Picture = picture;
+         this.picture = picture;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }
