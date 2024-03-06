@@ -11,15 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:text="Profile"
-        app:layout_constraintStart_toEndOf="@+id/homeButton"
+        app:layout_constraintStart_toEndOf="@+id/checkInButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/homeButton"
+        android:id="@+id/checkInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Home"
+        android:text="Check In"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

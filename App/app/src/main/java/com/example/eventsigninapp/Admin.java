@@ -1,7 +1,7 @@
 package com.example.eventsigninapp;
 
 public class Admin extends User{
-    protected Admin(int id) {
+    protected Admin(String id) {
         super(id);
     }
 }

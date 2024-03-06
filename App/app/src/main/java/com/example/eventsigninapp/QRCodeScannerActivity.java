@@ -3,13 +3,11 @@ package com.example.eventsigninapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -34,7 +32,6 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     private void initQRCodeScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.setOrientationLocked(true);
         integrator.setPrompt("Scan a QR Code");
         integrator.initiateScan();
     }

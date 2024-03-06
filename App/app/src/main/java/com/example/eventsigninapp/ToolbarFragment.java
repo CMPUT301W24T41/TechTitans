@@ -16,12 +16,15 @@ public class ToolbarFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Button profileButton = view.findViewById(R.id.profileButton);
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                startActivity(intent);
-            }
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            startActivity(intent);
+        });
+
+        Button checkInButton = view.findViewById(R.id.checkInButton);
+        checkInButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), CheckInActivity.class);
+            startActivity(intent);
         });
     }
 }

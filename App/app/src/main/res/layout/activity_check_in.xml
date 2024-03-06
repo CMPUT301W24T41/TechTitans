@@ -43,13 +43,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/checkInQrConstraintLayout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="128dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/check_in_qr_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/checkInToolbarContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeTextView">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/checkInExampleQrImageView"
@@ -58,7 +58,6 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/example_qr_code_content_description"
             android:scaleType="fitCenter"
-            android:src="@tools:sample/avatars"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,5 +81,16 @@
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/checkInToolbarContainer"
+        android:name="com.example.eventsigninapp.ToolbarFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout="@layout/toolbar_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,12 +6,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentContainerView;
 
 public class CheckInActivity extends AppCompatActivity {
     private AppCompatButton hostButton;
     private ConstraintLayout qrCodeLayout;
+    private FragmentContainerView toolbarFragmentContainer;
 
     public CheckInActivity() {
         // Required empty public constructor
@@ -21,6 +21,9 @@ public class CheckInActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_in);
+
+        toolbarFragmentContainer = findViewById(R.id.checkInToolbarContainer);
+        getSupportFragmentManager().beginTransaction().add(R.id.checkInToolbarContainer, new ToolbarFragment()).commit();
 
         hostButton = findViewById(R.id.checkInHostEventButton);
 
