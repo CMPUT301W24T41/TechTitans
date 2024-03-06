@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
 import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
@@ -43,29 +44,35 @@ public class CheckInFragment extends Fragment {
 
         barLauncher = registerForActivityResult(
                 new ScanContract(),
-                result -> {
-                    if (result.getContents() != null) {
+                this::processResult);
+    }
 
-                        scanCount++;
-                        System.out.println(scanCount);
+    /**
+     * Processes the result of the barcode scanner activity.
+     * Shows the scanned result in an alert dialog.
+     */
+    private void processResult(ScanIntentResult result) {
+        if (result.getContents() != null) {
 
-                        // Show the scanned result in an alert dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                        builder.setTitle("Result");
-                        builder.setMessage("Scanned Content: " + result.getContents() + "\nScan Count: " + scanCount);
+            scanCount++;
+            System.out.println(scanCount);
 
-                        // The custom view to the AlertDialog
-                        LayoutInflater inflater = LayoutInflater.from(requireContext());
-                        View dialogView = inflater.inflate(R.layout.custom_camera_dialog_layout, null);
+            // Show the scanned result in an alert dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Result");
+            builder.setMessage("Scanned Content: " + result.getContents() + "\nScan Count: " + scanCount);
 
-                        ImageView imageView = dialogView.findViewById(R.id.imageView);
-                        imageView.setImageResource(R.drawable.event_image);
-                        // Set the custom view to the AlertDialog
-                        builder.setView(dialogView);
+            // The custom view to the AlertDialog
+            LayoutInflater inflater = LayoutInflater.from(requireContext());
+            View dialogView = inflater.inflate(R.layout.custom_camera_dialog_layout, null);
 
-                        builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss()).show();
-                    }
-                });
+            ImageView imageView = dialogView.findViewById(R.id.imageView);
+            imageView.setImageResource(R.drawable.event_image);
+            // Set the custom view to the AlertDialog
+            builder.setView(dialogView);
+
+            builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss()).show();
+        }
     }
 
     /**
