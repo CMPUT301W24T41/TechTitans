@@ -18,8 +18,6 @@ public class User {
     private Collection<Event> attendingEvents;
 
     private Collection<Event> hostedEvents;
-
-
     private String imgUrl;
     private Uri Picture;
 

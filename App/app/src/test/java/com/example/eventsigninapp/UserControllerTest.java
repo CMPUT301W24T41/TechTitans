@@ -97,7 +97,7 @@ public class UserControllerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 //        FirebaseApp.initializeApp(RuntimeEnvironment.getApplication());
-        userController = new UserController(mockFirestore, mockFirebaseStorage);
+        userController = new UserController();
     }
 
     @Test
@@ -176,26 +176,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetOtherUserFromFirestore_existingUser() {
-        // Mock the Firestore instance
-        when(mockFirestore.collection(anyString())).thenReturn(mockCollectionReference);
-        when(mockCollectionReference.whereEqualTo(anyString(), any())).thenReturn(mockQuery);
-        when(mockQuery.get()).thenReturn(mockQueryTask);
-        when(mockQueryTask.isSuccessful()).thenReturn(true);
-
-        // Mock the DocumentSnapshot
-        DocumentSnapshot mockDocumentSnapshot = mock(DocumentSnapshot.class);
-        when(mockQueryTask.getResult()).thenReturn(mock(QuerySnapshot.class));
-        when(mockDocumentSnapshot.getString(anyString())).thenReturn("Jane");
-
-        // Perform the function
-        userController.getOtherUserFromFirestore("existingUserID", mockUserCallback);
-
-        // Verify that the callback is invoked with the correct user
-        verify(mockUserCallback).onCallback(any(User.class));
-    }
-
-    @Test
     public void testEditProfile() {
         User mockUser = new User("123456", "John", "Doe", "123456");
         when(mockFirestore.collection(anyString())).thenReturn(mockCollectionReference);
@@ -236,15 +216,5 @@ public class UserControllerTest {
         assertNotNull(userController.getUser().getPicture());
     }
 
-    @Test
-    public void testGetOtherUserProfilePicture() {
-        when(mockFirebaseStorage.getReference()).thenReturn(mockStorageReference);
-        when(mockStorageReference.child(anyString())).thenReturn(mockStorageReference);
-        when(mockStorageReference.getDownloadUrl()).thenReturn(mockUriTask);
-
-        userController.getOtherUserProfilePicture("otherUserID", mockImageUriCallback);
-
-        verify(mockImageUriCallback).onImageUriCallback(any(Uri.class));
-    }
 
 }

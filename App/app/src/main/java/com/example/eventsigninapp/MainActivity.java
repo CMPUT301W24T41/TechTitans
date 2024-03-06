@@ -41,17 +41,4 @@ public class MainActivity extends AppCompatActivity{
         getSupportFragmentManager().beginTransaction().add(R.id.mainFragmentContainer, new ExampleFragment()).commit();
     }
 
-
-    //Testing Database
-//    @Override
-//    public void onUserInteraction() {
-
-
-//        super.onUserInteraction();
-//
-//        db = FirebaseFirestore.getInstance();
-//        FirebaseApp.initializeApp(this);
-//        user.put("name", "test");
-//        db.collection("testDoc").add(user);
-//}
 }

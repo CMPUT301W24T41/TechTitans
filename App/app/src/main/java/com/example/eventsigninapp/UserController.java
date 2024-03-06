@@ -32,6 +32,8 @@ import java.util.UUID;
 public class UserController {
 
 
+    public UserController() {}
+
     /**
      * This interface allows images to be retrieved
      */
@@ -58,22 +60,14 @@ public class UserController {
 
     //this represents the name to the preference that stores the id
     private static final String prefName = "ID";
-    private final FirebaseFirestore db;
-    private final FirebaseStorage storage;
 
+    private final static DatabaseController databaseController = new DatabaseController();
     /**
      * creates a new UserController object and gets an instance of firestore and storage
      */
-    public UserController(){
-        db = FirebaseFirestore.getInstance();
-        storage =  FirebaseStorage.getInstance();
-    }
 
-    //this constructor is made for testing only
-    public UserController(FirebaseFirestore db, FirebaseStorage storage){
-        this.db = db;
-        this.storage = storage;
-    }
+
+
 
     /**
      * getter for acquiring locally stored user from the controller,
@@ -134,26 +128,10 @@ public class UserController {
      * Adds current user to the database or updates an existing one based on the current user in the controller.
      */
     public void putUserToFirestore() {
-        //add the new user to Firestore
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("id", user.getId());
-        userData.put("firstName", user.getFirstName());
-        userData.put("lastName", user.getLastName());
-        userData.put("contact", user.getContact());
-
-        DocumentReference userDocument = db.collection("users").document(user.getId());
-
-        userDocument.set(userData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    //Success, updating profile
-                    Log.d("Database", "addUserToFirestore: user data successfully updated");
-
-                })
-                .addOnFailureListener(e -> {
-                    // Failure
-                    Log.e("Database", "addUserToFirestore: Error, new user data not added to database", e);
-                });
+        databaseController.putUserToFirestore(user);
     }
+
+
 
 
     /**
@@ -162,59 +140,9 @@ public class UserController {
      * @param id the id of the user to acquire
      */
     public void getUserFromFirestore(String id) {
-        //fetch from the database where the document ID is equal to the UUID
-        db.collection("users")
-                .whereEqualTo("id", id)
-                .get()
-                .addOnCompleteListener(task -> {
-                    // Checks if the task is successful and if the document does not exist, defaults to creating a new one
-                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
-                        this.setUser(pulledUser);
-                        updateWithProfPictureFromWeb();
-                    } else {
-                        // user does not exist
-                        User createdUser = new User(id);
-                        this.setUser(createdUser);
-                    }
-
-
-                });
+        databaseController.getUserFromFirestoreToUserController(id, this);
     }
 
-
-    /**Finds a user based on their unique id in the database and fetches it from the database,
-     * returning the user in a callback
-     *
-     * @param id:       the unique id of the user to be fetched
-     * @param callback: due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
-     *                  to access a user fetched from the database, use the following code:
-     *                  userIDController.getOtherUserFromFirestore(userID, new UserIDController.userCallback() {
-     *                  public void onCallback(User user) {
-     *
-     *                  }
-     *                  });
-     */
-    public void getOtherUserFromFirestore(String id, userCallback callback) {
-        //fetch from the database where the document ID is equal to the UUID
-        db.collection("users")
-                .whereEqualTo("id", id)
-                .get()
-                .addOnCompleteListener(task -> {
-                    // Checks if the task is successful and if the document does not exist, defaults to creating a new one
-                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
-                        callback.onCallback(pulledUser);
-                    } else {
-                        // user does not exist
-                        callback.onError(new Exception("failed to retrieve user"));
-                    }
-
-
-                });
-    }
 
 
     /**
@@ -236,7 +164,6 @@ public class UserController {
     /**
      * This creates a instance of imagepicker when called in the given fragment
      * @param fragment the fragment that calls the imagepicker
-     *
      * ImagePicker library by Dhaval Sodha Parmar
      * Github: github.com/dhaval2404/imagePicker
      */
@@ -284,25 +211,7 @@ public class UserController {
      * @param picture the picture to upload
      */
     public void uploadProfilePicture(Uri picture) {
-        StorageReference storageRef = storage.getReference();
-
-        //reference to store the image
-        StorageReference profilePicRef = storageRef.child("profile_pictures/" + user.getId());
-
-        //upload file to Firebase Storage
-        profilePicRef.putFile(picture)
-                .addOnSuccessListener(taskSnapshot -> {
-                    profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        //update upon successfully completion
-                        this.updateWithProfPictureFromWeb();
-
-                    }).addOnFailureListener(e -> {
-                        Log.e("Database", "addImageToStorage: Error, failure to get url data", e);
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Database", "addImageToStorage: Error, failure to upload image", e);
-                });
+        databaseController.uploadProfilePicture(picture, user, this);
     }
 
 
@@ -310,53 +219,9 @@ public class UserController {
      * This updates/fetches the current users profile picture stored in the storage online
      */
     public void updateWithProfPictureFromWeb() {
-        StorageReference storageRef = storage.getReferenceFromUrl(user.getImgUrl());
-
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Log.d("database", "Image download URL: " + uri.toString());
-                user.setPicture(uri);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // Handle failure to retrieve the URL
-                Log.e("database", "failedImageRetrieval: ");
-            }
-        });
+        databaseController.updateWithProfPictureFromWeb(user, this);
     }
 
-    /**
-     * fetches the profile picture of other users on the platform using a callback
-     * @param userID the id of the user's picture to fetch
-     * @param callback due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
-     *      *                  to access a user fetched from the database, use the following code:
-     *      *                  userIDController.getOtherUserProfilePicture(userID, new UserIDController.userCallback() {
-     *      *                  public void onCallback(Uri picture) {
-     *      *
-     *      *                  }
-     *      *                  });
-     */
 
-    public void getOtherUserProfilePicture(String userID, ImageUriCallback callback) {
-        StorageReference storageRef = storage.getReference();
-        StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
-
-        profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Log.d("database", "Image download URL: " + uri.toString());
-                callback.onImageUriCallback(uri);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("database", "failedImageRetrieval: failed to get image");
-                callback.onError(e);
-            }
-        });
-
-    }
 }
 
