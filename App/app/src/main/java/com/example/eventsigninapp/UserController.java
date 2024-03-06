@@ -30,26 +30,7 @@ import java.util.UUID;
  * their information from the the database
  */
 public class UserController {
-
-
-    public UserController() {}
-
-    /**
-     * This interface allows images to be retrieved
-     */
-    public interface ImageUriCallback {
-        void onImageUriCallback(Uri imageUri);
-        void onError(Exception e);
-    }
-
-    /**
-     * This interface allows users to be retrieved
-     */
-    public interface userCallback {
-        void onCallback(User user);
-
-        void onError(Exception e);
-    }
+    
 
     // this represents the current user
     private static User user = new User();
@@ -61,10 +42,16 @@ public class UserController {
     //this represents the name to the preference that stores the id
     private static final String prefName = "ID";
 
-    private final static DatabaseController databaseController = new DatabaseController();
-    /**
-     * creates a new UserController object and gets an instance of firestore and storage
-     */
+
+    private static DatabaseController databaseController;
+
+    public UserController() {
+        this.databaseController = new DatabaseController();
+    }
+
+    public UserController(DatabaseController controller) {
+        this.databaseController = controller;
+    }
 
 
 
@@ -136,7 +123,7 @@ public class UserController {
 
     /**
      * This function gets a user from the database using the given id and updates the current user of this class to the acquired user from the database,
-     * if the task fails, this creates a new user insteat
+     * if the task fails, this creates a new user instead
      * @param id the id of the user to acquire
      */
     public void getUserFromFirestore(String id) {

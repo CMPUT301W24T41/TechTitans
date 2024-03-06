@@ -30,6 +30,10 @@ public class DatabaseController {
         storage = FirebaseStorage.getInstance();
     }
 
+    /**
+     * This method stores a user or updates an existing user to the database
+     * @param user the user to add
+     */
     public void putUserToFirestore(User user) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("id", user.getId());
@@ -43,6 +47,7 @@ public class DatabaseController {
                 .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
                 .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
     }
+
 
     public void getUserFromFirestoreToUserController(String id, UserController userController) {
         db.collection("users")
@@ -90,8 +95,11 @@ public class DatabaseController {
                 });
     }
 
-    // Additional methods for handling Firebase Storage operations
 
+    /**
+     * This method uploads the given picture uri to the storage for the current user in the controller class
+     * @param picture the picture to upload
+     */
     public void uploadProfilePicture(Uri picture, User user, UserController userController) {
         StorageReference storageRef = storage.getReference();
 
@@ -153,12 +161,17 @@ public class DatabaseController {
     }
 
 
+    /**
+     * This interface allows images to be retrieved
+     */
     public interface ImageUriCallback {
         void onImageUriCallback(Uri imageUri);
-
         void onError(Exception e);
     }
 
+    /**
+     * This interface allows users to be retrieved
+     */
     public interface UserCallback {
         void onCallback(User user);
 

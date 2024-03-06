@@ -85,11 +85,11 @@ public class UserControllerTest {
     @Mock
     private UploadTask mockUploadTask;
 
-    @Mock
-    private UserController.ImageUriCallback mockImageUriCallback;
-
-    @Mock
-    private UserController.userCallback mockUserCallback;
+//    @Mock
+//    private UserController.ImageUriCallback mockImageUriCallback;
+//
+//    @Mock
+//    private UserController.userCallback mockUserCallback;
 
     private UserController userController;
 
