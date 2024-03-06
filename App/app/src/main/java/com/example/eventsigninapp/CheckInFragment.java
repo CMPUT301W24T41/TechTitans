@@ -19,11 +19,6 @@ import com.journeyapps.barcodescanner.ScanOptions;
  * Use the {@link CheckInFragment#} factory method to
  * create an instance of this fragment.
  */
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CheckInFragment#} factory method to
- * create an instance of this fragment.
- */
 public class CheckInFragment extends Fragment {
 
     ActivityResultLauncher<ScanOptions> barLauncher;
