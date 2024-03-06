@@ -18,15 +18,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     FrameLayout frameLayout;
 
     TabLayout tabLayout;
     Map<String, Object> user = new HashMap<>();
-    FirebaseFirestore db;
-    private UserIdController userController;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView idText;
+    UserController userController = new UserController();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         event.setName(eventName);
         event.setLocation(eventLocation);
 
+        //testing with a test user
+        //User user = new User("usr", "fname", "lname", "123456789");
+        //userController.setUser(user);
+        userController.getUserFromFirestore("usr");
+        //userController.putUserToFirestore();
+
 
         event.createEvent(userId, eventName);
         System.out.println("DONE");
@@ -108,17 +115,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    //Testing Database
-//    @Override
-//    public void onUserInteraction() {
-
-
-//        super.onUserInteraction();
-//
-//        db = FirebaseFirestore.getInstance();
-//        FirebaseApp.initializeApp(this);
-//        user.put("name", "test");
-//        db.collection("testDoc").add(user);
-//}
 }

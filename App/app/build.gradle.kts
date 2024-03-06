@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-storage:20.3.0")
     val fragment_version = "1.6.2"
 
     implementation("com.google.firebase:firebase-analytics")
@@ -43,6 +44,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.google.android.gms:play-services-cast-framework:21.4.0")
     implementation("androidx.fragment:fragment:$fragment_version")
 
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
@@ -50,12 +52,13 @@ dependencies {
     implementation ("com.github.yalantis:ucrop:2.2.8")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
+    implementation ("com.squareup.picasso:picasso:2.8")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     testImplementation("org.mockito:mockito-core:3.11.2")
     androidTestImplementation("org.mockito:mockito-android:3.11.2")
     testImplementation("org.robolectric:robolectric:4.8.1")
-
 
 }
