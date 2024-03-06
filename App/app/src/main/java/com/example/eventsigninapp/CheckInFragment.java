@@ -53,7 +53,6 @@ public class CheckInFragment extends Fragment {
      */
     private void processResult(ScanIntentResult result) {
         if (result.getContents() != null) {
-
             scanCount++;
             System.out.println(scanCount);
 
@@ -86,12 +85,7 @@ public class CheckInFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_check_in, container, false);
 
         Button scanButton = rootView.findViewById(R.id.scanButton);
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanCode();
-            }
-        });
+        scanButton.setOnClickListener(v -> scanCode());
 
         return rootView;
     }
