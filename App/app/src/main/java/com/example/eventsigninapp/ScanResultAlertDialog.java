@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AlertDialog;
 
 public class ScanResultAlertDialog extends AlertDialog {
-    private View rootView;
-    private ImageView imageView;
+    private final View rootView;
+    private final ImageView imageView;
 
     public ScanResultAlertDialog(Context context, ViewGroup parent) {
         super(context);
