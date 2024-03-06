@@ -30,7 +30,7 @@ import java.util.UUID;
  * their information from the the database
  */
 public class UserController {
-    
+
 
     // this represents the current user
     private static User user = new User();
@@ -46,11 +46,11 @@ public class UserController {
     private static DatabaseController databaseController;
 
     public UserController() {
-        this.databaseController = new DatabaseController();
+        databaseController = new DatabaseController();
     }
 
     public UserController(DatabaseController controller) {
-        this.databaseController = controller;
+        databaseController = controller;
     }
 
 

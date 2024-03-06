@@ -90,7 +90,6 @@ public class ProfileActivity extends AppCompatActivity implements EditProfileFra
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
-        Picasso.get().load(newPicture).into(profPic);
 
     }
 }

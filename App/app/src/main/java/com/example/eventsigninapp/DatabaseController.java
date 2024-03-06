@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,13 +23,11 @@ import java.util.UUID;
 
 public class DatabaseController {
 
-    private final FirebaseFirestore db;
-    private final FirebaseStorage storage;
+    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public DatabaseController() {
-        db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
-    }
+    private static final FirebaseStorage storage = FirebaseStorage.getInstance();;
+
+    public DatabaseController() {}
 
     /**
      * This method stores a user or updates an existing user to the database
