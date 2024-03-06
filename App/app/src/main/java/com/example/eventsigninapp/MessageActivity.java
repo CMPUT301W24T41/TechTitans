@@ -6,11 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
-import java.util.Map;
+
 
 
 public class MessageActivity extends AppCompatActivity {
@@ -18,7 +16,6 @@ public class MessageActivity extends AppCompatActivity {
     Button sendButton, backButton, sendToButton;
     TextView eventTitle, eventDate, eventLocation;
     ArrayList<User> messageRecipients = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +56,19 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Send the message
-                sendNotification(messageTitle.getText().toString(), messageBody.getText().toString());
+                sendInAppMessage(messageTitle.getText().toString(), messageBody.getText().toString());
             }
         });
     }
+
+    private void sendInAppMessage(String title, String body) {
+        // Create a message object
+    }
+
+
+
+
+
 
     private void openSendToFragment() {
         // Create instance of SendToFragment
@@ -72,9 +78,4 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    private void sendNotification(String title, String body) {
-        //Send the notification to the server
-
-        String token = "fSHonvpuReC8-rFMMUb0zY";
-    }
 }
