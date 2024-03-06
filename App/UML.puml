@@ -1,0 +1,138 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class MainActivity {
+    #onCreate(savedInstanceState: Bundle)
+}
+
+class ProfileActivity {
+    -TextView firstName
+    -TextView lastName
+    -TextView contact
+    -ImageView profPic
+    -UserController userController
+    #onCreate(savedInstanceState: Bundle)
+}
+
+class UserController {
+    -User user
+    -String defaultUUID
+    -String prefName
+    +User getUser()
+    +void setUser(user: User)
+    +String getUserID(context: Context)
+    +void saveUUID(context: Context, id: String)
+    +void putUserToFirestore()
+    +void getUserFromFirestore(id: String)
+    +void selectImage(activity: Activity)
+    +void selectImage(fragment: Fragment)
+    +void editProfile(firstName: String, lastName: String,
+    contact: String, pictureUri: Uri)
+    +void uploadProfilePicture(picture: Uri)
+    +void updateWithProfPictureFromWeb()
+}
+
+class DatabaseController {
+    -FirebaseFirestore db
+    -FirebaseStorage storage
+    +void putUserToFirestore(user: User)
+    +void getUserFromFirestoreToUserController(id: String, userController: UserController)
+    +void getUserFromFirestore(id: String, callback: UserCallback)
+    +void uploadProfilePicture(picture: Uri, user: User, userController: UserController)
+    +void updateWithProfPictureFromWeb(user: User, userController: UserController)
+    +void getUserProfilePicture(userID: String, callback: ImageUriCallback)
+}
+
+class Event {
+    -String id
+    -String name
+    -int capacity
+    -Collection<User> signedUpUsers
+    -Collection<User> checkedInUsers
+    -Object eventPoster
+    -Object location
+    -Date date
+    +String getId()
+    +void setId(id: String)
+    +String getName()
+    +void setName(name: String)
+    +int getCapacity()
+    +void setCapacity(capacity: int)
+    +boolean isCapped()
+    +boolean isFull()
+    +void checkInUser(user: User)
+    +Collection<User> getCheckedInUsers()
+    +boolean isUserCheckedIn(user: User)
+    +void signUpUser(user: User)
+    +Collection<User> getSignedUpUsers()
+    +boolean isUserSignedUp(user: User)
+}
+
+class User {
+    -String profilePicPath
+    -String id
+    -String firstName
+    -String lastName
+    -String contact
+    -Collection<Event> attendingEvents
+    -Collection<Event> hostingEvents
+    -Uri picture
+    -String imgUrl
+    +String getId()
+    +void setId(id: String)
+    +String getFirstName()
+    +void setFirstName(firstName: String)
+    +String getLastName()
+    +void setLastName(lastName: String)
+    +Collection<Event> getAttendingEvents()
+    +Collection<Event> getHostingEvents()
+    +String getContact()
+    +void setContact(contact: String)
+    +void checkIn(event: Event)
+    +void signUp(event: Event)
+    +Uri getPicture()
+    +void setPicture(picture: Uri)
+    +String getImgUrl()
+    +void setImgUrl(imgUrl: String)
+}
+
+class Admin
+
+class EditProfileFragment {
+    -OnProfileUpdateListener profileUpdateListener
+    -EditText firstName
+    -EditText lastName
+    -EditText contact
+    -ImageView profPic
+    -UserController userController
+    +setOnProfileUpdateListener(listener: OnProfileUpdateListener)
+}
+
+class ToolbarFragment
+class Fragment
+interface OnProfileUpdateListener {
+    +onProfileUpdate(newFirstName: String, newLastName: String, newContact: String, newPicture: Uri)
+}
+
+Fragment <|-- ToolbarFragment
+Fragment <|-- EditProfileFragment
+
+AppCompatActivity <|-- MainActivity : extends
+AppCompatActivity <|-- ProfileActivity : extends
+
+ProfileActivity <|.. OnProfileUpdateListener : implements
+
+UserController "1" o-- "1" ProfileActivity : has
+UserController "1" o-- "1" User : has
+
+DatabaseController -- User : takes as argument
+DatabaseController -- UserController : takes as argument
+
+EditProfileFragment o-- UserController
+
+Event "*" o-- "*" User
+
+User <|-- Admin : extends
+
+skinparam linetype ortho
+@enduml
