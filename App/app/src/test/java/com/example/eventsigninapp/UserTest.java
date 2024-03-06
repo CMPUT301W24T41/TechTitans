@@ -5,15 +5,15 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * This class tests the Attendee class.
+ * This class tests the User class.
  */
 public class UserTest {
     /**
-     * This method creates a mock Attendee object.
-     * @return a mock Attendee object
+     * This method creates a mock User object.
+     * @return a mock User object
      */
     private User mockUser() {
-        return new User("1");
+        return new User();
     }
 
     /**
@@ -25,57 +25,116 @@ public class UserTest {
     }
 
     /**
-     * This method tests the getContact and setContact method of the Attendee class.
+     * This method tests the getContact and setContact method of the User class.
      */
     @Test
     public void testGetSetContact() {
-        User attendee = new User("1");
+        User user = mockUser();
 
-        assertNull(attendee.getContact()); // should be null
+        assertNotNull(user.getContact()); // should not be null
+        assertEquals("", user.getContact()); // should be empty
 
-        attendee.setContact("xxx");
+        user.setContact("xxx");
 
-        assertNotNull(attendee.getContact()); // should not be null
-        assertEquals("xxx", attendee.getContact()); // should be "xxx"
+        assertEquals("xxx", user.getContact()); // should be "xxx"
 
-        attendee.setContact("yyy");
-        assertEquals("yyy", attendee.getContact()); // should be "yyy"
+        user.setContact("yyy");
+        assertEquals("yyy", user.getContact()); // should be "yyy"
     }
 
     /**
-     * This method tests the checkIn method of the Attendee class.
+     * This method tests the getFirstName and setFirstName method of the User class.
+     */
+    @Test
+    public void testGetSetFirstName() {
+        User user = mockUser();
+
+        assertEquals("", user.getFirstName()); // should be empty
+
+        user.setFirstName("John");
+        assertEquals("John", user.getFirstName()); // should be "John"
+
+        user.setFirstName("Jane");
+        assertEquals("Jane", user.getFirstName()); // should be "Jane"
+    }
+
+    /**
+     * This method tests the getLastName and setLastName method of the User class.
+     */
+    @Test
+    public void testGetSetLastName() {
+        User user = mockUser();
+
+        assertEquals("", user.getLastName()); // should be empty
+
+        user.setLastName("Doe");
+        assertEquals("Doe", user.getLastName()); // should be "Doe"
+
+        user.setLastName("Smith");
+        assertEquals("Smith", user.getLastName()); // should be "Smith"
+    }
+
+    /**
+     * This method tests the getId and setId method of the User class.
+     */
+    @Test
+    public void testGetSetId() {
+        User user = mockUser();
+
+        assertEquals("", user.getId()); // should be empty
+
+        user.setId("Test");
+        assertEquals("Test", user.getId()); // should be "2"
+
+        user.setId("Overwrite");
+        assertEquals("Overwrite", user.getId()); // should be "3"
+    }
+
+    /**
+     * This method tests the checkIn method of the User class.
      */
     @Test
     public void testCheckIn() {
-        User attendee = mockUser();
+        User user = mockUser();
         Event event = mockEvent();
-        attendee.checkIn(event);
+        user.checkIn(event);
 
-        assertEquals(1, event.getCheckedInAttendees().size()); // should have 1 attendee
-        assertTrue(event.getCheckedInAttendees().contains(attendee)); // should contain the attendee
+        assertEquals(1, event.getCheckedInUsers().size()); // should have 1 user
+        assertTrue(event.getCheckedInUsers().contains(user)); // should contain the user
     }
 
     /**
-     * This method tests the getEvents method of the Attendee class.
+     * This method tests the getAttendingEvents method of the User class.
      */
     @Test
-    public void testGetEvents() {
-        User attendee = new User("1");
+    public void testGetAttendingEvents() {
+        User user = mockUser();
 
-        assertNotNull(attendee.getEvents()); // should not be null
-        assertEquals(0, attendee.getEvents().size()); // should be empty
+        assertNotNull(user.getAttendingEvents()); // should not be null
+        assertEquals(0, user.getAttendingEvents().size()); // should be empty
     }
 
     /**
-     * This method tests the signUp method of the Attendee class.
+     * This method tests the getHostingEvents method of the User class.
+     */
+    @Test
+    public void testGetHostingEvents() {
+        User user = mockUser();
+
+        assertNotNull(user.getHostingEvents()); // should not be null
+        assertEquals(0, user.getHostingEvents().size()); // should be empty
+    }
+
+    /**
+     * This method tests the signUp method of the User class.
      */
     @Test
     public void testSignUp() {
-        User attendee = mockUser();
+        User user = mockUser();
         Event event = mockEvent();
-        attendee.signUp(event);
+        user.signUp(event);
 
-        assertEquals(1, attendee.getEvents().size()); // should have 1 event
-        assertTrue(attendee.getEvents().contains(event)); // should contain the event
+        assertEquals(1, user.getAttendingEvents().size()); // should have 1 event
+        assertTrue(user.getAttendingEvents().contains(event)); // should contain the event
     }
 }

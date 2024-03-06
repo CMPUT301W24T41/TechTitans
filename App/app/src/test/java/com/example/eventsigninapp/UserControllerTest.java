@@ -91,7 +91,7 @@ public class UserControllerTest {
 //    @Mock
 //    private UserController.userCallback mockUserCallback;
 
-    private UserController userController;
+    private UserIdController userController;
 
     @Before
     public void setUp() {
