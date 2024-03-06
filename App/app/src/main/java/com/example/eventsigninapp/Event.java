@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 public class Event {
-    private String id;
+    private String uuid;
     private String name;
 
     // The capacity of the event, 0 if uncapped
@@ -26,7 +26,7 @@ public class Event {
 
     public Event() {
         //TODO: generate a unique id on creation
-        id = "";
+        uuid = UUID.randomUUID().toString();
         name = "";
         checkedInUsers = new ArrayList<User>();
         signedUpUsers = new ArrayList<User>();
@@ -41,16 +41,16 @@ public class Event {
      * This method should be used to get the id of the event
      * @return the id of the event
      */
-    public String getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
     /**
      * This method should be used to set the id of the event
-     * @param id the id of the event
+     * @param uuid the id of the event
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -76,7 +76,6 @@ public class Event {
     public void setLocation(String location) {
         this.location = location;
     }
-
 
     /**
      * This method should be used to get the capacity of the event
@@ -124,7 +123,7 @@ public class Event {
             throw new AlreadyCheckedInException("Attendee is already checked in to the event");
         }
 
-        this.checkedInUsers.add(user);
+        checkedInUsers.add(user);
     }
 
     /**

@@ -52,13 +52,13 @@ public class EventTest {
     public void testGetSetId() {
         Event event = mockEvent();
 
-        assertEquals("", event.getId()); // should be empty
+        assertEquals("", event.getUuid()); // should be empty
 
-        event.setId("Test");
-        assertEquals("Test", event.getId()); // should be "Test"
+        event.setUuid("Test");
+        assertEquals("Test", event.getUuid()); // should be "Test"
 
-        event.setId("Overwrite");
-        assertEquals("Overwrite", event.getId()); // should be "Overwrite"
+        event.setUuid("Overwrite");
+        assertEquals("Overwrite", event.getUuid()); // should be "Overwrite"
     }
 
     @Test
