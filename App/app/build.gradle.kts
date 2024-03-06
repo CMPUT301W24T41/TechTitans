@@ -49,7 +49,9 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.8.1")
     // Add the dependencies for the In-App Messaging and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation("com.google.firebase:firebase-inappmessaging-display")
+    implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
+
+
 
 }

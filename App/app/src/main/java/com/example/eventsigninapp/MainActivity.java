@@ -3,10 +3,12 @@ package com.example.eventsigninapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 
 import java.util.HashMap;
@@ -26,13 +28,17 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         userController = new UserIdController();
-
         getSupportFragmentManager().beginTransaction().add(R.id.toolbarFragmentContainer, new ToolbarFragment()).commit();
-
         getSupportFragmentManager().beginTransaction().add(R.id.mainFragmentContainer, new ExampleFragment()).commit();
+
+        //FCM
+
+
+
     }
+
+
 
 
 

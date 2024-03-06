@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EventSignInApp</string>
+    <string name="msg_token_fmt">FCM registration token: %1$s</string>
 </resources>

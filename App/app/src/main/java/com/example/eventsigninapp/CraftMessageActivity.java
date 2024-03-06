@@ -1,17 +1,23 @@
 package com.example.eventsigninapp;
 
+
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+
+
 import java.util.ArrayList;
 
 
 
-public class MessageActivity extends AppCompatActivity {
+public class CraftMessageActivity extends AppCompatActivity {
     EditText messageTitle, messageBody;
     Button sendButton, backButton, sendToButton;
     TextView eventTitle, eventDate, eventLocation;
@@ -22,7 +28,11 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         setReferences();
+
     }
+
+
+
 
     private void setReferences() {
         messageTitle = findViewById(R.id.messageTitle);
@@ -38,7 +48,7 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate back to MainActivity
-                Intent intent = new Intent(MessageActivity.this, MainActivity.class);
+                Intent intent = new Intent(CraftMessageActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish(); // Finish the MessageActivity
             }
@@ -55,18 +65,10 @@ public class MessageActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send the message
-                sendInAppMessage(messageTitle.getText().toString(), messageBody.getText().toString());
+                // Send the message to the selected users
             }
         });
     }
-
-    private void sendInAppMessage(String title, String body) {
-        // Create a message object
-    }
-
-
-
 
 
 

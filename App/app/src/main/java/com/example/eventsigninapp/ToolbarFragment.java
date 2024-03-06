@@ -34,7 +34,7 @@ public class ToolbarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Open the message screen here
-                Intent intent = new Intent(getActivity(), MessageActivity.class);
+                Intent intent = new Intent(getActivity(), CraftMessageActivity.class);
                 startActivity(intent);
 
             }
