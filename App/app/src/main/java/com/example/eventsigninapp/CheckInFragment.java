@@ -22,7 +22,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 public class CheckInFragment extends Fragment {
 
-    ActivityResultLauncher<ScanOptions> barLauncher;
+    ActivityResultLauncher<ScanOptions> scanLauncher;
 
     // Variable to track the number of scans
     private int scanCount = 0;
@@ -42,7 +42,7 @@ public class CheckInFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        barLauncher = registerForActivityResult(
+        scanLauncher = registerForActivityResult(
                 new ScanContract(),
                 this::processResult);
     }
@@ -104,6 +104,6 @@ public class CheckInFragment extends Fragment {
         options.setBeepEnabled(true);
         // Adjust this line if your CaptureAct class has a different name or package
         options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
-        barLauncher.launch(options);
+        scanLauncher.launch(options);
     }
 }
