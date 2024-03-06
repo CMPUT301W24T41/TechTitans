@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Event {
-    private String uuid;
+    private final String uuid;
     private String name;
 
     // The capacity of the event, 0 if uncapped
@@ -43,14 +43,6 @@ public class Event {
      */
     public String getUuid() {
         return uuid;
-    }
-
-    /**
-     * This method should be used to set the id of the event
-     * @param uuid the id of the event
-     */
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     /**
