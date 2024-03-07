@@ -7,7 +7,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class EventDatabaseController {
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
 
     public EventDatabaseController() {
         db = FirebaseFirestore.getInstance();
@@ -16,24 +16,8 @@ public class EventDatabaseController {
     public void pushEventToFirestore(Event event) {
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         eventRef.set(event.toMap())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Database", "pushEventToFirestore: Event data successfully updated");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Database", "pushEventToFirestore: Error updating event data", e);
-                });
-    }
-
-    private void updateEventInFirestore(Event event) {
-        db.collection("events")
-                .document(event.getUuid())
-                .update(event.toMap());
-    }
-
-    private void createEventInFirestore(Event event) {
-        db.collection("events")
-                .document(event.getUuid())
-                .set(event.toMap());
+                .addOnSuccessListener(aVoid -> Log.d("Database", "pushEventToFirestore: Event data successfully updated"))
+                .addOnFailureListener(e -> Log.e("Database", "pushEventToFirestore: Error updating event data", e));
     }
 
     public void getEventFromFirestore(String uuid, GetEventCallback callback) {
