@@ -17,6 +17,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -65,7 +66,14 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents")
+                        );
                         userController.setUser(pulledUser);
                         this.updateWithProfPictureFromWeb(pulledUser);
                     } else {
@@ -96,7 +104,14 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents")
+                        );
                         callback.onCallback(pulledUser);
                     } else {
                         callback.onError(new Exception("failed to retrieve user"));

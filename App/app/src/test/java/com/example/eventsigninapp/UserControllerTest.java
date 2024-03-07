@@ -136,7 +136,7 @@ public class UserControllerTest {
 
         userController.signUp(mockEvent);
 
-        verify(mockEvent).signUpUser(user);
+        verify(mockEvent).signUpUser(user.getId());
         Collection<String> attendingEvents = new HashSet<>();
         attendingEvents.add(mockEvent.getId());
         assertEquals(attendingEvents, user.getAttendingEvents());

@@ -159,16 +159,16 @@ public class Event {
      * @throws AlreadySignedUpException if the user is already signed up for the event
      */
     //TODO this method should be moved into a controller class
-    public void signUpUser(User user) throws EventFullException, AlreadySignedUpException {
-        if (isCapped() && signedUpUsers.size() >= capacity) {
+    public void signUpUser(String userUUID) throws EventFullException, AlreadySignedUpException {
+        if (isCapped() && signedUpUsersUUIDs.size() >= capacity) {
             throw new EventFullException("Event is full");
         }
 
-        if (isUserSignedUp(uuid)) {
+        if (isUserSignedUp(userUUID)) {
             throw new AlreadySignedUpException("Attendee is already signed up for the event");
         }
 
-        signedUpUsersUUIDs.add(uuid);
+        signedUpUsersUUIDs.add(userUUID);
     }
 
     /**

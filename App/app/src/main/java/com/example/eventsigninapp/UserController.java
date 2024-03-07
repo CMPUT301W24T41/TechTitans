@@ -10,14 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -135,7 +128,7 @@ public class UserController {
      */
     public void checkIn(Event event) {
         try {
-            event.checkInUser(this.getUser());              // inform event that user has checked in
+            event.checkInUser(this.getUser().getId());              // inform event that user has checked in
         } catch (Event.AlreadyCheckedInException e) { // catch exception
             System.out.println(e.getMessage());       // print error message
         }
@@ -153,8 +146,8 @@ public class UserController {
         }
 
         try {
-            event.signUpUser(this.getUser()); // inform event that user has signed up
-            this.getUser().getAttendingEvents().add(event.getId());          // add event to user's list of events
+            event.signUpUser(this.getUser().getId()); // inform event that user has signed up
+            this.getUser().getAttendingEvents().add(event.getUuid());          // add event to user's list of events
         } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message
         }
