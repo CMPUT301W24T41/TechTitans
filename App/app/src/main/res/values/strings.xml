@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">EventSignInApp</string>
-
+    <string name="event_title_text">Event title</string>
     <string name="CheckInMessage">Welcome! \nCheck in seamlessly\nwith your QR code.</string>
     <string name="lastName">Last Name</string>
     <string name="firstName">First Name</string>
@@ -17,10 +17,8 @@
     <string name="upload_poster">Upload Poster</string>
     <string name="cancel">cancel</string>
     <string name="Share">Share</string>
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="check_in_fragment">Check In Fragment</string>
-
     <string name="first_name">First Name</string>
     <string name="Last_name">Last Name</string>
     <string name="user_first_name">User First Name</string>
