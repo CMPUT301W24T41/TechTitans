@@ -16,7 +16,7 @@ public class CheckInConfirmationDialog extends AlertDialog {
     public CheckInConfirmationDialog(Context context, ViewGroup parent) {
         super(context);
 
-        rootView = getLayoutInflater().inflate(R.layout.scan_result_dialog, parent, false);
+        rootView = getLayoutInflater().inflate(R.layout.check_in_confirmation, parent, false);
 
         imageView = rootView.findViewById(R.id.imageView);
     }
