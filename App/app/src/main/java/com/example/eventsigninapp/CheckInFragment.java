@@ -17,9 +17,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
  * This class acts as a controller for the check in process.
  * It is responsible for scanning QR codes and processing the result.
  */
-public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener {
-    private ScanIntentResult result;
-    private CheckInView checkInView;
+public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, EventDatabaseController.GetEventCallback{
+    private EventDatabaseController eventDatabaseController;
 
     ActivityResultLauncher<ScanOptions> scanLauncher;
 
@@ -46,16 +45,23 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
             scanCount++;
             System.out.println(scanCount);
 
-            this.result = result;
-
-            createAlertDialog();
+            eventDatabaseController = new EventDatabaseController();
+            eventDatabaseController.getEventFromFirestore(result.getContents(), this);
         }
     }
 
-    private void createAlertDialog() {
-        ScanResultAlertDialog dialog = new ScanResultAlertDialog(requireContext(), (ViewGroup) checkInView.getRootView());
-        dialog.setImageView(R.drawable.event_image);
-        dialog.showResult(result.getContents(), scanCount);
+    @Override
+    public void onGetEventCallback(Event event, String uuid) {
+        if (event != null) {
+            event.setUuid(uuid);
+            UserController userController = new UserController();
+            try {
+                event.checkInUser(userController.getUserID(requireContext()));
+                eventDatabaseController.pushEventToFirestore(event);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -65,7 +71,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        checkInView = new CheckInView(inflater, container);
+        CheckInView checkInView = new CheckInView(inflater, container);
         checkInView.setListener(this);
 
         return checkInView.getRootView();

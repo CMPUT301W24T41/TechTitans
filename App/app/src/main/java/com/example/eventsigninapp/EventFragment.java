@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -67,33 +66,46 @@ public class EventFragment extends Fragment {
         });
 
         // This generates qr code
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // This passes data to the CrCodeActivity
-                String eventNameText = eventEditText.getText().toString().trim();
-                String eventDescriptionText = eventDescription.getText().toString().trim();
+        confirmButton.setOnClickListener(v -> {
+            // This passes data to the CrCodeActivity
+            String eventNameText = eventEditText.getText().toString().trim();
+            String eventDescriptionText = eventDescription.getText().toString().trim();
 
-                // Check if both fields are not empty
-                if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
-                    // Both fields are filled up, proceed with the action
+            Event event = new Event();
 
-                    // Create intent to navigate to the QrCode activity
-                    Bitmap bitmap = Organizer.generateQRCode(eventNameText);
-                    QRCodeFragment qrCodeFragment = QRCodeFragment.newInstance(bitmap);
-                    qrCodeFragment.show(getParentFragmentManager(), "qr_code_fragment");
+            // Check if both fields are not empty
+            if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
+                // Both fields are filled up, proceed with the action
 
-                    // Clear EditText fields
-                    eventEditText.setText("");
-                    eventDescription.setText("");
+                // Set the event name and description
+                event.setName(eventNameText);
+                event.setDescription(eventDescriptionText);
 
-                    // Save data to the database
-                    // (You can perform any database operations here)
-                } else {
-                    // If either eventNameText or eventDescriptionText is empty,
-                    // show a toast or alert the user to fill both fields
-                    Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
-                }
+                // Set the creator UUID
+                UserController userController = new UserController();
+                event.setCreatorUUID(userController.getUserID(requireContext()));
+
+                // Clear EditText fields
+                eventEditText.setText("");
+                eventDescription.setText("");
+
+                // Save data to the database
+                // (You can perform any database operations here)
+                EventDatabaseController eventDatabaseController = new EventDatabaseController();
+                eventDatabaseController.pushEventToFirestore(event);
+
+                // Print the UUID of the created event
+                // Tag the print for logcat
+                System.out.println("Event UUID: " + event.getUuid());
+
+                // Create intent to navigate to the QrCode activity
+                Bitmap bitmap = Organizer.generateQRCode(event.getUuid());
+                QRCodeFragment qrCodeFragment = QRCodeFragment.newInstance(bitmap);
+                qrCodeFragment.show(getParentFragmentManager(), "qr_code_fragment");
+            } else {
+                // If either eventNameText or eventDescriptionText is empty,
+                // show a toast or alert the user to fill both fields
+                Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
             }
         });
 
