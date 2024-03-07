@@ -91,8 +91,8 @@ public class EventFragment extends Fragment {
 
                 // Save data to the database
                 // (You can perform any database operations here)
-                EventDatabaseController eventDatabaseController = new EventDatabaseController();
-                eventDatabaseController.pushEventToFirestore(event);
+                DatabaseController DatabaseController = new DatabaseController();
+                DatabaseController.pushEventToFirestore(event);
 
                 // Print the UUID of the created event
                 // Tag the print for logcat

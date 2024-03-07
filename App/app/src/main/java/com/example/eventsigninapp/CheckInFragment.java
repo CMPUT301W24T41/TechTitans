@@ -17,8 +17,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
  * This class acts as a controller for the check in process.
  * It is responsible for scanning QR codes and processing the result.
  */
-public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, EventDatabaseController.GetEventCallback{
-    private EventDatabaseController eventDatabaseController;
+public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback{
+    private DatabaseController DatabaseController;
 
     ActivityResultLauncher<ScanOptions> scanLauncher;
 
@@ -45,8 +45,8 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
             scanCount++;
             System.out.println(scanCount);
 
-            eventDatabaseController = new EventDatabaseController();
-            eventDatabaseController.getEventFromFirestore(result.getContents(), this);
+            DatabaseController = new DatabaseController();
+            DatabaseController.getEventFromFirestore(result.getContents(), this);
         }
     }
 
@@ -57,7 +57,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
             UserController userController = new UserController();
             try {
                 event.checkInUser(userController.getUserID(requireContext()));
-                eventDatabaseController.pushEventToFirestore(event);
+                DatabaseController.pushEventToFirestore(event);
             } catch (Exception e) {
                 e.printStackTrace();
             }

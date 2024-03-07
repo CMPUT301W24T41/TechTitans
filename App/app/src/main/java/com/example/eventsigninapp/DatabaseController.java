@@ -160,6 +160,33 @@ public class DatabaseController {
     }
 
 
+    public void pushEventToFirestore(Event event) {
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        eventRef.set(event.toMap())
+                .addOnSuccessListener(aVoid -> Log.d("Database", "pushEventToFirestore: Event data successfully updated"))
+                .addOnFailureListener(e -> Log.e("Database", "pushEventToFirestore: Error updating event data", e));
+    }
+
+    public void getEventFromFirestore(String uuid, GetEventCallback callback) {
+        DocumentReference eventRef = db.collection("events").document(uuid);
+
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    callback.onGetEventCallback(document.toObject(Event.class), uuid);
+                } else {
+                    callback.onGetEventCallback(null, null);
+                }
+            }
+        });
+    }
+
+    public interface GetEventCallback {
+        void onGetEventCallback(Event event, String uuid);
+    }
+
+
     /**
      * This interface allows images to be retrieved
      */
