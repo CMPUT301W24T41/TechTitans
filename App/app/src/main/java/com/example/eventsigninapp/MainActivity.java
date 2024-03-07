@@ -1,19 +1,16 @@
 package com.example.eventsigninapp;
 
-import static android.media.MediaSyncEvent.createEvent;
+import android.os.Bundle;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Bundle;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity{
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new EventFragment();
+                        fragment = new EventCreationFragment();
                         break;
                     case 1:
                         fragment = new HomeFragment();
