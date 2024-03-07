@@ -25,7 +25,7 @@ public class DatabaseController {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public DatabaseController() {}
 
