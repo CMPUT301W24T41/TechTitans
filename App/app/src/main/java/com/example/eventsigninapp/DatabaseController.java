@@ -65,7 +65,7 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         userController.setUser(pulledUser);
-                        this.updateWithProfPictureFromWeb(pulledUser, userController);
+                        this.updateWithProfPictureFromWeb(pulledUser);
                     } else {
                         // user does not exist, create a new user
                         User createdUser = new User(id);
@@ -73,7 +73,6 @@ public class DatabaseController {
                     }
                 });
     }
-
 
 
     /**Finds a user based on their unique id in the database and fetches it from the database,
@@ -130,12 +129,17 @@ public class DatabaseController {
                 });
     }
 
-    public void updateWithProfPictureFromWeb(User user, UserController userController) {
+
+    /**
+     * this updates the profile of a given user with the result acquired from the database
+     * @param user the user to be updated
+     */
+    public void updateWithProfPictureFromWeb(User user) {
         StorageReference storageRef = storage.getReferenceFromUrl(user.getImgUrl());
 
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
             user.setPicture(uri);
-            this.putUserToFirestore(userController.getUser()); // Update the user's profile in Firestore
+            this.putUserToFirestore(user); // Update the user's profile in Firestore
         }).addOnFailureListener(e -> {
             // Handle failure to retrieve the URL
             Log.e("Database", "updateWithProfPictureFromWeb: Failed to retrieve image URL", e);

@@ -43,17 +43,6 @@ public class UserController {
     private static final String prefName = "ID";
 
 
-    private static DatabaseController databaseController;
-
-    public UserController() {
-        databaseController = new DatabaseController();
-    }
-
-    public UserController(DatabaseController controller) {
-        databaseController = controller;
-    }
-
-
 
 
     /**
@@ -110,20 +99,6 @@ public class UserController {
         editor.putString(deafaultUUID, id);
         editor.apply();
     }
-
-    /**
-     * Adds current user to the database or updates an existing one based on the current user in the controller.
-     */
-    public void putUserToFirestore() {
-        databaseController.putUserToFirestore(user);
-    }
-
-
-
-
-
-
-
 
 
     /**
