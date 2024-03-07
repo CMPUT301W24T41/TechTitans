@@ -150,6 +150,7 @@ public class Event {
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException if the user is already signed up for the event
      */
+    //TODO this method should be moved into a controller class
     public void signUpUser(User user) throws EventFullException, AlreadySignedUpException {
         if (isCapped() && signedUpUsers.size() >= capacity) {
             throw new EventFullException("Event is full");
@@ -212,7 +213,7 @@ public class Event {
      * @param userId       The UUID of the user who is creating the event.
      * @param eventName    The name of the event.
      */
-
+//TODO please move this into the DatabaseController class
 
     public void createEvent(String userId, String eventName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

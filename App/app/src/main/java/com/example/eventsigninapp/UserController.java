@@ -129,6 +129,37 @@ public class UserController {
 
     }
 
+    /**
+     * This method should be used to sign up a user for an event
+     * @param event the event to sign up for
+     */
+    public void checkIn(Event event) {
+        try {
+            event.checkInUser(this.getUser());              // inform event that user has checked in
+        } catch (Event.AlreadyCheckedInException e) { // catch exception
+            System.out.println(e.getMessage());       // print error message
+        }
+    }
+
+    /**
+     * This method should be used to sign up a user for an event
+     * @param event the event to sign up for
+     */
+    public void signUp(Event event) {
+        //TODO: implement handling of full event, ideally prevent calling of method if event is full
+        if (event.isFull()) {
+            System.out.println("Event is full"); // print error message
+            return;
+        }
+
+        try {
+            event.signUpUser(this.getUser()); // inform event that user has signed up
+            this.getUser().getAttendingEvents().add(event.getId());          // add event to user's list of events
+        } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
+            System.out.println(e.getMessage()); // print error message
+        }
+    }
+
 
     /**
      * This creates a instance of imagepicker when called in the given activity
@@ -159,5 +190,7 @@ public class UserController {
                 .maxResultSize(1028, 1028)
                 .start();
     }
+
+
 }
 

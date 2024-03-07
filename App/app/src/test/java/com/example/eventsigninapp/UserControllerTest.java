@@ -13,8 +13,13 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -28,8 +33,16 @@ public class UserControllerTest {
     @Mock
     private SharedPreferences.Editor mockEditor;
 
+    @Mock
+    private Event mockEvent;
 
     private UserController userController;
+
+    private User mockUser() {
+        return new User();
+    }
+
+
 
     @Before
     public void setUp() {
@@ -63,6 +76,7 @@ public class UserControllerTest {
         String result = userController.getUserID(mockContext);
 
         // see if the the result was saved to the preference
+        assertNotNull(result);
         verify(mockPreferences.edit()).putString("UUID_Default", result);
     }
 
@@ -96,6 +110,52 @@ public class UserControllerTest {
         assertEquals("789012", userController.getUser().getContact());
         assertEquals("images/prof", userController.getUser().getPicture().toString());
     }
+
+    /**
+     * This method tests the checkIn method of the User class.
+     */
+    @Test
+    public void testCheckIn() throws Event.AlreadyCheckedInException {
+        User user = mockUser();
+        userController.setUser(user);
+        userController.checkIn(mockEvent);
+
+        verify(mockEvent).checkInUser(user);
+
+    }
+
+
+
+    @Test
+    public void testSignUp() throws Event.EventFullException, Event.AlreadySignedUpException {
+        UserController userController = new UserController();
+        User user = new User();
+        userController.setUser(user);
+
+        when(mockEvent.isFull()).thenReturn(false);
+
+        userController.signUp(mockEvent);
+
+        verify(mockEvent).signUpUser(user);
+        Collection<String> attendingEvents = new HashSet<>();
+        attendingEvents.add(mockEvent.getId());
+        assertEquals(attendingEvents, user.getAttendingEvents());
+    }
+
+    @Test
+    public void testSignUp_EventIsFull_PrintsErrorMessage() throws Event.EventFullException, Event.AlreadySignedUpException {
+        UserController userController = new UserController();
+        User user = new User();
+        userController.setUser(user);
+
+        when(mockEvent.isFull()).thenReturn(true);
+
+        userController.signUp(mockEvent);
+    //TODO update this test so that it can check if user is not signed in
+
+    }
+
+
 
 
 }

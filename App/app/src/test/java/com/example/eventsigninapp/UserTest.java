@@ -90,18 +90,7 @@ public class UserTest {
         assertEquals("Overwrite", user.getId()); // should be "3"
     }
 
-    /**
-     * This method tests the checkIn method of the User class.
-     */
-    @Test
-    public void testCheckIn() {
-        User user = mockUser();
-        Event event = mockEvent();
-        user.checkIn(event);
 
-        assertEquals(1, event.getCheckedInUsers().size()); // should have 1 user
-        assertTrue(event.getCheckedInUsers().contains(user)); // should contain the user
-    }
 
     /**
      * This method tests the getAttendingEvents method of the User class.
@@ -125,16 +114,5 @@ public class UserTest {
         assertEquals(0, user.getHostingEvents().size()); // should be empty
     }
 
-    /**
-     * This method tests the signUp method of the User class.
-     */
-    @Test
-    public void testSignUp() {
-        User user = mockUser();
-        Event event = mockEvent();
-        user.signUp(event);
 
-        assertEquals(1, user.getAttendingEvents().size()); // should have 1 event
-        assertTrue(user.getAttendingEvents().contains(event)); // should contain the event
-    }
 }

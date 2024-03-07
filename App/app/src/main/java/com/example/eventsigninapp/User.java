@@ -37,12 +37,12 @@ public class User {
     /**
      * This variable stores the events that the user has signed up for
      */
-    private final Collection<Event> attendingEvents;
+    private final Collection<String> attendingEvents;
 
     /**
      * This variable stores the events that the user is hosting
      */
-    private final Collection<Event> hostingEvents;
+    private final Collection<String> hostingEvents;
 
     /**
      * This variable stores the picture of the user
@@ -133,7 +133,7 @@ public class User {
      * This method should be used to get the events that the user has signed up for
      * @return the events that the user has signed up for
      */
-    public Collection<Event> getAttendingEvents() {
+    public Collection<String> getAttendingEvents() {
         return attendingEvents;
     }
 
@@ -141,7 +141,7 @@ public class User {
      * This method should be used to get the events that the user has hosted
      * @return the events that the user has hosted
      */
-    public Collection<Event> getHostingEvents() {
+    public Collection<String> getHostingEvents() {
         return hostingEvents;
     }
 
@@ -159,37 +159,6 @@ public class User {
      */
     public void setContact(String contact) {
         this.contact = contact;
-    }
-
-    /**
-     * This method should be used to sign up a user for an event
-     * @param event the event to sign up for
-     */
-    public void checkIn(Event event) {
-        try {
-            event.checkInUser(this);              // inform event that user has checked in
-        } catch (Event.AlreadyCheckedInException e) { // catch exception
-            System.out.println(e.getMessage());       // print error message
-        }
-    }
-
-    /**
-     * This method should be used to sign up a user for an event
-     * @param event the event to sign up for
-     */
-    public void signUp(Event event) {
-        //TODO: implement handling of full event, ideally prevent calling of method if event is full
-        if (event.isFull()) {
-            System.out.println("Event is full"); // print error message
-            return;
-        }
-
-        try {
-            event.signUpUser(this); // inform event that user has signed up
-            attendingEvents.add(event);          // add event to user's list of events
-        } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
-            System.out.println(e.getMessage()); // print error message
-        }
     }
 
 

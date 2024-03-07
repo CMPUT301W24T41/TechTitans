@@ -39,6 +39,8 @@ public class DatabaseController {
         userData.put("firstName", user.getFirstName());
         userData.put("lastName", user.getLastName());
         userData.put("contact", user.getContact());
+        userData.put("attendingEvents", user.getAttendingEvents());
+        userData.put("hostingEvents", user.getHostingEvents());
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
 
