@@ -26,4 +26,7 @@
     <string name="number">Contact</string>
     <string name="profile_picture_of_user">profile picture of user</string>
     <string name="save">Save</string>
+    <string name="checked_in_title_text">CHECKED IN</string>
+    <string name="signed_up_title_text">SIGNED UP</string>
+    <string name="go_to_map_text">View check-in location</string>
 </resources>
