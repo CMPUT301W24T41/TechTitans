@@ -1,42 +1,29 @@
 package com.example.eventsigninapp;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link CheckInFragment#} factory method to
- * create an instance of this fragment.
+ * This class acts as a controller for the check in process.
+ * It is responsible for scanning QR codes and processing the result.
  */
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CheckInFragment#} factory method to
- * create an instance of this fragment.
- */
-public class CheckInFragment extends Fragment {
+public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback{
+    private DatabaseController DatabaseController;
 
-    ActivityResultLauncher<ScanOptions> barLauncher;
+    ActivityResultLauncher<ScanOptions> scanLauncher;
 
     // Variable to track the number of scans
     private int scanCount = 0;
-
-    /**
-     * Required empty public constructor for the fragment.
-     */
-    public CheckInFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * Called when the fragment is created.
@@ -46,62 +33,58 @@ public class CheckInFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        barLauncher = registerForActivityResult(
-                new ScanContract(),
-                result -> {
-                    if (result.getContents() != null) {
+        scanLauncher = registerForActivityResult(new ScanContract(), this::processResult);
+    }
 
-                        scanCount++;
-                        System.out.println(scanCount);
+    /**
+     * Processes the result of the barcode scanner activity.
+     * Shows the scanned result in an alert dialog.
+     */
+    private void processResult(ScanIntentResult result) {
+        if (result.getContents() != null) {
+            scanCount++;
+            System.out.println(scanCount);
 
-                        // Show the scanned result in an alert dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                        builder.setTitle("Result");
-                        builder.setMessage("Scanned Content: " + result.getContents() + "\nScan Count: " + scanCount);
+            DatabaseController = new DatabaseController();
+            DatabaseController.getEventFromFirestore(result.getContents(), this);
+        }
+    }
 
-                        // The custom view to the AlertDialog
-                        LayoutInflater inflater = LayoutInflater.from(requireContext());
-                        View dialogView = inflater.inflate(R.layout.custom_camera_dialog_layout, null);
-
-                        ImageView imageView = dialogView.findViewById(R.id.imageView);
-                        imageView.setImageResource(R.drawable.event_image);
-                        // Set the custom view to the AlertDialog
-                        builder.setView(dialogView);
-
-                        builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss()).show();
-                    }
-                });
+    @Override
+    public void onGetEventCallback(Event event, String uuid) {
+        if (event != null) {
+            event.setUuid(uuid);
+            UserController userController = new UserController();
+            try {
+                event.checkInUser(userController.getUserID(requireContext()));
+                DatabaseController.pushEventToFirestore(event);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
      * Called to create the view for the fragment.
-     * Initializes UI components and sets onClickListener for scan button.
+     * Initializes the CheckInView and sets the listener.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_check_in, container, false);
+        CheckInView checkInView = new CheckInView(inflater, container);
+        checkInView.setListener(this);
 
-        Button scanButton = rootView.findViewById(R.id.scanButton);
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanCode();
-            }
-        });
-
-        return rootView;
+        return checkInView.getRootView();
     }
 
     /**
      * Launches the barcode scanner activity to scan QR codes.
      */
-    private void scanCode() {
+    @Override
+    public void onScanButtonClick() {
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
-        // Adjust this line if your CaptureAct class has a different name or package
         options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
-        barLauncher.launch(options);
+        scanLauncher.launch(options);
     }
 }

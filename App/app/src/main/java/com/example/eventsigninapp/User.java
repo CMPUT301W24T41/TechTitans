@@ -170,6 +170,37 @@ public class User {
         this.contact = contact;
     }
 
+    /**
+     * This method should be used to sign up a user for an event
+     * @param event the event to sign up for
+     */
+    public void checkIn(Event event) {
+        try {
+            event.checkInUser(id);              // inform event that user has checked in
+        } catch (Event.AlreadyCheckedInException e) { // catch exception
+            System.out.println(e.getMessage());       // print error message
+        }
+    }
+
+    /**
+     * This method should be used to sign up a user for an event
+     * @param event the event to sign up for
+     */
+    public void signUp(Event event) {
+        //TODO: implement handling of full event, ideally prevent calling of method if event is full
+        if (event.isFull()) {
+            System.out.println("Event is full"); // print error message
+            return;
+        }
+
+        try {
+            event.signUpUser(id); // inform event that user has signed up
+            attendingEvents.add(event);          // add event to user's list of events
+        } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
+            System.out.println(e.getMessage()); // print error message
+        }
+    }
+
 
     public Uri getPicture() {
         return this.picture;
