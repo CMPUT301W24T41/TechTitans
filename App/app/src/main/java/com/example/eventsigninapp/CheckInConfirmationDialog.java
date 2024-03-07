@@ -7,11 +7,13 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 
-public class ScanResultAlertDialog extends AlertDialog {
+import com.squareup.picasso.Picasso;
+
+public class CheckInConfirmationDialog extends AlertDialog {
     private final View rootView;
     private final ImageView imageView;
 
-    public ScanResultAlertDialog(Context context, ViewGroup parent) {
+    public CheckInConfirmationDialog(Context context, ViewGroup parent) {
         super(context);
 
         rootView = getLayoutInflater().inflate(R.layout.scan_result_dialog, parent, false);
@@ -19,16 +21,13 @@ public class ScanResultAlertDialog extends AlertDialog {
         imageView = rootView.findViewById(R.id.imageView);
     }
 
-    public void showResult(String result, int scanCount) {
+    public void showEvent(Event event) {
         setView(rootView);
-        setTitle("Result");
-        setMessage("Scanned Content: " + result + "\nScan Count: " + scanCount);
+        setTitle(event.getName());
+        setMessage("You have successfully checked in to this event!");
         setCancelable(true);
         setButton(BUTTON_POSITIVE, "OK", (dialog, which) -> dialog.dismiss());
+        Picasso.get().load(event.getPosterUri()).into(imageView);
         show();
-    }
-
-    public void setImageView(int imageResource) {
-        imageView.setImageResource(imageResource);
     }
 }
