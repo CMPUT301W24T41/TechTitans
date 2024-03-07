@@ -13,6 +13,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     ListView checkedInList;
     ListView signedUpList;
     Button switchToMapButton;
+    Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +24,11 @@ public class AttendeeListActivity extends AppCompatActivity {
         checkedInList = findViewById(R.id.checked_in_list);
         signedUpList = findViewById(R.id.signed_up_list);
         switchToMapButton = findViewById(R.id.button_to_map_view);
+        backButton = findViewById(R.id.back_button);
 
         switchToMapButton.setOnClickListener(listener -> {
-            Intent goToMap = new Intent(AttendeeListActivity.this, MapActivity.class);
+            Intent startMapActivity = new Intent(AttendeeListActivity.this, MapActivity.class);
+            startActivity(startMapActivity);
         });
     }
 }
