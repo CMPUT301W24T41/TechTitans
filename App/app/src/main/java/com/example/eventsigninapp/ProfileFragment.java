@@ -1,27 +1,50 @@
 package com.example.eventsigninapp;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements EditProfileFragment.OnProfileUpdateListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    UserController userController = new UserController();
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    Button editButton;
+    TextView firstName;
+    TextView lastName;
+    TextView contact;
+    ImageView profPic;
+
+
+
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -58,6 +81,67 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+
+
+        editButton = rootView.findViewById(R.id.editButton);
+        firstName = rootView.findViewById(R.id.user_first_name);
+        lastName = rootView.findViewById(R.id.user_last_name);
+        contact = rootView.findViewById(R.id.user_number);
+        profPic = rootView.findViewById(R.id.profilePicture);
+
+
+        firstName.setText(userController.getUser().getFirstName());
+        lastName.setText(userController.getUser().getLastName());
+        contact.setText(userController.getUser().getContact());
+        Picasso.get().load(userController.getUser().getPicture()).into(profPic);
+
+        profPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserController.selectImage(ProfileFragment.this);
+            }
+
+
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditProfileFragment editProfileFragment = new EditProfileFragment();
+                editProfileFragment.setOnProfileUpdateListener(ProfileFragment.this);
+
+                editProfileFragment.show(getChildFragmentManager(), "profileEditDialog");
+
+            }
+
+
+        });
+
+        return rootView;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+
+            Uri imageUri = data.getData();
+            Picasso.get().load(imageUri).into(profPic);
+            userController.uploadProfilePicture(imageUri);
+
+
+
+        }
+    }
+
+
+    @Override
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri newPicture) {
+        firstName.setText(newFirstName);
+        lastName.setText(newLastName);
+        contact.setText(newContact);
+
     }
 }

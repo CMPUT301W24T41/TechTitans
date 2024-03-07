@@ -128,6 +128,7 @@ public class UserController {
      */
     public void getUserFromFirestore(String id) {
         databaseController.getUserFromFirestoreToUserController(id, this);
+        Log.d("userProfile", "getUserFromFirestore: " + user.getImgUrl());
     }
 
 

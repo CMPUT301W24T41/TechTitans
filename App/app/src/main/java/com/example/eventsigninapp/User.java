@@ -7,7 +7,7 @@ import java.util.HashSet;
 
 public class User {
 
-    private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures";
+    private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures/";
 
     /**
      * This variable stores the id of the user
@@ -58,17 +58,18 @@ public class User {
         firstName = "";
         lastName = "";
         contact = "";
-        imgUrl = profilePicpath + id;
         location = "";
     }
 
     protected User(String id) {
         this();
         this.id = id;
+        this.imgUrl = profilePicpath + id;
     }
 
     protected User(String id, String first, String last) {
         this(id);
+        this.imgUrl = profilePicpath + id;
         this.firstName = first;
         this.lastName = last;
     }
