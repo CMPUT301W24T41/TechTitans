@@ -24,17 +24,24 @@ public class MainActivity extends AppCompatActivity{
 
     TabLayout tabLayout;
     Map<String, Object> user = new HashMap<>();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView idText;
     UserController userController = new UserController();
+    DatabaseController databaseController = new DatabaseController();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        FirebaseApp.initializeApp(this);
-        db = FirebaseFirestore.getInstance();
+//        db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // this finds the current user and sends the result to userController
+        String defaultID = userController.getUserID(this);
+        databaseController.updateWithUserFromFirestore(defaultID, userController);
+
 
         frameLayout = findViewById(R.id.eventButton);
         tabLayout = findViewById(R.id.mainTabLayout);
