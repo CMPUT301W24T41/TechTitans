@@ -213,7 +213,6 @@ public class DatabaseController {
         void onGetEventCallback(Event event, String uuid);
     }
 
-
     /**
      * This interface allows images to be retrieved
      */
