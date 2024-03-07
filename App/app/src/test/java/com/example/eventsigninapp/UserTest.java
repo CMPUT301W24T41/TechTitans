@@ -99,8 +99,8 @@ public class UserTest {
         Event event = mockEvent();
         user.checkIn(event);
 
-        assertEquals(1, event.getCheckedInUsers().size()); // should have 1 user
-        assertTrue(event.getCheckedInUsers().contains(user)); // should contain the user
+        assertEquals(1, event.getCheckedInUsersUUIDs().size()); // should have 1 user
+        assertTrue(event.getCheckedInUsersUUIDs().contains(user)); // should contain the user
     }
 
     /**

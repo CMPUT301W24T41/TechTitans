@@ -166,7 +166,7 @@ public class User {
      */
     public void checkIn(Event event) {
         try {
-            event.checkInUser(this);              // inform event that user has checked in
+            event.checkInUser(id);              // inform event that user has checked in
         } catch (Event.AlreadyCheckedInException e) { // catch exception
             System.out.println(e.getMessage());       // print error message
         }
@@ -184,7 +184,7 @@ public class User {
         }
 
         try {
-            event.signUpUser(this); // inform event that user has signed up
+            event.signUpUser(id); // inform event that user has signed up
             attendingEvents.add(event);          // add event to user's list of events
         } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message
