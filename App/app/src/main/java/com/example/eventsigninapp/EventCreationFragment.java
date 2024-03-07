@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+
+import java.io.ByteArrayOutputStream;
 
 import kotlin.Unit;
 
@@ -45,6 +48,8 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         eventCreationView.setImageButtonListener(this);
         eventCreationView.setConfirmButtonListener(this);
 
+        createImagePickerLauncher();
+
         return eventCreationView.getRootView();
     }
 
@@ -66,7 +71,6 @@ public class EventCreationFragment extends Fragment implements EventCreationView
 
     @Override
     public void onImageButtonClick() {
-        createImagePickerLauncher();
         ImagePicker.with(this)
             .crop()
             .maxResultSize(1080, 1080)
@@ -86,8 +90,13 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
+            event.setPosterUri(eventCreationView.getPosterUri());
 
-
+            Bitmap bitmap = Organizer.generateQRCode(event.getUuid());
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(requireContext().getContentResolver(), bitmap, "QR Code", null);
+            event.setCheckInQRCodeUri(Uri.parse(path));
 
             UserController userController = new UserController();
             event.setCreatorUUID(userController.getUserID(requireContext()));
@@ -95,7 +104,6 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             DatabaseController DatabaseController = new DatabaseController();
             DatabaseController.pushEventToFirestore(event);
 
-            Bitmap bitmap = Organizer.generateQRCode(event.getUuid());
             QRCodeFragment qrCodeFragment = QRCodeFragment.newInstance(bitmap);
             qrCodeFragment.show(getParentFragmentManager(), "qr_code_fragment");
         } else {

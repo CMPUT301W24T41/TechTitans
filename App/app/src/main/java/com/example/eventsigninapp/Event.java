@@ -1,6 +1,8 @@
 package com.example.eventsigninapp;
 
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,8 +18,9 @@ public class Event {
     private int capacity;
     private final Collection<String> signedUpUsersUUIDs; // collection of signed up users
     private final Collection<String> checkedInUsersUUIDs; // collection of checked in users
-    private Object eventPoster;
-    private Object qrCode;
+    private Uri posterUri;
+    private Uri checkInQRCodeUri;
+    private Uri descriptionQRCodeUri;
     private Object location;
     private Date date;
     private String creatorUUID;
@@ -29,8 +32,8 @@ public class Event {
         name = "";
         checkedInUsersUUIDs = new ArrayList<String>();
         signedUpUsersUUIDs = new ArrayList<String>();
-        eventPoster = null;
-        qrCode = null;
+        posterUri = null;
+        checkInQRCodeUri = null;
         location = null;
         date = null;
         capacity = 10000000;
@@ -188,13 +191,12 @@ public class Event {
 
     public Map<String, Object> toMap() {
         Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put("uuid", uuid);
         eventMap.put("name", name);
         eventMap.put("creatorUUID", creatorUUID);
         eventMap.put("capacity", capacity);
         eventMap.put("date", date);
         eventMap.put("location", location);
-        eventMap.put("poster", eventPoster);
-        eventMap.put("qrCode", qrCode);
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
         eventMap.put("description", description);
@@ -207,6 +209,30 @@ public class Event {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setPosterUri(Uri posterUri) {
+        this.posterUri = posterUri;
+    }
+
+    public Uri getPosterUri() {
+        return posterUri;
+    }
+
+    public void setCheckInQRCodeUri(Uri checkInQRCodeUri) {
+        this.checkInQRCodeUri = checkInQRCodeUri;
+    }
+
+    public Uri getCheckInQRCodeUri() {
+        return checkInQRCodeUri;
+    }
+
+    public void setDescriptionQRCodeUri(Uri descriptionQRCodeUri) {
+        this.descriptionQRCodeUri = descriptionQRCodeUri;
+    }
+
+    public Uri getDescriptionQRCodeUri() {
+        return descriptionQRCodeUri;
     }
 
     /**

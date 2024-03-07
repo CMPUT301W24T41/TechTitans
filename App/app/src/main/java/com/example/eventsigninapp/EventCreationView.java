@@ -15,7 +15,7 @@ public class EventCreationView {
     private final Button confirmButton;
     private final ImageView captureImage;
     private final View rootView;
-    private Uri imageUri;
+    private Uri posterUri;
 
     public EventCreationView(LayoutInflater inflater, ViewGroup parent) {
         rootView = inflater.inflate(R.layout.fragment_event, parent, false);
@@ -36,12 +36,12 @@ public class EventCreationView {
     }
 
     public void setCaptureImage(Uri uri) {
-        imageUri = uri;
+        posterUri = uri;
         captureImage.setImageURI(uri);
     }
 
-    public Uri getImageUri() {
-        return imageUri;
+    public Uri getPosterUri() {
+        return posterUri;
     }
 
     public View getRootView() {
