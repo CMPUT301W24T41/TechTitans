@@ -20,7 +20,6 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback, DatabaseController.EventImageUriCallbacks {
     private DatabaseController databaseController;
-    private CheckInView checkInView;
     private CheckInConfirmationDialog checkInConfirmationDialog;
     private Event event;
 
@@ -63,11 +62,12 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     @Override
     public void onGetEventCallback(Event event) {
         this.event = event;
+        EventController eventController = new EventController(event);
         if (event != null) {
             UserController userController = new UserController();
 
             try {
-                event.checkInUser(userController.getUserID(requireContext()));
+                eventController.checkInUser(userController.getUser());
                 databaseController.pushEventToFirestore(event);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -84,7 +84,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        checkInView = new CheckInView(inflater, container);
+        CheckInView checkInView = new CheckInView(inflater, container);
         checkInView.setListener(this);
 
         checkInConfirmationDialog = new CheckInConfirmationDialog(requireContext(), container);
