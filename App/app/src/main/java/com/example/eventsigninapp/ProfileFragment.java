@@ -30,6 +30,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     private static final String ARG_PARAM2 = "param2";
 
     UserController userController = new UserController();
+    DatabaseController databaseController = new DatabaseController();
 
 
     // TODO: Rename and change types of parameters
@@ -128,9 +129,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         if (resultCode == Activity.RESULT_OK) {
 
             Uri imageUri = data.getData();
+            databaseController.uploadProfilePicture(imageUri, userController.getUser());
+            databaseController.putUserToFirestore(userController.getUser());
             Picasso.get().load(imageUri).into(profPic);
-            userController.uploadProfilePicture(imageUri);
-
 
 
         }
@@ -142,6 +143,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
+        Picasso.get().load(newPicture).into(profPic);
+        databaseController.putUserToFirestore(userController.getUser());
+
 
     }
 }

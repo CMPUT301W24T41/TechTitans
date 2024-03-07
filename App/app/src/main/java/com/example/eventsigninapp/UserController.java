@@ -121,15 +121,8 @@ public class UserController {
 
 
 
-    /**
-     * This function gets a user from the database using the given id and updates the current user of this class to the acquired user from the database,
-     * if the task fails, this creates a new user instead
-     * @param id the id of the user to acquire
-     */
-    public void getUserFromFirestore(String id) {
-        databaseController.getUserFromFirestoreToUserController(id, this);
-        Log.d("userProfile", "getUserFromFirestore: " + user.getImgUrl());
-    }
+
+
 
 
 
@@ -189,27 +182,7 @@ public class UserController {
             user.setPicture(pictureUri);
         }
 
-        putUserToFirestore();
-
     }
-
-
-    /**
-     * This method uploads the given picture uri to the storage for the current user in the controller class
-     * @param picture the picture to upload
-     */
-    public void uploadProfilePicture(Uri picture) {
-        databaseController.uploadProfilePicture(picture, user, this);
-    }
-
-
-    /**
-     * This updates/fetches the current users profile picture stored in the storage online
-     */
-    public void updateWithProfPictureFromWeb() {
-        databaseController.updateWithProfPictureFromWeb(user, this);
-    }
-
 
 }
 

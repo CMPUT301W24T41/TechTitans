@@ -23,9 +23,9 @@ import java.util.UUID;
 
 public class DatabaseController {
 
-    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private static final FirebaseStorage storage = FirebaseStorage.getInstance();;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();;
 
     public DatabaseController() {}
 
@@ -48,7 +48,15 @@ public class DatabaseController {
     }
 
 
-    public void getUserFromFirestoreToUserController(String id, UserController userController) {
+
+    /**
+     * This function gets a user from the database using the given id and updates the current
+     * user of a given userController object with information of that user
+     * if the task fails, this creates a new user instead to add
+     * @param id the id of the user to acquire
+     * @param userController the UserController to update
+     */
+    public void updateWithUserFromFirestore(String id, UserController userController) {
         db.collection("users")
                 .whereEqualTo("id", id)
                 .get()
@@ -57,8 +65,9 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         userController.setUser(pulledUser);
-                        userController.updateWithProfPictureFromWeb();
+                        this.updateWithProfPictureFromWeb(pulledUser, userController);
                     } else {
+                        // user does not exist, create a new user
                         User createdUser = new User(id);
                         userController.setUser(createdUser);
                     }
@@ -96,10 +105,11 @@ public class DatabaseController {
 
 
     /**
-     * This method uploads the given picture uri to the storage for the current user in the controller class
+     * This method uploads the given picture uri to the storage for the given user
      * @param picture the picture to upload
+     * @param user the user whose profile is being updated
      */
-    public void uploadProfilePicture(Uri picture, User user, UserController userController) {
+    public void uploadProfilePicture(Uri picture, User user) {
         StorageReference storageRef = storage.getReference();
 
         // Reference to store the image
@@ -111,7 +121,6 @@ public class DatabaseController {
                     profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         // Update upon successful completion
                         user.setPicture(uri);
-                        userController.putUserToFirestore(); // Update the user's profile in Firestore
                     }).addOnFailureListener(e -> {
                         Log.e("Database", "uploadProfilePicture: Error, failure to get URL data", e);
                     });
@@ -125,9 +134,8 @@ public class DatabaseController {
         StorageReference storageRef = storage.getReferenceFromUrl(user.getImgUrl());
 
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            Log.d("Database", "Image download URL: " + uri.toString());
             user.setPicture(uri);
-            userController.putUserToFirestore(); // Update the user's profile in Firestore
+            this.putUserToFirestore(userController.getUser()); // Update the user's profile in Firestore
         }).addOnFailureListener(e -> {
             // Handle failure to retrieve the URL
             Log.e("Database", "updateWithProfPictureFromWeb: Failed to retrieve image URL", e);
@@ -151,7 +159,6 @@ public class DatabaseController {
         StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
 
         profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            Log.d("Database", "Image download URL: " + uri.toString());
             callback.onImageUriCallback(uri);
         }).addOnFailureListener(e -> {
             Log.e("Database", "getOtherUserProfilePicture: Failed to retrieve image", e);
