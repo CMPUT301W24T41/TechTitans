@@ -2,6 +2,9 @@ package com.example.eventsigninapp;
 
 import android.net.Uri;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -37,12 +40,12 @@ public class User {
     /**
      * This variable stores the events that the user has signed up for
      */
-    private final Collection<String> attendingEvents;
+    private ArrayList<String> attendingEvents;
 
     /**
      * This variable stores the events that the user is hosting
      */
-    private final Collection<String> hostingEvents;
+    private ArrayList<String> hostingEvents;
 
     /**
      * This variable stores the picture of the user
@@ -51,14 +54,15 @@ public class User {
     private String imgUrl;
 
     protected User() {
-        attendingEvents = new HashSet<>();
-        hostingEvents = new HashSet<>();
+        attendingEvents = new ArrayList<>();
+        hostingEvents = new ArrayList<>();
         picture = null;
         id = "";
         firstName = "";
         lastName = "";
         contact = "";
         location = "";
+        imgUrl = "";
     }
 
     protected User(String id) {
@@ -69,17 +73,22 @@ public class User {
 
     protected User(String id, String first, String last) {
         this(id);
-        this.imgUrl = profilePicpath + id;
         this.firstName = first;
         this.lastName = last;
     }
 
     protected User(String id, String first, String last, String contact) {
-        this(id);
-        this.firstName = first;
-        this.lastName = last;
+        this(id, first, last);
         this.contact = contact;
     }
+
+    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents) {
+        this(id, first, last);
+        this.contact = contact;
+        this.attendingEvents = attendingEvents;
+        this.hostingEvents = hostingEvents;
+    }
+
 
     /**
      * This method should be used to get the id of the user
@@ -133,7 +142,7 @@ public class User {
      * This method should be used to get the events that the user has signed up for
      * @return the events that the user has signed up for
      */
-    public Collection<String> getAttendingEvents() {
+    public ArrayList<String> getAttendingEvents() {
         return attendingEvents;
     }
 
@@ -141,7 +150,7 @@ public class User {
      * This method should be used to get the events that the user has hosted
      * @return the events that the user has hosted
      */
-    public Collection<String> getHostingEvents() {
+    public ArrayList<String> getHostingEvents() {
         return hostingEvents;
     }
 

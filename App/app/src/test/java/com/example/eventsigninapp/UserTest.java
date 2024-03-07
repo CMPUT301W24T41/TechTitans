@@ -2,11 +2,16 @@ package com.example.eventsigninapp;
 
 import static org.junit.Assert.*;
 
+import android.net.Uri;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 /**
  * This class tests the User class.
  */
+@RunWith(RobolectricTestRunner.class)
 public class UserTest {
     /**
      * This method creates a mock User object.
@@ -22,6 +27,45 @@ public class UserTest {
      */
     private Event mockEvent() {
         return new Event();
+    }
+
+    /**
+     * This method tests the getPicture and setPicture method of the User class.
+     */
+    @Test
+    public void testGetSetPicture() {
+        User user = mockUser();
+
+        assertNull(user.getPicture()); // should be null initially
+
+        user.setPicture(Uri.parse("content://img.jpg"));
+
+        assertEquals(Uri.parse("content://img.jpg"), user.getPicture());
+
+        user.setPicture(Uri.parse("content://photo.jpg"));
+
+        assertEquals(Uri.parse("content://photo.jpg"), user.getPicture());
+
+    }
+
+
+
+    /**
+     * This method tests the getImgUrl and setImgUrl method of the User class.
+     */
+    @Test
+    public void testGetSetImgUrl(){
+        User user = mockUser();
+
+        assertNotNull(user.getImgUrl()); // should not be null
+        assertEquals("", user.getImgUrl()); // should be empty
+
+        user.setImgUrl("photo.jpg");
+
+        assertEquals("photo.jpg", user.getImgUrl());
+
+        user.setImgUrl("image.jpg");
+        assertEquals("image.jpg", user.getImgUrl());
     }
 
     /**
