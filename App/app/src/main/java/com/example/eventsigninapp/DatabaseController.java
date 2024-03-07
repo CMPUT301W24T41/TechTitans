@@ -22,6 +22,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Document;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -182,6 +183,21 @@ public class DatabaseController {
                         ArrayList<?> usersCheckedIn = (ArrayList<?>) document.get("checkedInUsers");
                         if (usersCheckedIn != null) {
                             alController.updateCheckedInUsers(usersCheckedIn);
+                        }
+                    }
+                });
+    }
+
+    public void getSignedUpUsersFromFirestore(String eventId, AttendeeListController alController) {
+        db.collection("events")
+                .document(eventId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
+                        ArrayList<?> usersSignedUp = (ArrayList<?>) document.get("signedUpUsers");
+                        if (usersSignedUp != null) {
+                            alController.updateSignedUpUsers(usersSignedUp);
                         }
                     }
                 });

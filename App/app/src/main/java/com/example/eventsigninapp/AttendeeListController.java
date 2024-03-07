@@ -10,9 +10,16 @@ import java.util.Objects;
 public class AttendeeListController {
     DatabaseController dbController;
     UserController userController;
+    Event event;
     ArrayList<User> signedUpUsers = new ArrayList<User>();
     ArrayList<User> checkedInUsers = new ArrayList<User>();
     public AttendeeListController() {
+        dbController = new DatabaseController();
+        userController = new UserController();
+    }
+
+    public AttendeeListController(Event event) {
+        this.event = event;
         dbController = new DatabaseController();
         userController = new UserController();
     }

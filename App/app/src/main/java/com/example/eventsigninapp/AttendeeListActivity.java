@@ -17,18 +17,24 @@ public class AttendeeListActivity extends AppCompatActivity {
     ListView signedUpListView;
     Button switchToMapButton;
     Button backButton;
-    AttendeeListController alController;
     ArrayList<User> signedUpUsers;
     ArrayList<User> checkedInUsers;
     ArrayAdapter<User> signedUpUserAdapter;
     ArrayAdapter<User> checkedInUserAdapter;
+    AttendeeListController alController;
+    DatabaseController dbController;
+    Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_list);
 
+        // for testing, no event is passed yet
         alController = new AttendeeListController();
+        // TODO: Uncomment
+        // alController = new AttendeeListController(event);
+        dbController = new DatabaseController();
         eventTitle = findViewById(R.id.event_title_text);
         checkedInListView = findViewById(R.id.checked_in_list);
         signedUpListView = findViewById(R.id.signed_up_list);
@@ -38,11 +44,14 @@ public class AttendeeListActivity extends AppCompatActivity {
         signedUpUsers = alController.getSignedUpUsers();
         checkedInUsers = alController.getCheckedInUsers();
 
-        signedUpUserAdapter = new ArrayAdapter<User>(this, R.layout.attendee_list_item, signedUpUsers);
-        checkedInUserAdapter = new ArrayAdapter<User>(this, R.layout.attendee_list_item, signedUpUsers);
+        signedUpUserAdapter = new UserArrayAdapter(this, signedUpUsers);
+        checkedInUserAdapter = new UserArrayAdapter(this, checkedInUsers);
 
         signedUpListView.setAdapter(signedUpUserAdapter);
         checkedInListView.setAdapter(checkedInUserAdapter);
+
+        dbController.getSignedUpUsersFromFirestore(event.getUuid(), alController);
+        dbController.getCheckedInUsersFromFirestore(event.getUuid(), alController);
 
         switchToMapButton.setOnClickListener(listener -> {
             Intent startMapActivity = new Intent(AttendeeListActivity.this, MapActivity.class);
