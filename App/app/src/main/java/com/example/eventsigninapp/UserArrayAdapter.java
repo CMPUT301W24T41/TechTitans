@@ -7,18 +7,21 @@ import android.widget.ArrayAdapter;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import android.content.Context;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class UserArrayAdapter extends ArrayAdapter<User> {
-    private ArrayList<User> users;
+public class UserArrayAdapter extends ArrayAdapter<String> {
+    private List<String> users;
     private Context context;
 
-    public UserArrayAdapter(Context context, ArrayList<User> users) {
-        super(context, 0, users);
+    public UserArrayAdapter(Context context, List<String> users) {
+        super(context, 0,  users);
         this.users = users;
         this.context = context;
     }
@@ -31,13 +34,10 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
             view = LayoutInflater.from(context).inflate(R.layout.attendee_list_item, parent, false);
         }
 
-        User user = users.get(position);
+        String uuid = users.get(position);
 
         TextView firstName = view.findViewById(R.id.user_first_name);
         TextView lastName = view.findViewById(R.id.user_last_name);
-
-        firstName.setText(user.getFirstName());
-        lastName.setText(user.getLastName());
 
         return view;
     }

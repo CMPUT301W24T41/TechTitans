@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -14,7 +15,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
@@ -174,6 +178,41 @@ public class DatabaseController {
      * @param eventId id of an event
      */
     public void getCheckedInUsersFromFirestore(String eventId, AttendeeListController alController) {
+         db.collection("events")
+                 .document(eventId)
+                 .get()
+                 .addOnCompleteListener(task -> {
+                     if (task.isSuccessful() && task.getResult() != null) {
+                         DocumentSnapshot document = task.getResult();
+                         ArrayList<?> usersCheckedIn = (ArrayList<?>) document.get("checkedInUsers");
+                     }
+                 });
+        // DocumentReference usersRef = db.collection("events").document(eventId);
+        // usersRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        //     @Override
+        //     public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+        //         if (error != null) {
+        //             Log.e("Database", "Failed to retrieve users");
+        //             return;
+        //         }
+
+        //         if (value == null) {
+        //             return;
+        //         }
+        //         usersRef.get().addOnCompleteListener(task -> {
+        //             if (task.isSuccessful() && task.getResult() != null) {
+        //                 DocumentSnapshot document = task.getResult();
+        //                 ArrayList<?> usersCheckedIn = (ArrayList<?>) document.get("checkedInUsers");
+        //                 if (usersCheckedIn != null) {
+        //                     alController.updateCheckedInUsers(usersCheckedIn);
+        //                 }
+        //             }
+        //         });
+        //     }
+        // });
+    }
+
+    public void getCheckedInUsersFromFirestore(String eventId, GetCheckedInUsersCallback callback) {
         db.collection("events")
                 .document(eventId)
                 .get()
@@ -182,13 +221,13 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult();
                         ArrayList<?> usersCheckedIn = (ArrayList<?>) document.get("checkedInUsers");
                         if (usersCheckedIn != null) {
-                            alController.updateCheckedInUsers(usersCheckedIn);
+                            callback.onGetCheckedInUsersCallback(document.toObject(Event.class), usersCheckedIn);
                         }
                     }
                 });
     }
 
-    public void getSignedUpUsersFromFirestore(String eventId, AttendeeListController alController) {
+    public void getSignedUpUsersFromFirestore(String eventId, GetSignedUpUsersCallback callback) {
         db.collection("events")
                 .document(eventId)
                 .get()
@@ -197,7 +236,7 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult();
                         ArrayList<?> usersSignedUp = (ArrayList<?>) document.get("signedUpUsers");
                         if (usersSignedUp != null) {
-                            alController.updateSignedUpUsers(usersSignedUp);
+                            callback.onGetSignedUpUsersCallback(document.toObject(Event.class), usersSignedUp);
                         }
                     }
                 });
@@ -244,5 +283,16 @@ public class DatabaseController {
         void onCallback(User user);
 
         void onError(Exception e);
+    }
+
+    /**
+     * This interface allows signed up users to be retrieved
+     */
+    public interface GetSignedUpUsersCallback {
+        void onGetSignedUpUsersCallback(Event event, List<?> userIDs);
+    }
+
+    public interface GetCheckedInUsersCallback {
+        void onGetCheckedInUsersCallback(Event event, List<?> userIDs);
     }
 }

@@ -10,24 +10,29 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class AttendeeListActivity extends AppCompatActivity {
+public class AttendeeListActivity extends AppCompatActivity implements DatabaseController.GetSignedUpUsersCallback,
+        DatabaseController.GetCheckedInUsersCallback {
     TextView eventTitle;
     ListView checkedInListView;
     ListView signedUpListView;
     Button switchToMapButton;
     Button backButton;
-    ArrayList<User> signedUpUsers;
-    ArrayList<User> checkedInUsers;
-    ArrayAdapter<User> signedUpUserAdapter;
-    ArrayAdapter<User> checkedInUserAdapter;
+    Event anEvent = new Event();
+    List<String> signedUpUsers = (List<String>) anEvent.getSignedUpUsersUUIDs();
+    List<String> checkedInUsers = (List<String>) anEvent.getCheckedInUsersUUIDs();
+    ArrayAdapter<String> signedUpUserAdapter;
+    ArrayAdapter<String> checkedInUserAdapter;
     AttendeeListController alController;
     DatabaseController dbController;
-    Event event;
+    String eventId = "131e7de5-38de-4cce-ab04-230a5f2ca76f"; // for testing
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        anEvent.setUuid(eventId);
         setContentView(R.layout.activity_attendee_list);
 
         // for testing, no event is passed yet
@@ -41,8 +46,6 @@ public class AttendeeListActivity extends AppCompatActivity {
         switchToMapButton = findViewById(R.id.button_to_map_view);
         backButton = findViewById(R.id.back_button);
 
-        signedUpUsers = alController.getSignedUpUsers();
-        checkedInUsers = alController.getCheckedInUsers();
 
         signedUpUserAdapter = new UserArrayAdapter(this, signedUpUsers);
         checkedInUserAdapter = new UserArrayAdapter(this, checkedInUsers);
@@ -50,8 +53,6 @@ public class AttendeeListActivity extends AppCompatActivity {
         signedUpListView.setAdapter(signedUpUserAdapter);
         checkedInListView.setAdapter(checkedInUserAdapter);
 
-        dbController.getSignedUpUsersFromFirestore(event.getUuid(), alController);
-        dbController.getCheckedInUsersFromFirestore(event.getUuid(), alController);
 
         switchToMapButton.setOnClickListener(listener -> {
             Intent startMapActivity = new Intent(AttendeeListActivity.this, MapActivity.class);
@@ -61,4 +62,28 @@ public class AttendeeListActivity extends AppCompatActivity {
         signedUpUserAdapter.notifyDataSetChanged();
         checkedInUserAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onGetSignedUpUsersCallback(Event event, List<?> userIDs) {
+        try {
+            for (int i = 0; i < userIDs.size(); i++) {
+                event.signUpUser((String) userIDs.get(i));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void onGetCheckedInUsersCallback(Event event, List<?> userIDs) {
+        try {
+            for (int i = 0; i < userIDs.size(); i++) {
+                event.checkInUser((String) userIDs.get(i));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public interface GetSignedUpUserCallback {}
 }
