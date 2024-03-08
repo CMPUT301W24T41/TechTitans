@@ -96,6 +96,17 @@ class User {
     +void setImgUrl(imgUrl: String)
 }
 
+class CheckInFragment {
+    -DatabaseController databaseController
+    -ActivityResultLauncher<ScanOptions> scanLauncher
+    -processResult(ScanIntentResult: result)
+}
+
+checkInFragment "1" o-- "1" DatabaseController : has
+CheckInFragment <|-- Fragment : extends
+CheckInFragment <|.. ScanButtonListener : implements
+CheckInFragment <|.. GetEventCallback : implements
+
 class Admin
 
 class EditProfileFragment {
