@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -35,11 +37,12 @@ public class AttendeeListActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        event = new Event();
 
-        event.setUuid(eventId);
         setContentView(R.layout.activity_attendee_list);
 
+        event = new Event();
+        event.setUuid(eventId);
+        event.setName("test");
 
         // for testing, no event is passed yet
         // TODO: Uncomment
@@ -52,6 +55,8 @@ public class AttendeeListActivity extends AppCompatActivity implements
         signedUpCountText = findViewById(R.id.signed_up_title);
         switchToMapButton = findViewById(R.id.button_to_map_view);
         backButton = findViewById(R.id.back_button);
+
+        eventTitle.setText(event.getName());
 
         signedUpUsers = new ArrayList<User>();
         checkedInUsers = new ArrayList<User>();
@@ -69,6 +74,7 @@ public class AttendeeListActivity extends AppCompatActivity implements
             Intent startMapActivity = new Intent(AttendeeListActivity.this, MapActivity.class);
             startActivity(startMapActivity);
         });
+
     }
 
     /**
@@ -85,6 +91,7 @@ public class AttendeeListActivity extends AppCompatActivity implements
                     @Override
                     public void onCallback(User user) {
                         signedUpUsers.add(user);
+                        signedUpCountText.setText(String.format(Locale.CANADA, "SIGNED UP (%d)", signedUpUsers.size()));
                         signedUpUserAdapter.notifyDataSetChanged();
                     }
 
@@ -95,7 +102,6 @@ public class AttendeeListActivity extends AppCompatActivity implements
                 });
                 signedUpCount += 1;
             }
-            signedUpCountText.setText(String.format(Locale.CANADA, "SIGNED UP (%d)", signedUpCount));
         } catch (Exception e) {
             Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
         }
@@ -115,6 +121,7 @@ public class AttendeeListActivity extends AppCompatActivity implements
                     @Override
                     public void onCallback(User user) {
                         checkedInUsers.add(user);
+                        checkedInCountText.setText(String.format(Locale.CANADA, "CHECKED IN (%d)", checkedInUsers.size()));
                         checkedInUserAdapter.notifyDataSetChanged();
                     }
 
@@ -123,9 +130,7 @@ public class AttendeeListActivity extends AppCompatActivity implements
                         Log.e("DEBUG", String.format("Error getting checked in users: %s", e.getMessage()));
                     }
                 });
-                checkedInCount += 1;
             }
-            checkedInCountText.setText(String.format(Locale.CANADA, "CHECKED IN (%d)", checkedInCount));
         } catch (Exception e) {
                 Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
             }

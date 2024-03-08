@@ -226,8 +226,8 @@ public class DatabaseController {
      */
     public void getSignedUpUsersFromFirestore(Event event, GetSignedUpUsersCallback callback) {
         final ArrayList<?>[] usersSignedUp = new ArrayList<?>[1]; // effectively final
-        DocumentReference eventRef = db.collection("events").document(event.getUuid());
-        eventRef.get().addOnCompleteListener(task -> {
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 DocumentSnapshot document = task.getResult();
                 usersSignedUp[0] = (ArrayList<?>) document.get("signedUpUsers");
@@ -236,6 +236,23 @@ public class DatabaseController {
                 } else {
                     Log.e("Database", "Error retrieving signed up users");
                 }
+            }
+        });
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            usersSignedUp[0] = (ArrayList<?>) doc.get("checkedInUsers");
+            if (usersSignedUp[0] != null) {
+                callback.onGetSignedUpUsersCallback(event, usersSignedUp[0]);
+            } else {
+                Log.e("Database", "Error retrieving checked in users");
             }
         });
     }
@@ -258,6 +275,23 @@ public class DatabaseController {
                 } else {
                     Log.e("Database", "Error retrieving checked in users");
                 }
+            }
+        });
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
+            if (usersCheckedIn[0] != null) {
+                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
+            } else {
+                Log.e("Database", "Error retrieving checked in users");
             }
         });
     }
