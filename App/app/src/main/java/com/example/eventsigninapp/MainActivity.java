@@ -1,19 +1,16 @@
 package com.example.eventsigninapp;
 
-import static android.media.MediaSyncEvent.createEvent;
+import android.os.Bundle;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Bundle;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +21,24 @@ public class MainActivity extends AppCompatActivity{
 
     TabLayout tabLayout;
     Map<String, Object> user = new HashMap<>();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView idText;
     UserController userController = new UserController();
+    DatabaseController databaseController = new DatabaseController();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        FirebaseApp.initializeApp(this);
-        db = FirebaseFirestore.getInstance();
+//        db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // this finds the current user and sends the result to userController
+        String defaultID = userController.getUserID(this);
+        databaseController.updateWithUserFromFirestore(defaultID, userController);
+
 
         frameLayout = findViewById(R.id.eventButton);
         tabLayout = findViewById(R.id.mainTabLayout);
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity{
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new EventFragment();
+                        fragment = new EventCreationFragment();
                         break;
                     case 1:
                         fragment = new HomeFragment();

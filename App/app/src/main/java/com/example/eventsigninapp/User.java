@@ -7,7 +7,7 @@ import java.util.HashSet;
 
 public class User {
 
-    private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures";
+    private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures/";
 
     /**
      * This variable stores the id of the user
@@ -32,7 +32,7 @@ public class User {
     /**
      * This variable stores the events location if required
      */
-    private String location;
+    private final String location;
 
     /**
      * This variable stores the events that the user has signed up for
@@ -58,17 +58,18 @@ public class User {
         firstName = "";
         lastName = "";
         contact = "";
-        imgUrl = profilePicpath + id;
         location = "";
     }
 
     protected User(String id) {
         this();
         this.id = id;
+        this.imgUrl = profilePicpath + id;
     }
 
     protected User(String id, String first, String last) {
         this(id);
+        this.imgUrl = profilePicpath + id;
         this.firstName = first;
         this.lastName = last;
     }
@@ -165,9 +166,10 @@ public class User {
      * @param event the event to sign up for
      */
     public void checkIn(Event event) {
+        EventController eventController = new EventController(event);
         try {
-            event.checkInUser(id);              // inform event that user has checked in
-        } catch (Event.AlreadyCheckedInException e) { // catch exception
+            eventController.checkInUser(this);              // inform event that user has checked in
+        } catch (EventController.AlreadyCheckedInException e) { // catch exception
             System.out.println(e.getMessage());       // print error message
         }
     }
@@ -177,16 +179,17 @@ public class User {
      * @param event the event to sign up for
      */
     public void signUp(Event event) {
-        //TODO: implement handling of full event, ideally prevent calling of method if event is full
+        EventController eventController = new EventController(event);
+
         if (event.isFull()) {
             System.out.println("Event is full"); // print error message
             return;
         }
 
         try {
-            event.signUpUser(id); // inform event that user has signed up
-            attendingEvents.add(event);          // add event to user's list of events
-        } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
+            eventController.signUpUser(id); // inform event that user has signed up
+            attendingEvents.add(event);     // add event to user's list of events
+        } catch (EventController.EventFullException | EventController.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message
         }
     }
