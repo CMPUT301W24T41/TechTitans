@@ -174,7 +174,34 @@ class HomeFragment {
     -ArrayList<Event> events
     -ListView eventsList
     -EventArrayAdapter eventsArrayAdapter
+    -EventDetailsFragment frag
 }
+
+class EventDetailsFragment {
+    -TextView eventDescription
+    -TextView announcement
+    -ImageView eventPoster
+    -Button backButton
+    +newInstance(Event event)
+}
+
+class AttendeeListActivity {
+    -eventTitle: TextView
+    -checkedInCountText: TextView
+    -signedUpCountText: TextView
+    -checkedInListView: ListView
+    -signedUpListView: ListView
+    -switchToMapButton: Button
+    -signedUpUserAdapter: UserArrayAdapter
+    -checkedInUserAdapter: UserArrayAdapter
+    -dbController: DatabaseController
+    -event: Event
+    -signedUpUsers: ArrayList<User>
+    -checkedInUsers: ArrayList<User>
+}
+
+HomeFragment "1" o-- "0...*" EventDetailsFragment
+EventDetailsFragment "1" *-- "1" Event
 
 Fragment <|-- ProfileFragment
 Fragment <|-- CheckInFragment
@@ -183,6 +210,7 @@ Fragment <|-- EventDetailsFragment
 Fragment <|-- HomeFragment
 
 ArrayAdapter <|-- EventArrayAdapter
+ArrayAdapter <|-- UserArrayAdapter
 
 DialogFragment <|-- EditProfileFragment
 DialogFragment <|-- QRCodeFragment
@@ -191,6 +219,7 @@ AlertDialog <|-- CheckInConfirmationDialog
 
 
 AppCompatActivity <|-- MainActivity : extends
+AppCompatActivity <|-- AttendeeListActivity : extends
 
 ProfileFragment <|.. OnProfileUpdateListener : implements
 ProfileFragment "0...1" o-- "1" DatabaseController
@@ -204,9 +233,13 @@ EditProfileFragment "0...1" o-- "1" DatabaseController
 EditProfileFragment "0...1" o-- "1" UserController
 EditProfileFragment "0...1" o-- "1" User
 
+AttendeeListActivity "0...1" o-- "0..*" User
+
 HomeFragment "0...1" o-- "1" DatabaseController
 HomeFragment "0..1" *-- "1" EventArrayAdapter
-HomeFragment <|.. GetAllEventsCallback
+GetAllEventsCallback <|.. HomeFragment
+GetCheckedInUsersCallback <|.. AttendeeListActivity
+GetSignedUpUsersCallback <|.. AttendeeListActivity
 
 UserController "0...1" o-- "1" User : has
 EventController "0..1" o-- "1" Event
