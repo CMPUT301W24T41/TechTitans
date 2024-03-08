@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 
+import android.net.Uri;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,10 +18,11 @@ public class Event implements Serializable {
     private int capacity;
     private final Collection<String> signedUpUsersUUIDs; // collection of signed up users
     private final Collection<String> checkedInUsersUUIDs; // collection of checked in users
-    private Object eventPoster;
-    private Object qrCode;
+    private Uri posterUri;
+    private Uri checkInQRCodeUri;
+    private Uri descriptionQRCodeUri;
     private Object location;
-    private Date date;
+    private final Date date;
     private String creatorUUID;
     private String description;
 
@@ -30,8 +32,8 @@ public class Event implements Serializable {
         name = "";
         checkedInUsersUUIDs = new ArrayList<String>();
         signedUpUsersUUIDs = new ArrayList<String>();
-        eventPoster = null;
-        qrCode = null;
+        posterUri = null;
+        checkInQRCodeUri = null;
         location = null;
         date = null;
         capacity = 10000000;
@@ -124,15 +126,10 @@ public class Event implements Serializable {
     }
 
     /**
-     * This method should be used to check in a user for an event
+     * This method adds a user to the checked in users list
      * @param uuid the uuid of the user to check in
-     * @throws AlreadyCheckedInException if the user is already checked in to the event
      */
-    public void checkInUser(String uuid) throws AlreadyCheckedInException {
-        if (checkedInUsersUUIDs.contains(uuid)) {
-            throw new AlreadyCheckedInException("Attendee is already checked in to the event");
-        }
-
+    public void addCheckedInUser(String uuid) {
         checkedInUsersUUIDs.add(uuid);
     }
 
@@ -154,20 +151,10 @@ public class Event implements Serializable {
     }
 
     /**
-     * This method should be used to sign up a user for an event
+     * This method should be used to add a user to the signed up users list
      * @param uuid the uuid of the user to sign up
-     * @throws EventFullException if the event is full
-     * @throws AlreadySignedUpException if the user is already signed up for the event
      */
-    public void signUpUser(String uuid) throws EventFullException, AlreadySignedUpException {
-        if (isCapped() && signedUpUsersUUIDs.size() >= capacity) {
-            throw new EventFullException("Event is full");
-        }
-
-        if (isUserSignedUp(uuid)) {
-            throw new AlreadySignedUpException("Attendee is already signed up for the event");
-        }
-
+    public void addSignedUpUser(String uuid) {
         signedUpUsersUUIDs.add(uuid);
     }
 
@@ -189,13 +176,12 @@ public class Event implements Serializable {
 
     public Map<String, Object> toMap() {
         Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put("uuid", uuid);
         eventMap.put("name", name);
         eventMap.put("creatorUUID", creatorUUID);
         eventMap.put("capacity", capacity);
         eventMap.put("date", date);
         eventMap.put("location", location);
-        eventMap.put("poster", eventPoster);
-        eventMap.put("qrCode", qrCode);
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
         eventMap.put("description", description);
@@ -210,30 +196,27 @@ public class Event implements Serializable {
         return description;
     }
 
-    /**
-     * This class should be thrown when a user tries to sign up for an event that is full
-     */
-    public static class EventFullException extends Exception {
-        public EventFullException(String message) {
-            super(message);
-        }
+    public void setPosterUri(Uri posterUri) {
+        this.posterUri = posterUri;
     }
 
-    /**
-     * This class should be thrown when a user tries to sign up for an event that they are already signed up for
-     */
-    public static class AlreadySignedUpException extends Exception {
-        public AlreadySignedUpException(String message) {
-            super(message);
-        }
+    public Uri getPosterUri() {
+        return posterUri;
     }
 
-    /**
-     * This class should be thrown when a user tries to check in to an event that they are already checked in to
-     */
-    public static class AlreadyCheckedInException extends Exception {
-        public AlreadyCheckedInException(String message) {
-            super(message);
-        }
+    public void setCheckInQRCodeUri(Uri checkInQRCodeUri) {
+        this.checkInQRCodeUri = checkInQRCodeUri;
+    }
+
+    public Uri getCheckInQRCodeUri() {
+        return checkInQRCodeUri;
+    }
+
+    public void setDescriptionQRCodeUri(Uri descriptionQRCodeUri) {
+        this.descriptionQRCodeUri = descriptionQRCodeUri;
+    }
+
+    public Uri getDescriptionQRCodeUri() {
+        return descriptionQRCodeUri;
     }
 }
