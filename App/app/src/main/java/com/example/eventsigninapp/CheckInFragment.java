@@ -23,7 +23,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     private CheckInConfirmationDialog checkInConfirmationDialog;
     private Event event;
 
-    ActivityResultLauncher<ScanOptions> scanLauncher;
+    private ActivityResultLauncher<ScanOptions> scanLauncher;
 
     // Variable to track the number of scans
     private int scanCount = 0;
@@ -65,9 +65,10 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
         EventController eventController = new EventController(event);
         if (event != null) {
             UserController userController = new UserController();
+            User user = userController.getUser();
 
             try {
-                eventController.checkInUser(userController.getUser());
+                eventController.checkInUser(user.getId());
                 databaseController.pushEventToFirestore(event);
             } catch (Exception e) {
                 e.printStackTrace();

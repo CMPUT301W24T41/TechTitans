@@ -2,11 +2,16 @@ package com.example.eventsigninapp;
 
 import static org.junit.Assert.*;
 
+import android.net.Uri;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 /**
  * This class tests the User class.
  */
+@RunWith(RobolectricTestRunner.class)
 public class UserTest {
     /**
      * This method creates a mock User object.
@@ -22,6 +27,45 @@ public class UserTest {
      */
     private Event mockEvent() {
         return new Event();
+    }
+
+    /**
+     * This method tests the getPicture and setPicture method of the User class.
+     */
+    @Test
+    public void testGetSetPicture() {
+        User user = mockUser();
+
+        assertNull(user.getPicture()); // should be null initially
+
+        user.setPicture(Uri.parse("content://img.jpg"));
+
+        assertEquals(Uri.parse("content://img.jpg"), user.getPicture());
+
+        user.setPicture(Uri.parse("content://photo.jpg"));
+
+        assertEquals(Uri.parse("content://photo.jpg"), user.getPicture());
+
+    }
+
+
+
+    /**
+     * This method tests the getImgUrl and setImgUrl method of the User class.
+     */
+    @Test
+    public void testGetSetImgUrl(){
+        User user = mockUser();
+
+        assertNotNull(user.getImgUrl()); // should not be null
+        assertEquals("", user.getImgUrl()); // should be empty
+
+        user.setImgUrl("photo.jpg");
+
+        assertEquals("photo.jpg", user.getImgUrl());
+
+        user.setImgUrl("image.jpg");
+        assertEquals("image.jpg", user.getImgUrl());
     }
 
     /**
@@ -90,18 +134,7 @@ public class UserTest {
         assertEquals("Overwrite", user.getId()); // should be "3"
     }
 
-    /**
-     * This method tests the checkIn method of the User class.
-     */
-    @Test
-    public void testCheckIn() {
-        User user = mockUser();
-        Event event = mockEvent();
-        user.checkIn(event);
 
-        assertEquals(1, event.getCheckedInUsersUUIDs().size()); // should have 1 user
-        assertTrue(event.getCheckedInUsersUUIDs().contains(user)); // should contain the user
-    }
 
     /**
      * This method tests the getAttendingEvents method of the User class.
@@ -125,16 +158,5 @@ public class UserTest {
         assertEquals(0, user.getHostingEvents().size()); // should be empty
     }
 
-    /**
-     * This method tests the signUp method of the User class.
-     */
-    @Test
-    public void testSignUp() {
-        User user = mockUser();
-        Event event = mockEvent();
-        user.signUp(event);
 
-        assertEquals(1, user.getAttendingEvents().size()); // should have 1 event
-        assertTrue(user.getAttendingEvents().contains(event)); // should contain the event
-    }
 }

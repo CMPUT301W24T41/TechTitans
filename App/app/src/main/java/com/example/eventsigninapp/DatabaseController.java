@@ -19,16 +19,30 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class DatabaseController {
 
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    // cannot be final for testing purposes
+    private FirebaseFirestore db;
 
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();;
+    // cannot be final for testing purposes
+    private FirebaseStorage storage;
 
-    public DatabaseController() {}
+
+
+    public DatabaseController() {
+        this.db = FirebaseFirestore.getInstance();
+        this.storage= FirebaseStorage.getInstance();
+    }
+    public DatabaseController(FirebaseFirestore firestore, FirebaseStorage storage) {
+        this.db = firestore;
+        this.storage = storage;
+    }
+
 
     /**
      * This method stores a user or updates an existing user to the database
@@ -40,12 +54,16 @@ public class DatabaseController {
         userData.put("firstName", user.getFirstName());
         userData.put("lastName", user.getLastName());
         userData.put("contact", user.getContact());
+        userData.put("attendingEvents", user.getAttendingEvents());
+        userData.put("hostingEvents", user.getHostingEvents());
+
+
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
 
-        userDocument.set(userData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
-                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
+        userDocument.set(userData, SetOptions.merge());
+//                .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
+//                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
     }
 
 
@@ -64,7 +82,14 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents")
+                        );
                         userController.setUser(pulledUser);
                         this.updateWithProfPictureFromWeb(pulledUser);
                     } else {
@@ -95,7 +120,14 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents")
+                        );
                         callback.onCallback(pulledUser);
                     } else {
                         callback.onError(new Exception("failed to retrieve user"));
