@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,10 @@ import com.journeyapps.barcodescanner.ScanOptions;
  * This class acts as a controller for the check in process.
  * It is responsible for scanning QR codes and processing the result.
  */
-public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback{
-    private DatabaseController DatabaseController;
+public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback, DatabaseController.EventImageUriCallbacks {
+    private DatabaseController databaseController;
+    private CheckInConfirmationDialog checkInConfirmationDialog;
+    private Event event;
 
     ActivityResultLauncher<ScanOptions> scanLauncher;
 
@@ -45,22 +48,32 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
             scanCount++;
             System.out.println(scanCount);
 
-            DatabaseController = new DatabaseController();
-            DatabaseController.getEventFromFirestore(result.getContents(), this);
+            databaseController = new DatabaseController();
+            databaseController.getEventFromFirestore(result.getContents(), this);
+        }
+    }
+
+    private void showCheckInConfirmation() {
+        if (event != null) {
+            checkInConfirmationDialog.showEvent(event);
         }
     }
 
     @Override
-    public void onGetEventCallback(Event event, String uuid) {
+    public void onGetEventCallback(Event event) {
+        this.event = event;
+        EventController eventController = new EventController(event);
         if (event != null) {
-            event.setUuid(uuid);
             UserController userController = new UserController();
+
             try {
-                event.checkInUser(userController.getUserID(requireContext()));
-                DatabaseController.pushEventToFirestore(event);
+                eventController.checkInUser(userController.getUser());
+                databaseController.pushEventToFirestore(event);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            databaseController.getEventPoster(event.getUuid(), this);
         }
     }
 
@@ -74,6 +87,8 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
         CheckInView checkInView = new CheckInView(inflater, container);
         checkInView.setListener(this);
 
+        checkInConfirmationDialog = new CheckInConfirmationDialog(requireContext(), container);
+
         return checkInView.getRootView();
     }
 
@@ -86,5 +101,25 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
         options.setBeepEnabled(true);
         options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
         scanLauncher.launch(options);
+    }
+
+    @Override
+    public void onEventPosterCallback(Uri imageUri) {
+        event.setPosterUri(imageUri);
+        showCheckInConfirmation();
+    }
+
+    @Override
+    public void onEventCheckInQRCodeCallback(Uri imageUri) {
+        event.setCheckInQRCodeUri(imageUri);
+    }
+
+    @Override
+    public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+        event.setDescriptionQRCodeUri(imageUri);
+    }
+
+    @Override
+    public void onError(Exception e) {
     }
 }

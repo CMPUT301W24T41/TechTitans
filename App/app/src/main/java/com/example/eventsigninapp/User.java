@@ -35,7 +35,7 @@ public class User {
     /**
      * This variable stores the events location if required
      */
-    private String location;
+    private final String location;
 
     /**
      * This variable stores the events that the user has signed up for
@@ -73,6 +73,7 @@ public class User {
 
     protected User(String id, String first, String last) {
         this(id);
+        this.imgUrl = profilePicpath + id;
         this.firstName = first;
         this.lastName = last;
     }
@@ -169,6 +170,7 @@ public class User {
     public void setContact(String contact) {
         this.contact = contact;
     }
+
 
 
     public Uri getPicture() {

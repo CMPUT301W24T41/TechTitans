@@ -122,7 +122,6 @@ public class UserControllerTest {
 
         verify(mockEvent).checkInUser(user.getId());
 
-    }
 
 
 
@@ -142,6 +141,7 @@ public class UserControllerTest {
         assertEquals(attendingEvents, user.getAttendingEvents());
     }
 
+
     @Test
     public void testSignUp_EventIsFull_PrintsErrorMessage() throws Event.EventFullException, Event.AlreadySignedUpException {
         UserController userController = new UserController();
@@ -156,6 +156,3 @@ public class UserControllerTest {
     }
 
 
-
-
-}
