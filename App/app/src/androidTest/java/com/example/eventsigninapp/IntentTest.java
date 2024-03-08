@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 import static android.icu.number.NumberRangeFormatter.with;
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -14,6 +15,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
@@ -174,8 +178,20 @@ public class IntentTest {
         onView(withId(R.id.btnShare)).perform(click());
 
         intended(hasAction(android.content.Intent.ACTION_CHOOSER));
+    }
 
+    @Test
+    public void testHomeFragment() {
+        onView(withText("Home")).perform(click());
+        onView(withText("Browse events")).check(matches(isDisplayed()));
+    }
 
+    @Test
+    public void testEventDetailsFragment() {
+        onView(withText("Home")).perform(click());
+        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events_list
+        )).atPosition(0).perform(click());
+        onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
     }
 
 
