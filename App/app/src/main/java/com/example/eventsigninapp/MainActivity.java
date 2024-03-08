@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.Manifest;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -38,9 +39,11 @@ public class MainActivity extends AppCompatActivity{
                 if (isGranted) {
                     // FCM SDK (and your app) can post notifications.
                 } else {
-                    // TODO: Inform user that that your app will not show notifications.
+                    // Inform user that your app will not show notifications.
+                    Toast.makeText(MainActivity.this, "Notifications permission denied. App will not show notifications.", Toast.LENGTH_SHORT).show();
                 }
             });
+
 
     private void askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
