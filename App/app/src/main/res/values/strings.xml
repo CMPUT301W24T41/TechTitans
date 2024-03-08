@@ -27,9 +27,10 @@
     <string name="profile_picture_of_user">profile picture of user</string>
     <string name="save">Save</string>
     <string name="event_details_header">Event Details and Poster</string>
-    <string name="event_details">Event details will be displayed here!</string>
+    <string name="event_details">Any event details will be displayed here! \n \n
+    (It appears that there are currently no details to be displayed for this event.)</string>
     <string name="event_announcements_header">Announcements</string>
-    <string name="event_announcements">All event announcements will be displayed here! \n \n
+    <string name="event_announcements">Any event announcements will be displayed here! \n \n
         (It appears that there are currently no announcements to display for this event.)</string>
     <string name="Back">Back</string>
 </resources>
