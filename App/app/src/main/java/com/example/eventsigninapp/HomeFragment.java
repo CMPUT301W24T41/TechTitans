@@ -4,16 +4,27 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements DatabaseController.GetAllEventsCallback {
+    DatabaseController dbController;
+    ArrayList<Event> events;
+    ListView eventsList;
+    EventArrayAdapter eventsArrayAdapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,16 +60,36 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        eventsList = rootView.findViewById(R.id.events_list);
+
+        dbController = new DatabaseController();
+        events = new ArrayList<Event>();
+
+        eventsArrayAdapter = new EventArrayAdapter(getContext(), events);
+        eventsList.setAdapter(eventsArrayAdapter);
+
+        dbController.getAllEventsFromFirestore(this);
+        eventsArrayAdapter.notifyDataSetChanged();
+
+        return rootView;
+    }
+
+    /**
+     * This function allows an event to be retrieved from the database and added to the list of events.
+     * @param event an event
+     */
+    @Override
+    public void onGetAllEventsCallback(Event event) {
+        events.add(event);
+        eventsArrayAdapter.notifyDataSetChanged();
     }
 }

@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
  */
 public class EditProfileFragment extends DialogFragment {
 
+     DatabaseController databaseController = new DatabaseController();
 
 
     public interface OnProfileUpdateListener {
@@ -82,10 +83,11 @@ public class EditProfileFragment extends DialogFragment {
                 Uri newProf = userController.getUser().getPicture();
 
 
+                userController.editProfile(newFirstName, newLastName, newContact, newProf);
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
 
-                userController.editProfile(newFirstName, newLastName, newContact, newProf);
+
                 dismiss();
 
             }
@@ -101,7 +103,8 @@ public class EditProfileFragment extends DialogFragment {
         if (resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
 
-            userController.uploadProfilePicture(imageUri);
+            databaseController.uploadProfilePicture(imageUri, userController.getUser());
+            databaseController.putUserToFirestore(userController.getUser());
             Picasso.get().load(imageUri).into(profPic);
 
 

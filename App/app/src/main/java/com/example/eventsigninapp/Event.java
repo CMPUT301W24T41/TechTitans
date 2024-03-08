@@ -2,7 +2,7 @@ package com.example.eventsigninapp;
 
 
 import android.net.Uri;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Event {
+public class Event implements Serializable {
     private String uuid;
     private String name;
 

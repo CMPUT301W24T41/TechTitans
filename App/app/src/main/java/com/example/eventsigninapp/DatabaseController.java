@@ -2,10 +2,19 @@ package com.example.eventsigninapp;
 
 import android.net.Uri;
 import android.util.Log;
+import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -15,9 +24,9 @@ import java.util.Map;
 
 public class DatabaseController {
 
-    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private static final FirebaseStorage storage = FirebaseStorage.getInstance();;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();;
 
     public DatabaseController() {}
 
@@ -40,7 +49,15 @@ public class DatabaseController {
     }
 
 
-    public void getUserFromFirestoreToUserController(String id, UserController userController) {
+
+    /**
+     * This function gets a user from the database using the given id and updates the current
+     * user of a given userController object with information of that user
+     * if the task fails, this creates a new user instead to add
+     * @param id the id of the user to acquire
+     * @param userController the UserController to update
+     */
+    public void updateWithUserFromFirestore(String id, UserController userController) {
         db.collection("users")
                 .whereEqualTo("id", id)
                 .get()
@@ -49,14 +66,14 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
                         userController.setUser(pulledUser);
-                        userController.updateWithProfPictureFromWeb();
+                        this.updateWithProfPictureFromWeb(pulledUser);
                     } else {
+                        // user does not exist, create a new user
                         User createdUser = new User(id);
                         userController.setUser(createdUser);
                     }
                 });
     }
-
 
 
     /**Finds a user based on their unique id in the database and fetches it from the database,
@@ -88,10 +105,11 @@ public class DatabaseController {
 
 
     /**
-     * This method uploads the given picture uri to the storage for the current user in the controller class
+     * This method uploads the given picture uri to the storage for the given user
      * @param picture the picture to upload
+     * @param user the user whose profile is being updated
      */
-    public void uploadProfilePicture(Uri picture, User user, UserController userController) {
+    public void uploadProfilePicture(Uri picture, User user) {
         StorageReference storageRef = storage.getReference();
 
         // Reference to store the image
@@ -103,7 +121,6 @@ public class DatabaseController {
                     profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         // Update upon successful completion
                         user.setPicture(uri);
-                        userController.putUserToFirestore(); // Update the user's profile in Firestore
                     }).addOnFailureListener(e -> {
                         Log.e("Database", "uploadProfilePicture: Error, failure to get URL data", e);
                     });
@@ -113,13 +130,17 @@ public class DatabaseController {
                 });
     }
 
-    public void updateWithProfPictureFromWeb(User user, UserController userController) {
+
+    /**
+     * this updates the profile of a given user with the result acquired from the database
+     * @param user the user to be updated
+     */
+    public void updateWithProfPictureFromWeb(User user) {
         StorageReference storageRef = storage.getReferenceFromUrl(user.getImgUrl());
 
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            Log.d("Database", "Image download URL: " + uri.toString());
             user.setPicture(uri);
-            userController.putUserToFirestore(); // Update the user's profile in Firestore
+            this.putUserToFirestore(user); // Update the user's profile in Firestore
         }).addOnFailureListener(e -> {
             // Handle failure to retrieve the URL
             Log.e("Database", "updateWithProfPictureFromWeb: Failed to retrieve image URL", e);
@@ -143,7 +164,6 @@ public class DatabaseController {
         StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
 
         profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            Log.d("Database", "Image download URL: " + uri.toString());
             callback.onImageUriCallback(uri);
         }).addOnFailureListener(e -> {
             Log.e("Database", "getOtherUserProfilePicture: Failed to retrieve image", e);
@@ -280,6 +300,33 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * This function gets all the events from the database.
+     * @param callback callback to add the events to the list of events
+     */
+    public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
+        CollectionReference events = db.collection("events");
+        events.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                String eventName = doc.getString("name");
+                                String eventId = doc.getId();
+                                Event event = new Event();
+                                event.setUuid(eventId);
+                                event.setName(eventName);
+                                Log.e("DEBUG", String.format("Event %s retrieved", event.getName()));
+                                callback.onGetAllEventsCallback(event);
+                            }
+                        } else {
+                            Log.e("DEBUG", "Error retrieving events");
+                        }
+                    }
+                });
+    }
+
     public interface GetEventCallback {
         void onGetEventCallback(Event event);
     }
@@ -289,6 +336,13 @@ public class DatabaseController {
         void onEventCheckInQRCodeCallback(Uri imageUri);
         void onEventDescriptionQRCodeCallback(Uri imageUri);
         void onError(Exception e);
+    }
+
+    /**
+     * This interface allows an event to be retrieved from the database and added to the list of events.
+     */
+    public interface GetAllEventsCallback {
+        void onGetAllEventsCallback(Event event);
     }
 
 
