@@ -132,9 +132,18 @@ class HomeFragment {
     -EventArrayAdapter eventsArrayAdapter
 }
 
+class MessagingService {
+    +void sendNotification()
+    +void onMessageReceived()
+}
+class FirebaseMessagingService
+
+
 Fragment <|-- ToolbarFragment
 Fragment <|-- EditProfileFragment
 Fragment <|-- HomeFragment : extends
+
+FirebaseMessagingService <|-- MessagingService : extends
 
 AppCompatActivity <|-- MainActivity : extends
 AppCompatActivity <|-- ProfileActivity : extends
