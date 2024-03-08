@@ -128,7 +128,7 @@ class CheckInFragment {
 }
 
 checkInFragment "1" o-- "1" DatabaseController : has
-CheckInFragment <|-- Fragment : extends
+
 CheckInFragment <|.. ScanButtonListener : implements
 CheckInFragment <|.. GetEventCallback : implements
 
@@ -144,8 +144,10 @@ class EditProfileFragment {
     +setOnProfileUpdateListener(listener: OnProfileUpdateListener)
 }
 
-class ToolbarFragment
+
 class Fragment
+class DialogFragment
+
 interface OnProfileUpdateListener {
     +onProfileUpdate(newFirstName: String, newLastName: String, newContact: String, newPicture: Uri)
 }
@@ -167,8 +169,15 @@ class HomeFragment {
     -EventArrayAdapter eventsArrayAdapter
 }
 
-Fragment <|-- ToolbarFragment
-Fragment <|-- EditProfileFragment
+Fragment <|-- ProfileFragment
+Fragment <|-- CheckInFragment
+Fragment <|-- EventCreationFragment
+Fragment <|-- EventDetailsFragment
+Fragment <|-- HomeFragment
+
+DialogFragment <|-- EditProfileFragmentProfile
+DialogFragment <|-- QRCodeFragment
+
 
 AppCompatActivity <|-- MainActivity : extends
 AppCompatActivity <|-- ProfileActivity : extends
@@ -176,10 +185,10 @@ AppCompatActivity <|-- ProfileActivity : extends
 ProfileActivity <|.. OnProfileUpdateListener : implements
 
 UserController "1" o-- "1" ProfileActivity : has
-UserController "1" o-- "1" User : has
+UserController "0...1" o-- "1" User : has
 
-DatabaseController -- User : takes as argument
-DatabaseController -- UserController : takes as argument
+DatabaseController -- User 
+DatabaseController -- UserController 
 
 EditProfileFragment o-- UserController
 
