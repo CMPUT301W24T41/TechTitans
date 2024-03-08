@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     val fragment_version = "1.6.2"
 
     implementation("com.google.firebase:firebase-analytics")
