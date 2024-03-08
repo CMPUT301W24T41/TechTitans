@@ -328,13 +328,7 @@ public class DatabaseController {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
-                                String eventName = doc.getString("name");
-                                String eventId = doc.getId();
-                                Event event = new Event();
-                                event.setUuid(eventId);
-                                event.setName(eventName);
-                                Log.e("DEBUG", String.format("Event %s retrieved", event.getName()));
-                                callback.onGetAllEventsCallback(event);
+                                callback.onGetAllEventsCallback(doc.toObject(Event.class));
                             }
                         } else {
                             Log.e("DEBUG", "Error retrieving events");
