@@ -60,8 +60,8 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.8.1")
 }
 
-//secrets {
-//    propertiesFileName = "secrets.properties"
-//    defaultPropertiesFileName = "local.defaults.properties"
-//    ignoreList.add("sdk.*")
-//}
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("sdk.*")
+}

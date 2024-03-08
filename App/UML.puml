@@ -5,12 +5,15 @@ class MainActivity {
     #onCreate(savedInstanceState: Bundle)
 }
 
-class ProfileActivity {
+class ProfileFragment {
     -TextView firstName
     -TextView lastName
     -TextView contact
     -ImageView profPic
     -UserController userController
+    -DatabaseController databaseController
+    -TabLayout tabLayout
+    -FrameLayout frameLayout
     #onCreate(savedInstanceState: Bundle)
 }
 
@@ -19,55 +22,78 @@ class UserController {
     -String defaultUUID
     -String prefName
     +User getUser()
-    +void setUser(user: User)
+    +setUser(user: User)
     +String getUserID(context: Context)
-    +void saveUUID(context: Context, id: String)
-    +void putUserToFirestore()
-    +void getUserFromFirestore(id: String)
-    +void selectImage(activity: Activity)
-    +void selectImage(fragment: Fragment)
-    +void editProfile(firstName: String, lastName: String,
+    +saveUUID(context: Context, id: String)
+    +selectImage(activity: Activity)
+    +selectImage(fragment: Fragment)
+    +editProfile(firstName: String, lastName: String,
     contact: String, pictureUri: Uri)
-    +void uploadProfilePicture(picture: Uri)
-    +void updateWithProfPictureFromWeb()
+    +checkIn(event: Event)
 }
 
 class DatabaseController {
     -FirebaseFirestore db
     -FirebaseStorage storage
-    +void putUserToFirestore(user: User)
-    +void getUserFromFirestoreToUserController(id: String, userController: UserController)
-    +void getUserFromFirestore(id: String, callback: UserCallback)
-    +void uploadProfilePicture(picture: Uri, user: User, userController: UserController)
-    +void updateWithProfPictureFromWeb(user: User, userController: UserController)
-    +void getUserProfilePicture(userID: String, callback: ImageUriCallback)
-    +void getAllEventsFromFirestore(callback: GetAllEventsCallback)
+    +putUserToFirestore(user: User)
+    +updateWithUserFromFirestore(id: String, userController: UserController)
+    +getUserFromFirestore(id: String, callback: UserCallback)
+    +uploadProfilePicture(picture: Uri, user: User)
+    +updateWithProfPictureFromWeb(user: User)
+    +getUserProfilePicture(userID: String, callback: ImageUriCallback)
+    +putEventPosterToFirestore(String: eventID, Uri imageUri)
+    +putEventCheckInQRCodeToFirestore(String: eventID, Uri imageUri)
+    +putEventDesscriptionQRCodeToFirestore(String: eventID, Uri imageUri)
+    +getEventPoster(String eventID, callback: EventImageUriCallbacks)
+    +getEventCheckInQRCode(String eventID, callback: EventImageUriCallbacks)
+    +getEventDescriptionQRCode(String eventID, callback: EventImageUriCallbacks)
+    +pushEventToFirestore(event: Event)
+    +getEventFromFirestore(eventID: String, callback: GetEventCallback)
+    +getAllEventsFromFirestore(callback: GetAllEventsCallback)
 }
 
 class Event {
     -String id
     -String name
     -int capacity
-    -Collection<User> signedUpUsers
-    -Collection<User> checkedInUsers
-    -Object eventPoster
+    -Collection<String> signedUpUsers
+    -Collection<String> checkedInUsers
+    -Uri eventPoster
+    -Uri checkInQrCodeUri
+    -Uri descriptionQRCodeUri
     -Object location
     -Date date
-    +String getId()
-    +void setId(id: String)
+    -String creatorUUID
+    -String description
+    +String getCreatorUUID()
+    +setCreator(creatorUUID: string)
+    +String getUuid()
+    +setUuid(id: String)
     +String getName()
-    +void setName(name: String)
+    +setName(name: String)
+    +setLocation(String location)
     +int getCapacity()
-    +void setCapacity(capacity: int)
+    +setCapacity(capacity: int)
     +boolean isCapped()
     +boolean isFull()
-    +void checkInUser(user: User)
-    +Collection<User> getCheckedInUsers()
+    +addCheckedInUser(uuid: String)
+    +Collection<String> getCheckedInUsersUUIDs()
     +boolean isUserCheckedIn(user: User)
-    +void signUpUser(user: User)
-    +Collection<User> getSignedUpUsers()
+    +addSignedUpUser(uuid: String)
+    +Collection<String> getSignedUpUsersUUIDs()
     +boolean isUserSignedUp(user: User)
+    +setCheckInQRCodeUri(Uri checkInQrCodeUri)
+    +Uri getCheckInQRCodeUri()
+    +setDescriptionQRCodeUri(Uri getDescriptionQRCodeUri)
+    +Uri getDescriptionQRCodeUri()
 }
+
+class EventController{
+  -Event event
+  +checkInUser(uuid: String)
+  +signUpUser(uuid: String)
+}
+
 
 class User {
     -String profilePicPath
@@ -75,29 +101,35 @@ class User {
     -String firstName
     -String lastName
     -String contact
-    -Collection<Event> attendingEvents
-    -Collection<Event> hostingEvents
+    -ArrayList<String> attendingEvents
+    -ArrayList<String> hostingEvents
     -Uri picture
     -String imgUrl
     +String getId()
-    +void setId(id: String)
+    +setId(id: String)
     +String getFirstName()
-    +void setFirstName(firstName: String)
+    +setFirstName(firstName: String)
     +String getLastName()
-    +void setLastName(lastName: String)
-    +Collection<Event> getAttendingEvents()
-    +Collection<Event> getHostingEvents()
+    +setLastName(lastName: String)
+    +ArrayList<String> getAttendingEvents()
+    +ArrayList<String> getHostingEvents()
     +String getContact()
-    +void setContact(contact: String)
-    +void checkIn(event: Event)
-    +void signUp(event: Event)
+    +setContact(contact: String)
     +Uri getPicture()
-    +void setPicture(picture: Uri)
+    +setPicture(picture: Uri)
     +String getImgUrl()
-    +void setImgUrl(imgUrl: String)
+    +setImgUrl(imgUrl: String)
 }
 
-class Admin
+class CheckInFragment {
+    -DatabaseController databaseController
+    -ActivityResultLauncher<ScanOptions> scanLauncher
+    -processResult(ScanIntentResult: result)
+}
+
+
+CheckInFragment <|.. ScanButtonListener : implements
+CheckInFragment <|.. GetEventCallback : implements
 
 class EditProfileFragment {
     -OnProfileUpdateListener profileUpdateListener
@@ -109,8 +141,10 @@ class EditProfileFragment {
     +setOnProfileUpdateListener(listener: OnProfileUpdateListener)
 }
 
-class ToolbarFragment
+
 class Fragment
+class DialogFragment
+
 interface OnProfileUpdateListener {
     +onProfileUpdate(newFirstName: String, newLastName: String, newContact: String, newPicture: Uri)
 }
@@ -118,11 +152,21 @@ interface OnProfileUpdateListener {
 class EventArrayAdapter {
     -ArrayList<Event> events
     -Context context
-    +void getView(position: int, convertView: View, parent: ViewGroup
+    +getView(position: int, convertView: View, parent: ViewGroup
 }
 
 interface GetAllEventsCallback {
     +onGetAllEventsCallback(event: Event)
+}
+
+interface ImageUriCallback{
+  +OnImageUriCallback(imageUri: Uri)
+  +OnError(e: Exception)
+}
+
+interface UserCallback{
+  +OnCallback(imageUri: Uri)
+  +OnError(e: Exception)
 }
 
 class HomeFragment {
@@ -132,28 +176,54 @@ class HomeFragment {
     -EventArrayAdapter eventsArrayAdapter
 }
 
-Fragment <|-- ToolbarFragment
-Fragment <|-- EditProfileFragment
-Fragment <|-- HomeFragment : extends
+Fragment <|-- ProfileFragment
+Fragment <|-- CheckInFragment
+Fragment <|-- EventCreationFragment
+Fragment <|-- EventDetailsFragment
+Fragment <|-- HomeFragment
+
+ArrayAdapter <|-- EventArrayAdapter
+
+DialogFragment <|-- EditProfileFragment
+DialogFragment <|-- QRCodeFragment
+
+AlertDialog <|-- CheckInConfirmationDialog
+
 
 AppCompatActivity <|-- MainActivity : extends
-AppCompatActivity <|-- ProfileActivity : extends
 
-ProfileActivity <|.. OnProfileUpdateListener : implements
-GetAllEventsCallback <|.. HomeFragment : implements
+ProfileFragment <|.. OnProfileUpdateListener : implements
+ProfileFragment "0...1" o-- "1" DatabaseController
+ProfileFragment "0...1" o-- "1" UserController
+ProfileFragment "1" -- "1" User
 
-UserController "1" o-- "1" ProfileActivity : has
-UserController "1" o-- "1" User : has
-HomeFragment "0..1" o-- "1" EventArrayAdapter : has
+MainActivity "0...1" o-- "1" DatabaseController
+MainActivity "0...1" o-- "1" UserController
 
-DatabaseController -- User : takes as argument
-DatabaseController -- UserController : takes as argument
+EditProfileFragment "0...1" o-- "1" DatabaseController
+EditProfileFragment "0...1" o-- "1" UserController
+EditProfileFragment "0...1" o-- "1" User
+
+HomeFragment "0...1" o-- "1" DatabaseController
+HomeFragment "0..1" *-- "1" EventArrayAdapter
+HomeFragment <|.. GetAllEventsCallback
+
+UserController "0...1" o-- "1" User : has
+EventController "0..1" o-- "1" Event
+DatabaseController "0..." -- "0..." User
+DatabaseController "0..." -- "0..." UserController
+
+CheckInFragment "0...1" o-- "1" DatabaseController : has
+
+EventCreationFragment "0...1" o-- "1" DatabaseController
+EventCreationFragment "0...1" o-- "1" UserController
+EventCreationFragment "0...1" o-- "1" QRCodeFragment
 
 EditProfileFragment o-- UserController
+ProfileFragment "1" *-- "0...1" EditProfileFragment
+Event "0..." -l- "0..." User
 
-Event "*" o-- "*" User
-
-User <|-- Admin : extends
-
+skinparam nodesep 25
+skinparam ranksep 25
 skinparam linetype ortho
 @enduml
