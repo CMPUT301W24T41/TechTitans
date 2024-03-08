@@ -3,6 +3,7 @@ package com.example.eventsigninapp;
 import static android.icu.number.NumberRangeFormatter.with;
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -38,6 +39,7 @@ public class IntentTest {
         // get to profile
         onView(withText("Profile")).perform(click());
 
+
         onView(withText("First Name")).check(matches(isDisplayed()));
         onView(withText("Last Name")).check(matches(isDisplayed()));
         onView(withText("Contact")).check(matches(isDisplayed()));
@@ -51,6 +53,9 @@ public class IntentTest {
         onView(withId(R.id.editContact)).check(matches(isDisplayed()));
         onView(withId(R.id.editProfileImage)).check(matches(isDisplayed()));
 
+        onView(withId(R.id.editFirstName)).perform(clearText());
+        onView(withId(R.id.editLastName)).perform(clearText());
+        onView(withId(R.id.editContact)).perform(clearText());
 
         onView(withId(R.id.editFirstName)).perform(typeText("John"));
         onView(withId(R.id.editLastName)).perform(typeText("Smith"));
@@ -98,6 +103,30 @@ public class IntentTest {
 
 
 
+
+    }
+
+    public void doubleTest() throws InterruptedException {
+        testProfEdit();
+
+        onView(withId(R.id.editButton)).perform(click());
+
+
+        onView(withId(R.id.editFirstName)).perform(clearText());
+
+        onView(withId(R.id.editFirstName)).perform(typeText("JoJo"));
+
+        Thread.sleep(2000);
+        onView(withId(R.id.buttonSave)).perform(click());
+
+        onView(withText("JoJo")).check(matches(isDisplayed()));
+
+
+    }
+
+    @Test
+
+    public void openQRcodeScanner(){
 
     }
 
