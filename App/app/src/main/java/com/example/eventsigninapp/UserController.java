@@ -119,7 +119,9 @@ public class UserController {
     }
 
     /**
+     *
      * This method should be used to sign up a user for an event
+     * May be outdated/unnecessary for use
      * @param event the event to sign up for
      */
     public void checkIn(Event event) {
@@ -134,6 +136,7 @@ public class UserController {
 
     /**
      * This method should be used to sign up a user for an event
+     * May be outdated/unnecessary for use
      * @param event the event to sign up for
      */
     public void signUp(Event event) {
