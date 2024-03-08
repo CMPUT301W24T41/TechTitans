@@ -20,9 +20,9 @@ public class AttendeeListActivity extends AppCompatActivity implements DatabaseC
     ListView signedUpListView;
     Button switchToMapButton;
     Button backButton;
-    Event anEvent = new Event();
-    List<String> signedUpUsers = (List<String>) anEvent.getSignedUpUsersUUIDs();
-    List<String> checkedInUsers = (List<String>) anEvent.getCheckedInUsersUUIDs();
+    Event event;
+    List<String> signedUpUsers;
+    List<String> checkedInUsers;
     ArrayAdapter<String> signedUpUserAdapter;
     ArrayAdapter<String> checkedInUserAdapter;
     AttendeeListController alController;
@@ -32,7 +32,7 @@ public class AttendeeListActivity extends AppCompatActivity implements DatabaseC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        anEvent.setUuid(eventId);
+        event.setUuid(eventId);
         setContentView(R.layout.activity_attendee_list);
 
         // for testing, no event is passed yet
