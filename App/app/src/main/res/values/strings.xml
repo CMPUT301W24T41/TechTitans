@@ -33,4 +33,8 @@
     <string name="event_announcements">Any event announcements will be displayed here! \n \n
         (It appears that there are currently no announcements to display for this event.)</string>
     <string name="Back">Back</string>
+    <string name="browse_events_text">Browse events</string>
+    <string name="see_announcements_text">Click here to see announcements</string>
+    <string name="sign_up_for_event">Sign up for this event</string>
+    <string name="see_details_text">See Event Details</string>
 </resources>
