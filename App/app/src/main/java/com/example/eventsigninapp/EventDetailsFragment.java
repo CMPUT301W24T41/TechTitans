@@ -1,15 +1,10 @@
 package com.example.eventsigninapp;
 
 
-import static android.content.Intent.getIntent;
-
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,18 +12,19 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.squareup.picasso.Picasso;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class EventDetailsFragment extends Fragment {
+    DatabaseController databaseController = new DatabaseController();
+    UserController userController = new UserController();
+
 
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
-    private Button backButton;
+    private Button backButton, editEventButton, notifyUsersButton;
 
     /**
      * Used for passing in data through Bundle from
@@ -37,6 +33,7 @@ public class EventDetailsFragment extends Fragment {
     static EventDetailsFragment newInstance(Event event) {
         Bundle args = new Bundle();
         args.putSerializable("event", event);
+        EventController eventController = new EventController(event);
 
         EventDetailsFragment eventFragment = new EventDetailsFragment();
         eventFragment.setArguments(args);
@@ -62,12 +59,36 @@ public class EventDetailsFragment extends Fragment {
         eventDescription = view.findViewById(R.id.eventDetails);
         announcement = view.findViewById(R.id.eventAnnouncements);
         eventPoster = view.findViewById(R.id.poster);
+        editEventButton = view.findViewById(R.id.editEventButton);
+        notifyUsersButton = view.findViewById(R.id.notifyUsersButton);
+        backButton = view.findViewById(R.id.btnEventDetails);
 
         Bundle bundle = getArguments();
         Event event = (Event) bundle.get("event");
         eventDescription.setText(event.getDescription());
 
-        backButton = view.findViewById(R.id.btnEventDetails);
+        if(userController.getUser().getId().equals(event.getCreatorUUID())){
+            editEventButton.setVisibility(View.VISIBLE);
+            notifyUsersButton.setVisibility(View.VISIBLE);
+
+        }
+        else{
+            editEventButton.setVisibility(View.GONE);
+            notifyUsersButton.setVisibility(View.GONE);
+        }
+
+        notifyUsersButton.setOnClickListener(v -> {
+            NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
+            bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
+        });
+
+
+
+
+
+
+
+
 
         backButton.setOnClickListener(v -> {
             HomeFragment homeFrag = new HomeFragment();

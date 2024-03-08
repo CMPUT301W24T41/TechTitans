@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity{
         // this finds the current user and sends the result to userController
         String defaultID = userController.getUserID(this);
         databaseController.updateWithUserFromFirestore(defaultID, userController);
+        Log.d(TAG, "User ID: " + defaultID);
 
         //FCM Notification Permission
         askNotificationPermission();
