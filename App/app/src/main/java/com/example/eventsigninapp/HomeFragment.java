@@ -3,15 +3,19 @@ package com.example.eventsigninapp;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +29,8 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     ArrayList<Event> events;
     ListView eventsList;
     EventArrayAdapter eventsArrayAdapter;
+
+    EventDetailsFragment frag;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +67,7 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -79,6 +86,19 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
 
         dbController.getAllEventsFromFirestore(this);
         eventsArrayAdapter.notifyDataSetChanged();
+
+        eventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("DEBUG", "item clicked");
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", events.get(position));
+                frag = new EventDetailsFragment();
+                frag.setArguments(bundle);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
+            }
+        });
 
         return rootView;
     }

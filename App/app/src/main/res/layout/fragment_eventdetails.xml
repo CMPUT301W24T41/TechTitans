@@ -9,6 +9,13 @@
     android:background="@color/lightBlue"
     tools:context=".EventFragment">
 
+    <Button
+        android:id="@+id/btnEventDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lightBlue"
+        android:text="←"
+        android:textSize="50dp"/>
 
     <TextView
         android:id="@+id/eventDetailsHeader"
