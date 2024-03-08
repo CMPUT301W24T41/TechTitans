@@ -43,7 +43,6 @@ public class UserControllerTest {
     }
 
 
-
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -115,18 +114,17 @@ public class UserControllerTest {
      * This method tests the checkIn method of the User class.
      */
     @Test
-    public void testCheckIn() throws Event.AlreadyCheckedInException {
+    public void testCheckIn() throws EventController.AlreadyCheckedInException {
         User user = mockUser();
         userController.setUser(user);
         userController.checkIn(mockEvent);
 
         verify(mockEvent).checkInUser(user.getId());
-
-
+    }
 
 
     @Test
-    public void testSignUp() throws Event.EventFullException, Event.AlreadySignedUpException {
+    public void testSignUp() throws EventController.EventFullException, EventController.AlreadySignedUpException {
         UserController userController = new UserController();
         User user = new User();
         userController.setUser(user);
@@ -143,7 +141,7 @@ public class UserControllerTest {
 
 
     @Test
-    public void testSignUp_EventIsFull_PrintsErrorMessage() throws Event.EventFullException, Event.AlreadySignedUpException {
+    public void testSignUp_EventIsFull_PrintsErrorMessage() throws EventController.EventFullException, EventController.AlreadySignedUpException {
         UserController userController = new UserController();
         User user = new User();
         userController.setUser(user);
@@ -151,8 +149,6 @@ public class UserControllerTest {
         when(mockEvent.isFull()).thenReturn(true);
 
         userController.signUp(mockEvent);
-    //TODO update this test so that it can check if user is not signed in
-
+        //TODO update this test so that it can check if user is not signed in
     }
-
-
+}

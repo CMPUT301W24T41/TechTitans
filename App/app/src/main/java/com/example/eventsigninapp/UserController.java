@@ -4,16 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -128,9 +123,11 @@ public class UserController {
      * @param event the event to sign up for
      */
     public void checkIn(Event event) {
+        EventController eventController = new EventController(event);
+
         try {
-            event.checkInUser(this.getUser().getId());              // inform event that user has checked in
-        } catch (Event.AlreadyCheckedInException e) { // catch exception
+            eventController.checkInUser(user.getId());              // inform event that user has checked in
+        } catch (EventController.AlreadyCheckedInException e) { // catch exception
             System.out.println(e.getMessage());       // print error message
         }
     }
@@ -140,6 +137,7 @@ public class UserController {
      * @param event the event to sign up for
      */
     public void signUp(Event event) {
+        EventController eventController = new EventController(event);
         //TODO: implement handling of full event, ideally prevent calling of method if event is full
         if (event.isFull()) {
             System.out.println("Event is full"); // print error message
@@ -147,9 +145,9 @@ public class UserController {
         }
 
         try {
-            event.signUpUser(this.getUser().getId()); // inform event that user has signed up
+            eventController.signUpUser(this.getUser().getId());
             this.getUser().getAttendingEvents().add(event.getUuid());          // add event to user's list of events
-        } catch (Event.EventFullException | Event.AlreadySignedUpException e) { // catch exception
+        } catch (EventController.EventFullException | EventController.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message
         }
     }
@@ -159,7 +157,6 @@ public class UserController {
     /**
      * This creates a instance of imagepicker when called in the given activity
      * @param activity the activity that calls the imagepicker
-     *
      * ImagePicker library by Dhaval Sodha Parmar
      * Github: github.com/dhaval2404/imagePicker
      */
@@ -185,35 +182,5 @@ public class UserController {
                 .maxResultSize(1028, 1028)
                 .start();
     }
-
-
-    /**
-     * This method edits the parameters of each of the users profile information
-     * and updates the database with the new info
-     *
-     * @param firstName the new first name
-     * @param lastName  the new last name
-     * @param contact   the new contact information
-     * @param pictureUri the new URI of the profile picture
-     */
-    public void editProfile(String firstName, String lastName, String contact, Uri pictureUri) {
-        if (firstName != null && !firstName.isEmpty()) {
-            user.setFirstName(firstName);
-        }
-
-        if (lastName != null && !lastName.isEmpty()) {
-            user.setLastName(lastName);
-        }
-
-        if (contact != null) {
-            user.setContact(contact);
-        }
-
-        if (pictureUri != null) {
-            user.setPicture(pictureUri);
-        }
-
-    }
-
 }
 
