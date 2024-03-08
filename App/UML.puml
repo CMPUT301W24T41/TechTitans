@@ -5,7 +5,6 @@ class MainActivity {
     #onCreate(savedInstanceState: Bundle)
 }
 
-
 class ProfileFragment {
     -TextView firstName
     -TextView lastName
@@ -132,8 +131,6 @@ class CheckInFragment {
 CheckInFragment <|.. ScanButtonListener : implements
 CheckInFragment <|.. GetEventCallback : implements
 
-class Admin
-
 class EditProfileFragment {
     -OnProfileUpdateListener profileUpdateListener
     -EditText firstName
@@ -211,15 +208,12 @@ HomeFragment "0...1" o-- "1" DatabaseController
 HomeFragment "0..1" *-- "1" EventArrayAdapter
 HomeFragment <|.. GetAllEventsCallback
 
-
-
 UserController "0...1" o-- "1" User : has
 EventController "0..1" o-- "1" Event
-DatabaseController "0..." -- "0..." User 
-DatabaseController "0..." -- "0..." UserController 
+DatabaseController "0..." -- "0..." User
+DatabaseController "0..." -- "0..." UserController
 
-
-checkInFragment "0...1" o-- "1" DatabaseController : has
+CheckInFragment "0...1" o-- "1" DatabaseController : has
 
 EventCreationFragment "0...1" o-- "1" DatabaseController
 EventCreationFragment "0...1" o-- "1" UserController
@@ -227,9 +221,9 @@ EventCreationFragment "0...1" o-- "1" QRCodeFragment
 
 EditProfileFragment o-- UserController
 ProfileFragment "1" *-- "0...1" EditProfileFragment
-Event "0..." -- "0..." User
+Event "0..." -l- "0..." User
 
-User <|-- Admin : extends
-
+skinparam nodesep 25
+skinparam ranksep 25
 skinparam linetype ortho
 @enduml
