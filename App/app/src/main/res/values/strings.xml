@@ -40,4 +40,7 @@
     <string name="checked_in_title_text">CHECKED IN (0)</string>
     <string name="signed_up_title_text">SIGNED UP (0)</string>
     <string name="go_to_map_text">View check-in location</string>
+    <string name="msg_token_fmt">FCM Registration Token: %1$s</string>
+
+
 </resources>
