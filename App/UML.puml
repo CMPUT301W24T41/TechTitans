@@ -25,14 +25,11 @@ class UserController {
     +setUser(user: User)
     +String getUserID(context: Context)
     +saveUUID(context: Context, id: String)
-    +putUserToFirestore()
-    +getUserFromFirestore(id: String)
     +selectImage(activity: Activity)
     +selectImage(fragment: Fragment)
     +editProfile(firstName: String, lastName: String,
     contact: String, pictureUri: Uri)
-    +uploadProfilePicture(picture: Uri)
-    +updateWithProfPictureFromWeb()
+    +checkIn(event: Event)
 }
 
 class DatabaseController {
@@ -59,26 +56,44 @@ class Event {
     -String id
     -String name
     -int capacity
-    -Collection<User> signedUpUsers
-    -Collection<User> checkedInUsers
-    -Object eventPoster
+    -Collection<String> signedUpUsers
+    -Collection<String> checkedInUsers
+    -Uri eventPoster
+    -Uri checkInQrCodeUri
+    -Uri descriptionQRCodeUri
     -Object location
     -Date date
-    +String getId()
-    +setId(id: String)
+    -String creatorUUID
+    -String description
+    +String getCreatorUUID()
+    +setCreator(creatorUUID: string)
+    +String getUuid()
+    +setUuid(id: String)
     +String getName()
     +setName(name: String)
+    +setLocation(String location)
     +int getCapacity()
     +setCapacity(capacity: int)
     +boolean isCapped()
     +boolean isFull()
-    +checkInUser(user: User)
-    +Collection<User> getCheckedInUsers()
+    +addCheckedInUser(uuid: String)
+    +Collection<String> getCheckedInUsersUUIDs()
     +boolean isUserCheckedIn(user: User)
-    +signUpUser(user: User)
-    +Collection<User> getSignedUpUsers()
+    +addSignedUpUser(uuid: String)
+    +Collection<String> getSignedUpUsersUUIDs()
     +boolean isUserSignedUp(user: User)
+    +setCheckInQRCodeUri(Uri checkInQrCodeUri)
+    +Uri getCheckInQRCodeUri()
+    +setDescriptionQRCodeUri(Uri getDescriptionQRCodeUri)
+    +Uri getDescriptionQRCodeUri()
 }
+
+class EventController{
+  -Event event
+  +checkInUser(uuid: String)
+  +signUpUser(uuid: String)
+}
+
 
 class User {
     -String profilePicPath
@@ -86,8 +101,8 @@ class User {
     -String firstName
     -String lastName
     -String contact
-    -Collection<Event> attendingEvents
-    -Collection<Event> hostingEvents
+    -ArrayList<String> attendingEvents
+    -ArrayList<String> hostingEvents
     -Uri picture
     -String imgUrl
     +String getId()
@@ -96,12 +111,10 @@ class User {
     +setFirstName(firstName: String)
     +String getLastName()
     +setLastName(lastName: String)
-    +Collection<Event> getAttendingEvents()
-    +Collection<Event> getHostingEvents()
+    +ArrayList<String> getAttendingEvents()
+    +ArrayList<String> getHostingEvents()
     +String getContact()
     +setContact(contact: String)
-    +checkIn(event: Event)
-    +signUp(event: Event)
     +Uri getPicture()
     +setPicture(picture: Uri)
     +String getImgUrl()
