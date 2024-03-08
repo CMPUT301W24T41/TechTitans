@@ -12,29 +12,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.UploadTask;
+import java.util.Collection;
+import java.util.HashSet;
 
-import java.util.Collections;
 
 @RunWith(RobolectricTestRunner.class)
 public class UserControllerTest {
@@ -48,55 +35,21 @@ public class UserControllerTest {
     private SharedPreferences.Editor mockEditor;
 
     @Mock
-    private FirebaseFirestore mockFirestore;
+    private EventController mockEventController;
 
     @Mock
-    private Query mockQuery;
-
-    @Mock
-    private Task<QuerySnapshot> mockQueryTask;
-
-    @Mock
-    private Task<Uri> mockUriTask;
-
-
-    @Mock
-    private Task<Void> mockVoidTask;
-
-    @Mock
-    private CollectionReference mockCollectionReference;
-
-    @Mock
-    private DocumentReference mockDocumentReference;
-
-    @Mock
-    private DocumentSnapshot mockDocumentSnapshot;
-
-    @Mock
-    private StorageReference mockStorageReference;
-
-    @Mock
-    private Uri mockUri;
-
-
-    @Mock
-    private FirebaseStorage mockFirebaseStorage;
-
-    @Mock
-    private UploadTask mockUploadTask;
-
-//    @Mock
-//    private UserController.ImageUriCallback mockImageUriCallback;
-//
-//    @Mock
-//    private UserController.userCallback mockUserCallback;
+    private Event mockEvent;
 
     private UserController userController;
+
+    private User mockUser() {
+        return new User();
+    }
+
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-//        FirebaseApp.initializeApp(RuntimeEnvironment.getApplication());
         userController = new UserController();
     }
 
@@ -126,6 +79,7 @@ public class UserControllerTest {
         String result = userController.getUserID(mockContext);
 
         // see if the the result was saved to the preference
+        assertNotNull(result);
         verify(mockPreferences.edit()).putString("UUID_Default", result);
     }
 
@@ -144,77 +98,63 @@ public class UserControllerTest {
         verify(mockEditor).apply();
     }
 
-    @Test
-    public void testGetUserFromFirestore_existingUser() {
-        when(mockFirestore.collection(anyString())).thenReturn(mockCollectionReference);
-        when(mockCollectionReference.whereEqualTo(anyString(), any())).thenReturn(mockQuery);
-        when(mockQuery.get()).thenReturn(mockQueryTask);
-        when(mockQueryTask.isSuccessful()).thenReturn(true);
-        when(mockQueryTask.getResult()).thenReturn(mock(QuerySnapshot.class));
-        when(mockQueryTask.getResult().getDocuments()).thenReturn(Collections.singletonList(mockDocumentSnapshot));
-
-        DocumentSnapshot mockDocumentSnapshot = mock(DocumentSnapshot.class);
-        when(mockDocumentSnapshot.getString(anyString())).thenReturn("John");
-
-        userController.getUserFromFirestore("existingUserID");
-
-
-        assertEquals("John", userController.getUser().getFirstName());
-    }
-
-    @Test
-    public void testPutUserToFirestore() {
-        User mockUser = new User("1234", "Joe", "Smith", "12345");
-        when(mockFirestore.collection(anyString())).thenReturn(mockCollectionReference);
-        when(mockCollectionReference.document(anyString())).thenReturn(mockDocumentReference);
-        when(mockDocumentReference.set(anyMap())).thenReturn(mockVoidTask);
-
-        userController.setUser(mockUser);
-        userController.putUserToFirestore();
-
-        verify(mockDocumentReference).set(anyMap());
-    }
 
     @Test
     public void testEditProfile() {
         User mockUser = new User("123456", "John", "Doe", "123456");
-        when(mockFirestore.collection(anyString())).thenReturn(mockCollectionReference);
-        when(mockCollectionReference.document(anyString())).thenReturn(mockDocumentReference);
-        when(mockDocumentReference.set(anyMap())).thenReturn(mockVoidTask);
+
 
         userController.setUser(mockUser);
 
-        userController.editProfile("Jane", "Smith", "789012", null);
+        userController.editProfile("Jane", "Smith", "789012", Uri.parse("images/prof"));
 
         assertEquals("Jane", userController.getUser().getFirstName());
         assertEquals("Smith", userController.getUser().getLastName());
         assertEquals("789012", userController.getUser().getContact());
-        verify(mockDocumentReference).set(anyMap());
+        assertEquals("images/prof", userController.getUser().getPicture().toString());
     }
 
-    @Test
-    public void testUploadProfilePicture() {
-        User mockUser = new User("1234", "Joe", "Smith", "12345");
-        when(mockFirebaseStorage.getReference()).thenReturn(mockStorageReference);
-        when(mockStorageReference.child(anyString())).thenReturn(mockStorageReference);
-        when(mockStorageReference.putFile(any(Uri.class))).thenReturn(mockUploadTask);
-        when(mockUploadTask.addOnSuccessListener(any())).thenReturn(mockUploadTask);
-        when(mockUploadTask.addOnFailureListener(any())).thenReturn(mockUploadTask);
+    //These methods are being unused and also seemingly(?) duplicated in eventController, removing for now
 
-        userController.uploadProfilePicture(mockUri);
-
-        verify(mockStorageReference).putFile(any(Uri.class));
-    }
-
-    @Test
-    public void testUpdateWithProfPictureFromWeb() {
-        when(mockFirebaseStorage.getReferenceFromUrl(anyString())).thenReturn(mockStorageReference);
-        when(mockStorageReference.getDownloadUrl()).thenReturn(mockUriTask);
-
-        userController.updateWithProfPictureFromWeb();
-
-        assertNotNull(userController.getUser().getPicture());
-    }
-
-
+//    /**
+//     * This method tests the checkIn method of the User class.
+//     */
+//    @Test
+//    public void testCheckIn() throws EventController.AlreadyCheckedInException {
+//        User user = mockUser();
+//        userController.setUser(user);
+//        userController.checkIn(mockEvent);
+//
+//
+//        verify(mockEventController).checkInUser(user.getId());
+//    }
+//
+//
+//    @Test
+//    public void testSignUp() throws EventController.EventFullException, EventController.AlreadySignedUpException {
+//        UserController userController = new UserController();
+//        User user = new User();
+//        userController.setUser(user);
+//
+//        when(mockEvent.isFull()).thenReturn(false);
+//
+//        userController.signUp(mockEvent);
+//
+//        verify(mockEventController).signUpUser(user.getId());
+//        Collection<String> attendingEvents = new HashSet<>();
+//        attendingEvents.add(mockEvent.getUuid());
+//        assertEquals(attendingEvents, user.getAttendingEvents());
+//    }
+//
+//
+//    @Test
+//    public void testSignUp_EventIsFull_PrintsErrorMessage() throws EventController.EventFullException, EventController.AlreadySignedUpException {
+//        UserController userController = new UserController();
+//        User user = new User();
+//        userController.setUser(user);
+//
+//        when(mockEvent.isFull()).thenReturn(true);
+//
+//        userController.signUp(mockEvent);
+//    }
 }

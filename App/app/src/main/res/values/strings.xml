@@ -26,4 +26,18 @@
     <string name="number">Contact</string>
     <string name="profile_picture_of_user">profile picture of user</string>
     <string name="save">Save</string>
+    <string name="event_details_header">Event Details and Poster</string>
+    <string name="event_details">Any event details will be displayed here! \n \n
+    (It appears that there are currently no details to be displayed for this event.)</string>
+    <string name="event_announcements_header">Announcements</string>
+    <string name="event_announcements">Any event announcements will be displayed here! \n \n
+        (It appears that there are currently no announcements to display for this event.)</string>
+    <string name="Back">Back</string>
+    <string name="browse_events_text">Browse events</string>
+    <string name="see_announcements_text">Click here to see announcements</string>
+    <string name="sign_up_for_event">Sign up for this event</string>
+    <string name="see_details_text">See Event Details</string>
+    <string name="checked_in_title_text">CHECKED IN (0)</string>
+    <string name="signed_up_title_text">SIGNED UP (0)</string>
+    <string name="go_to_map_text">View check-in location</string>
 </resources>

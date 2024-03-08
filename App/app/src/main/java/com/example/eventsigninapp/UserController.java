@@ -4,23 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -41,17 +29,6 @@ public class UserController {
 
     //this represents the name to the preference that stores the id
     private static final String prefName = "ID";
-
-
-    private static DatabaseController databaseController;
-
-    public UserController() {
-        databaseController = new DatabaseController();
-    }
-
-    public UserController(DatabaseController controller) {
-        databaseController = controller;
-    }
 
 
 
@@ -111,56 +88,7 @@ public class UserController {
         editor.apply();
     }
 
-    /**
-     * Adds current user to the database or updates an existing one based on the current user in the controller.
-     */
-    public void putUserToFirestore() {
-        databaseController.putUserToFirestore(user);
-    }
 
-
-
-
-    /**
-     * This function gets a user from the database using the given id and updates the current user of this class to the acquired user from the database,
-     * if the task fails, this creates a new user instead
-     * @param id the id of the user to acquire
-     */
-    public void getUserFromFirestore(String id) {
-        databaseController.getUserFromFirestoreToUserController(id, this);
-    }
-
-
-
-    /**
-     * This creates a instance of imagepicker when called in the given activity
-     * @param activity the activity that calls the imagepicker
-     *
-     * ImagePicker library by Dhaval Sodha Parmar
-     * Github: github.com/dhaval2404/imagePicker
-     */
-    public static void selectImage(Activity activity) {
-        ImagePicker.with(activity)
-                .crop()
-                .compress(1024)
-                .maxResultSize(1028, 1028)
-                .start();
-    }
-
-
-    /**
-     * This creates a instance of imagepicker when called in the given fragment
-     * @param fragment the fragment that calls the imagepicker
-     * ImagePicker library by Dhaval Sodha Parmar
-     * Github: github.com/dhaval2404/imagePicker
-     */
-    public static void selectImage(Fragment fragment){
-        ImagePicker.with(fragment)
-                .crop()
-                .compress(1024)
-                .maxResultSize(1028, 1028)
-                .start();
-    }
 
     /**
      * This method edits the parameters of each of the users profile information
@@ -188,27 +116,74 @@ public class UserController {
             user.setPicture(pictureUri);
         }
 
-        putUserToFirestore();
+    }
 
+    /**
+     *
+     * This method should be used to sign up a user for an event
+     * May be outdated/unnecessary for use
+     * @param event the event to sign up for
+     */
+    public void checkIn(Event event) {
+        EventController eventController = new EventController(event);
+
+        try {
+            eventController.checkInUser(user.getId());              // inform event that user has checked in
+        } catch (EventController.AlreadyCheckedInException e) { // catch exception
+            System.out.println(e.getMessage());       // print error message
+        }
+    }
+
+    /**
+     * This method should be used to sign up a user for an event
+     * May be outdated/unnecessary for use
+     * @param event the event to sign up for
+     */
+    public void signUp(Event event) {
+        EventController eventController = new EventController(event);
+        //TODO: implement handling of full event, ideally prevent calling of method if event is full
+        if (event.isFull()) {
+            System.out.println("Event is full"); // print error message
+            return;
+        }
+
+        try {
+            eventController.signUpUser(this.getUser().getId());
+            this.getUser().getAttendingEvents().add(event.getUuid());          // add event to user's list of events
+        } catch (EventController.EventFullException | EventController.AlreadySignedUpException e) { // catch exception
+            System.out.println(e.getMessage()); // print error message
+        }
+    }
+
+
+
+    /**
+     * This creates a instance of imagepicker when called in the given activity
+     * @param activity the activity that calls the imagepicker
+     * ImagePicker library by Dhaval Sodha Parmar
+     * Github: github.com/dhaval2404/imagePicker
+     */
+    public static void selectImage(Activity activity) {
+        ImagePicker.with(activity)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1028, 1028)
+                .start();
     }
 
 
     /**
-     * This method uploads the given picture uri to the storage for the current user in the controller class
-     * @param picture the picture to upload
+     * This creates a instance of imagepicker when called in the given fragment
+     * @param fragment the fragment that calls the imagepicker
+     * ImagePicker library by Dhaval Sodha Parmar
+     * Github: github.com/dhaval2404/imagePicker
      */
-    public void uploadProfilePicture(Uri picture) {
-        databaseController.uploadProfilePicture(picture, user, this);
+    public static void selectImage(Fragment fragment){
+        ImagePicker.with(fragment)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1028, 1028)
+                .start();
     }
-
-
-    /**
-     * This updates/fetches the current users profile picture stored in the storage online
-     */
-    public void updateWithProfPictureFromWeb() {
-        databaseController.updateWithProfPictureFromWeb(user, this);
-    }
-
-
 }
 

@@ -41,6 +41,7 @@ class DatabaseController {
     +void uploadProfilePicture(picture: Uri, user: User, userController: UserController)
     +void updateWithProfPictureFromWeb(user: User, userController: UserController)
     +void getUserProfilePicture(userID: String, callback: ImageUriCallback)
+    +void getAllEventsFromFirestore(callback: GetAllEventsCallback)
 }
 
 class Event {
@@ -114,16 +115,36 @@ interface OnProfileUpdateListener {
     +onProfileUpdate(newFirstName: String, newLastName: String, newContact: String, newPicture: Uri)
 }
 
+class EventArrayAdapter {
+    -ArrayList<Event> events
+    -Context context
+    +void getView(position: int, convertView: View, parent: ViewGroup
+}
+
+interface GetAllEventsCallback {
+    +onGetAllEventsCallback(event: Event)
+}
+
+class HomeFragment {
+    -DatabaseController dbController
+    -ArrayList<Event> events
+    -ListView eventsList
+    -EventArrayAdapter eventsArrayAdapter
+}
+
 Fragment <|-- ToolbarFragment
 Fragment <|-- EditProfileFragment
+Fragment <|-- HomeFragment : extends
 
 AppCompatActivity <|-- MainActivity : extends
 AppCompatActivity <|-- ProfileActivity : extends
 
 ProfileActivity <|.. OnProfileUpdateListener : implements
+GetAllEventsCallback <|.. HomeFragment : implements
 
 UserController "1" o-- "1" ProfileActivity : has
 UserController "1" o-- "1" User : has
+HomeFragment "0..1" o-- "1" EventArrayAdapter : has
 
 DatabaseController -- User : takes as argument
 DatabaseController -- UserController : takes as argument
