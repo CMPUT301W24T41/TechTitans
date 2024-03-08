@@ -18,7 +18,7 @@
         android:background="@drawable/light_blue_border"
         android:gravity="center"
 
-        android:text="@string/titile_of_even"
+        android:text="@string/event_title_text"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"

@@ -32,19 +32,33 @@ import org.w3c.dom.Document;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+
 public class DatabaseController {
 
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    // cannot be final for testing purposes
+    private FirebaseFirestore db;
 
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();;
+    // cannot be final for testing purposes
+    private FirebaseStorage storage;
 
-    public DatabaseController() {}
+
+
+    public DatabaseController() {
+        this.db = FirebaseFirestore.getInstance();
+        this.storage= FirebaseStorage.getInstance();
+    }
+    public DatabaseController(FirebaseFirestore firestore, FirebaseStorage storage) {
+        this.db = firestore;
+        this.storage = storage;
+    }
+
 
     /**
      * This method stores a user or updates an existing user to the database
@@ -56,12 +70,16 @@ public class DatabaseController {
         userData.put("firstName", user.getFirstName());
         userData.put("lastName", user.getLastName());
         userData.put("contact", user.getContact());
+        userData.put("attendingEvents", user.getAttendingEvents());
+        userData.put("hostingEvents", user.getHostingEvents());
+
+
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
 
-        userDocument.set(userData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
-                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
+        userDocument.set(userData, SetOptions.merge());
+//                .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
+//                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
     }
 
 
@@ -80,7 +98,14 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents")
+                        );
                         userController.setUser(pulledUser);
                         this.updateWithProfPictureFromWeb(pulledUser);
                     } else {
@@ -111,7 +136,14 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(id, document.getString("firstName"), document.getString("lastName"), document.getString("contact"));
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents")
+                        );
                         callback.onCallback(pulledUser);
                     } else {
                         callback.onError(new Exception("failed to retrieve user"));
@@ -187,14 +219,20 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * This function retrieves users that signed up to an event from the database.
+     * @param event the event we are retrieving signed up users for
+     * @param callback callback function to get retrieval results
+     */
     public void getSignedUpUsersFromFirestore(Event event, GetSignedUpUsersCallback callback) {
+        final ArrayList<?>[] usersSignedUp = new ArrayList<?>[1]; // effectively final
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         eventRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 DocumentSnapshot document = task.getResult();
-                ArrayList<?> usersSignedUp = (ArrayList<?>) document.get("signedUpUsers");
-                if (usersSignedUp != null) {
-                    callback.onGetSignedUpUsersCallback(event, usersSignedUp);
+                usersSignedUp[0] = (ArrayList<?>) document.get("signedUpUsers");
+                if (usersSignedUp[0] != null) {
+                    callback.onGetSignedUpUsersCallback(event, usersSignedUp[0]);
                 } else {
                     Log.e("Database", "Error retrieving signed up users");
                 }
@@ -202,14 +240,21 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * This function retrieves users that checked into an event from the database.
+     * @param event the event we are retrieving checked in users for
+     * @param callback callback function to get retrieval results
+     */
     public void getCheckedInUsersFromFirestore(Event event, GetCheckedInUsersCallback callback) {
-        DocumentReference eventRef = db.collection("events").document(event.getUuid());
-        eventRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
+        final ArrayList<?>[] usersCheckedIn = new ArrayList<?>[1]; // effectively final
+        CollectionReference eventsRef= db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
-                ArrayList<?> usersCheckedIn = (ArrayList<?>) document.get("checkedInUsers");
-                if (usersCheckedIn != null) {
-                    callback.onGetCheckedInUsersCallback(event, usersCheckedIn);
+                usersCheckedIn[0] = (ArrayList<?>) document.get("checkedInUsers");
+                if (usersCheckedIn[0] != null) {
+                    callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
                 } else {
                     Log.e("Database", "Error retrieving checked in users");
                 }

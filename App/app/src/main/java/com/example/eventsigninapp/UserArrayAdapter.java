@@ -17,6 +17,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * The UserArrayAdapter class allows the list of users to be displayed in a list view.
+ */
 public class UserArrayAdapter extends ArrayAdapter<User> {
     private List<User> users;
     private Context context;
