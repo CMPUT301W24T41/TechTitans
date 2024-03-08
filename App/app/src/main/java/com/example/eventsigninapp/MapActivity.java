@@ -1,6 +1,8 @@
 package com.example.eventsigninapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+    Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +24,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
+
+        backButton = findViewById(R.id.back_button);
+
+        backButton.setOnClickListener(listener -> {
+            Intent goBack = new Intent(MapActivity.this, AttendeeListActivity.class);
+            startActivity(goBack);
+        });
     }
 
     @Override

@@ -37,4 +37,7 @@
     <string name="see_announcements_text">Click here to see announcements</string>
     <string name="sign_up_for_event">Sign up for this event</string>
     <string name="see_details_text">See Event Details</string>
+    <string name="checked_in_title_text">CHECKED IN (0)</string>
+    <string name="signed_up_title_text">SIGNED UP (0)</string>
+    <string name="go_to_map_text">View check-in location</string>
 </resources>

@@ -1,8 +1,12 @@
 package com.example.eventsigninapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,16 +16,28 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.w3c.dom.Document;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 
 public class DatabaseController {
@@ -203,6 +219,83 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * This function retrieves users that signed up to an event from the database.
+     * @param event the event we are retrieving signed up users for
+     * @param callback callback function to get retrieval results
+     */
+    public void getSignedUpUsersFromFirestore(Event event, GetSignedUpUsersCallback callback) {
+        final ArrayList<?>[] usersSignedUp = new ArrayList<?>[1]; // effectively final
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot document = task.getResult();
+                usersSignedUp[0] = (ArrayList<?>) document.get("signedUpUsers");
+                if (usersSignedUp[0] != null) {
+                    callback.onGetSignedUpUsersCallback(event, usersSignedUp[0]);
+                } else {
+                    Log.e("Database", "Error retrieving signed up users");
+                }
+            }
+        });
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            usersSignedUp[0] = (ArrayList<?>) doc.get("checkedInUsers");
+            if (usersSignedUp[0] != null) {
+                callback.onGetSignedUpUsersCallback(event, usersSignedUp[0]);
+            } else {
+                Log.e("Database", "Error retrieving checked in users");
+            }
+        });
+    }
+
+    /**
+     * This function retrieves users that checked into an event from the database.
+     * @param event the event we are retrieving checked in users for
+     * @param callback callback function to get retrieval results
+     */
+    public void getCheckedInUsersFromFirestore(Event event, GetCheckedInUsersCallback callback) {
+        final ArrayList<?>[] usersCheckedIn = new ArrayList<?>[1]; // effectively final
+        CollectionReference eventsRef= db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                usersCheckedIn[0] = (ArrayList<?>) document.get("checkedInUsers");
+                if (usersCheckedIn[0] != null) {
+                    callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
+                } else {
+                    Log.e("Database", "Error retrieving checked in users");
+                }
+            }
+        });
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
+            if (usersCheckedIn[0] != null) {
+                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
+            } else {
+                Log.e("Database", "Error retrieving checked in users");
+            }
+        });
+    }
+
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
         if (imageUri == null) {
             return;
@@ -362,6 +455,20 @@ public class DatabaseController {
         void onEventCheckInQRCodeCallback(Uri imageUri);
         void onEventDescriptionQRCodeCallback(Uri imageUri);
         void onError(Exception e);
+    }
+
+    /**
+     * This interface allows the users that signed up for an event to be retrieved from the database.
+     */
+    public interface GetSignedUpUsersCallback {
+        void onGetSignedUpUsersCallback(Event event, ArrayList<?> users);
+    }
+
+    /**
+     * This interface allows the users that checked into an event to be retrieved from the database.
+     */
+    public interface GetCheckedInUsersCallback {
+        void onGetCheckedInUsersCallback(Event event, ArrayList<?> users);
     }
 
     /**
