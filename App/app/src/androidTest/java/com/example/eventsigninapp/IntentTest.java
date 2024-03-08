@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import static android.icu.number.NumberRangeFormatter.with;
+import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -33,7 +34,7 @@ public class IntentTest {
 
 
     @Test
-    public void testProfAdd() throws InterruptedException {
+    public void testProfEdit() throws InterruptedException {
         // get to profile
         onView(withText("Profile")).perform(click());
 
@@ -64,6 +65,38 @@ public class IntentTest {
        onView(withText("John")).check(matches(isDisplayed()));
        onView(withText("Smith")).check(matches(isDisplayed()));
        onView(withText("johnsmith@mail.com")).check(matches(isDisplayed()));
+
+
+    }
+
+    @Test
+    public void testCreateAndViewEvent() throws InterruptedException {
+        onView(withText("Create  Event")).perform(click());
+
+        onView(withId(R.id.titleOfEvent)).check(matches(isDisplayed()));
+        onView(withId(R.id.descriptionOfEvent)).check(matches(isDisplayed()));
+        onView(withId(R.id.attendeeLimit)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.titleOfEvent)).perform(typeText("TestEvent"));
+        onView(withId(R.id.descriptionOfEvent)).perform(typeText("Testdescript"));
+        onView(withId(R.id.attendeeLimit)).perform(typeText("1000"));
+
+
+        closeSoftKeyboard();
+        Thread.sleep(2000);
+        onView(withId(R.id.confirmButton)).perform(click());
+
+
+        onView(withId(R.id.qrCodeImageView)).check((matches(isDisplayed())));
+
+        onView(withId(R.id.btnCancel)).perform(click());
+
+        onView(withText("Home")).perform(click());
+
+        onView(withText("TestEvent"));
+
+
+
 
 
     }
