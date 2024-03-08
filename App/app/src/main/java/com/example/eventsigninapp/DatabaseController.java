@@ -187,6 +187,36 @@ public class DatabaseController {
         });
     }
 
+    public void getSignedUpUsersFromFirestore(Event event, GetSignedUpUsersCallback callback) {
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot document = task.getResult();
+                ArrayList<?> usersSignedUp = (ArrayList<?>) document.get("signedUpUsers");
+                if (usersSignedUp != null) {
+                    callback.onGetSignedUpUsersCallback(event, usersSignedUp);
+                } else {
+                    Log.e("Database", "Error retrieving signed up users");
+                }
+            }
+        });
+    }
+
+    public void getCheckedInUsersFromFirestore(Event event, GetCheckedInUsersCallback callback) {
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot document = task.getResult();
+                ArrayList<?> usersCheckedIn = (ArrayList<?>) document.get("checkedInUsers");
+                if (usersCheckedIn != null) {
+                    callback.onGetCheckedInUsersCallback(event, usersCheckedIn);
+                } else {
+                    Log.e("Database", "Error retrieving checked in users");
+                }
+            }
+        });
+    }
+
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
         if (imageUri == null) {
             return;
@@ -346,6 +376,20 @@ public class DatabaseController {
         void onEventCheckInQRCodeCallback(Uri imageUri);
         void onEventDescriptionQRCodeCallback(Uri imageUri);
         void onError(Exception e);
+    }
+
+    /**
+     * This interface allows the users that signed up for an event to be retrieved from the database.
+     */
+    public interface GetSignedUpUsersCallback {
+        void onGetSignedUpUsersCallback(Event event, ArrayList<?> users);
+    }
+
+    /**
+     * This interface allows the users that checked into an event to be retrieved from the database.
+     */
+    public interface GetCheckedInUsersCallback {
+        void onGetCheckedInUsersCallback(Event event, ArrayList<?> users);
     }
 
     /**

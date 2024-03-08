@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class UserArrayAdapter extends ArrayAdapter<String> {
-    private List<String> users;
+public class UserArrayAdapter extends ArrayAdapter<User> {
+    private List<User> users;
     private Context context;
 
-    public UserArrayAdapter(Context context, List<String> users) {
+    public UserArrayAdapter(Context context, List<User> users) {
         super(context, 0,  users);
         this.users = users;
         this.context = context;
@@ -34,11 +35,21 @@ public class UserArrayAdapter extends ArrayAdapter<String> {
             view = LayoutInflater.from(context).inflate(R.layout.attendee_list_item, parent, false);
         }
 
-        String uuid = users.get(position);
+        Log.e("DEBUG", "User adapter called");
 
-        TextView firstName = view.findViewById(R.id.user_first_name);
-        TextView lastName = view.findViewById(R.id.user_last_name);
+        User user = users.get(position);
+
+        TextView firstName = view.findViewById(R.id.first_name);
+        TextView lastName = view.findViewById(R.id.last_name);
+
+        try {
+            firstName.setText(user.getFirstName());
+            lastName.setText(user.getLastName());
+        } catch (Exception e) {
+            Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
+        }
 
         return view;
     }
+
 }

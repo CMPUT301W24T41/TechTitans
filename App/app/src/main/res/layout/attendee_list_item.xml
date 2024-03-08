@@ -3,6 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/light_blue_border"
     android:gravity="center_vertical">
 
     <ImageView
@@ -10,8 +11,8 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="4dp"
-        android:src="@drawable/ic_default_profile"
-        android:contentDescription="@string/profile_picture_of_user" />
+        android:contentDescription="@string/profile_picture_of_user"
+        android:src="@drawable/ic_default_profile" />
 
     <TextView
         android:id="@+id/first_name"
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/first_name"
+        android:textColor="@color/black"
         android:textSize="15sp" />
 
     <TextView
@@ -27,7 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/lastName"
-        android:textSize="15sp"/>
+        android:textSize="15sp"
+        android:textColor="@color/black"/>
 
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -13,25 +14,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AttendeeListActivity extends AppCompatActivity {
+public class AttendeeListActivity extends AppCompatActivity implements
+        DatabaseController.GetCheckedInUsersCallback,
+        DatabaseController.GetSignedUpUsersCallback {
     TextView eventTitle;
     ListView checkedInListView;
     ListView signedUpListView;
     Button switchToMapButton;
     Button backButton;
-    Event event;
-    List<String> signedUpUsers;
-    List<String> checkedInUsers;
-    ArrayAdapter<String> signedUpUserAdapter;
-    ArrayAdapter<String> checkedInUserAdapter;
+    UserArrayAdapter signedUpUserAdapter;
+    UserArrayAdapter checkedInUserAdapter;
     DatabaseController dbController;
+    Event event;
+    ArrayList<User> signedUpUsers;
+    ArrayList<User> checkedInUsers;
     String eventId = "131e7de5-38de-4cce-ab04-230a5f2ca76f"; // for testing
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        event = new Event();
+
         event.setUuid(eventId);
         setContentView(R.layout.activity_attendee_list);
+
 
         // for testing, no event is passed yet
         // TODO: Uncomment
@@ -43,6 +49,8 @@ public class AttendeeListActivity extends AppCompatActivity {
         switchToMapButton = findViewById(R.id.button_to_map_view);
         backButton = findViewById(R.id.back_button);
 
+        signedUpUsers = new ArrayList<User>();
+        checkedInUsers = new ArrayList<User>();
 
         signedUpUserAdapter = new UserArrayAdapter(this, signedUpUsers);
         checkedInUserAdapter = new UserArrayAdapter(this, checkedInUsers);
@@ -50,14 +58,64 @@ public class AttendeeListActivity extends AppCompatActivity {
         signedUpListView.setAdapter(signedUpUserAdapter);
         checkedInListView.setAdapter(checkedInUserAdapter);
 
+        dbController.getCheckedInUsersFromFirestore(event, this);
+        dbController.getSignedUpUsersFromFirestore(event, this);
+
+        signedUpUserAdapter.notifyDataSetChanged();
+        checkedInUserAdapter.notifyDataSetChanged();
 
         switchToMapButton.setOnClickListener(listener -> {
             Intent startMapActivity = new Intent(AttendeeListActivity.this, MapActivity.class);
             startActivity(startMapActivity);
         });
+    }
 
-        signedUpUserAdapter.notifyDataSetChanged();
-        checkedInUserAdapter.notifyDataSetChanged();
+    @Override
+    public void onGetSignedUpUsersCallback(Event event, ArrayList<?> users) {
+        try {
+            for (int i = 0; i < users.size(); i++) {
+                event.addSignedUpUser((String) users.get(i));
+                dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
+                    @Override
+                    public void onCallback(User user) {
+                        signedUpUsers.add(user);
+                        signedUpUserAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+                Log.e("DEBUG", String.format("User %s signed up", (String) users.get(i)));
+            }
+        } catch (Exception e) {
+            Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
+        }
+    }
+
+    @Override
+    public void onGetCheckedInUsersCallback(Event event, ArrayList<?> users) {
+        try {
+            for (int i = 0; i < users.size(); i++) {
+                event.addCheckedInUser((String) users.get(i));
+                dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
+                    @Override
+                    public void onCallback(User user) {
+                        checkedInUsers.add(user);
+                        checkedInUserAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+                Log.e("DEBUG", String.format("User %s checked in", users.get(i)));
+            }
+        } catch (Exception e) {
+                Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
+            }
     }
 
 }
