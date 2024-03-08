@@ -36,8 +36,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         Log.e("DEBUG", String.format("Looking at %s", event.getName()));
 
         TextView eventTitle = view.findViewById(R.id.event_title);
+        TextView eventDescription = view.findViewById(R.id.event_description);
 
         eventTitle.setText(event.getName());
+        eventDescription.setText(event.getDescription());
 
         return view;
     }
