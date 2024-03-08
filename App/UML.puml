@@ -5,7 +5,8 @@ class MainActivity {
     #onCreate(savedInstanceState: Bundle)
 }
 
-class ProfileActivity {
+
+class ProfileFragment {
     -TextView firstName
     -TextView lastName
     -TextView contact
@@ -127,7 +128,6 @@ class CheckInFragment {
     -processResult(ScanIntentResult: result)
 }
 
-checkInFragment "1" o-- "1" DatabaseController : has
 
 CheckInFragment <|.. ScanButtonListener : implements
 CheckInFragment <|.. GetEventCallback : implements
@@ -162,6 +162,16 @@ interface GetAllEventsCallback {
     +onGetAllEventsCallback(event: Event)
 }
 
+interface ImageUriCallback{
+  +OnImageUriCallback(imageUri: Uri)
+  +OnError(e: Exception)
+}
+
+interface UserCallback{
+  +OnCallback(imageUri: Uri)
+  +OnError(e: Exception)
+}
+
 class HomeFragment {
     -DatabaseController dbController
     -ArrayList<Event> events
@@ -175,24 +185,49 @@ Fragment <|-- EventCreationFragment
 Fragment <|-- EventDetailsFragment
 Fragment <|-- HomeFragment
 
-DialogFragment <|-- EditProfileFragmentProfile
+ArrayAdapter <|-- EventArrayAdapter
+
+DialogFragment <|-- EditProfileFragment
 DialogFragment <|-- QRCodeFragment
+
+AlertDialog <|-- CheckInConfirmationDialog
 
 
 AppCompatActivity <|-- MainActivity : extends
-AppCompatActivity <|-- ProfileActivity : extends
 
-ProfileActivity <|.. OnProfileUpdateListener : implements
+ProfileFragment <|.. OnProfileUpdateListener : implements
+ProfileFragment "0...1" o-- "1" DatabaseController
+ProfileFragment "0...1" o-- "1" UserController
+ProfileFragment "1" -- "1" User
 
-UserController "1" o-- "1" ProfileActivity : has
+MainActivity "0...1" o-- "1" DatabaseController
+MainActivity "0...1" o-- "1" UserController
+
+EditProfileFragment "0...1" o-- "1" DatabaseController
+EditProfileFragment "0...1" o-- "1" UserController
+EditProfileFragment "0...1" o-- "1" User
+
+HomeFragment "0...1" o-- "1" DatabaseController
+HomeFragment "0..1" *-- "1" EventArrayAdapter
+HomeFragment <|.. GetAllEventsCallback
+
+
+
 UserController "0...1" o-- "1" User : has
+EventController "0..1" o-- "1" Event
+DatabaseController "0..." -- "0..." User 
+DatabaseController "0..." -- "0..." UserController 
 
-DatabaseController -- User 
-DatabaseController -- UserController 
+
+checkInFragment "0...1" o-- "1" DatabaseController : has
+
+EventCreationFragment "0...1" o-- "1" DatabaseController
+EventCreationFragment "0...1" o-- "1" UserController
+EventCreationFragment "0...1" o-- "1" QRCodeFragment
 
 EditProfileFragment o-- UserController
-
-Event "*" o-- "*" User
+ProfileFragment "1" *-- "0...1" EditProfileFragment
+Event "0..." -- "0..." User
 
 User <|-- Admin : extends
 
