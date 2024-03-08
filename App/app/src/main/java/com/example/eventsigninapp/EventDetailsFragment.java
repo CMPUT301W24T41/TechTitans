@@ -5,14 +5,17 @@ import static android.content.Intent.getIntent;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +28,7 @@ public class EventDetailsFragment extends Fragment {
 
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
+    private Button backButton;
 
     /**
      * Used for passing in data through Bundle from
@@ -47,10 +51,6 @@ public class EventDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-        Event event = (Event) bundle.get("event");
-        eventDescription.setText(event.getDescription());
     }
 
     @Override
@@ -62,6 +62,18 @@ public class EventDetailsFragment extends Fragment {
         eventDescription = view.findViewById(R.id.eventDetails);
         announcement = view.findViewById(R.id.eventAnnouncements);
         eventPoster = view.findViewById(R.id.poster);
+
+        Bundle bundle = getArguments();
+        Event event = (Event) bundle.get("event");
+        eventDescription.setText(event.getDescription());
+
+        backButton = view.findViewById(R.id.btnEventDetails);
+
+        backButton.setOnClickListener(v -> {
+            HomeFragment homeFrag = new HomeFragment();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(((ViewGroup) getView().getParent()).getId(), homeFrag).commit();
+        });
 
         return view;
     }
