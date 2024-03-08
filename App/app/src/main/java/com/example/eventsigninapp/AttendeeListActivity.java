@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AttendeeListActivity extends AppCompatActivity implements DatabaseController.GetSignedUpUsersCallback,
-        DatabaseController.GetCheckedInUsersCallback {
+public class AttendeeListActivity extends AppCompatActivity {
     TextView eventTitle;
     ListView checkedInListView;
     ListView signedUpListView;
@@ -25,7 +24,6 @@ public class AttendeeListActivity extends AppCompatActivity implements DatabaseC
     List<String> checkedInUsers;
     ArrayAdapter<String> signedUpUserAdapter;
     ArrayAdapter<String> checkedInUserAdapter;
-    AttendeeListController alController;
     DatabaseController dbController;
     String eventId = "131e7de5-38de-4cce-ab04-230a5f2ca76f"; // for testing
 
@@ -36,7 +34,6 @@ public class AttendeeListActivity extends AppCompatActivity implements DatabaseC
         setContentView(R.layout.activity_attendee_list);
 
         // for testing, no event is passed yet
-        alController = new AttendeeListController();
         // TODO: Uncomment
         // alController = new AttendeeListController(event);
         dbController = new DatabaseController();
@@ -63,27 +60,4 @@ public class AttendeeListActivity extends AppCompatActivity implements DatabaseC
         checkedInUserAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onGetSignedUpUsersCallback(Event event, List<?> userIDs) {
-        try {
-            for (int i = 0; i < userIDs.size(); i++) {
-                event.signUpUser((String) userIDs.get(i));
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @Override
-    public void onGetCheckedInUsersCallback(Event event, List<?> userIDs) {
-        try {
-            for (int i = 0; i < userIDs.size(); i++) {
-                event.checkInUser((String) userIDs.get(i));
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public interface GetSignedUpUserCallback {}
 }
