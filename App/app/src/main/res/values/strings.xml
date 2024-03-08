@@ -26,4 +26,9 @@
     <string name="number">Contact</string>
     <string name="profile_picture_of_user">profile picture of user</string>
     <string name="save">Save</string>
+    <string name="event_details_header">Event Details and Poster</string>
+    <string name="event_details">Event details will be displayed here!</string>
+    <string name="event_announcements_header">Announcements</string>
+    <string name="event_announcements">Event announcements will be displayed here!</string>
+    <string name="Back">Back</string>
 </resources>
