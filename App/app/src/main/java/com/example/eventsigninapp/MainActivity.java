@@ -15,6 +15,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+// Citation
+// OpenAI, 2024, ChatGPT, (guidance on implementing the toolbar,
+// Check for syntax errors
+//----
+// Code utilizing the ImagePicker library by Dhaval Soneji.
+// Library source: https://github.com/Dhaval2404/ImagePicker
+//----
+
 public class MainActivity extends AppCompatActivity{
 
     FrameLayout frameLayout;
