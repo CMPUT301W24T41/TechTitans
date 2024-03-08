@@ -33,4 +33,16 @@
         android:entries="@array/filter_options"
         android:padding="16dp"/>
 
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinnerFilter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Send"
+        android:textColor="#EEF5FF"
+        android:backgroundTint="#176B87"
+        android:padding="16dp"/>
+
 </RelativeLayout>
