@@ -174,7 +174,19 @@ class HomeFragment {
     -ArrayList<Event> events
     -ListView eventsList
     -EventArrayAdapter eventsArrayAdapter
+    -EventDetailsFragment frag
 }
+
+class EventDetailsFragment {
+    -TextView eventDescription
+    -TextView announcement
+    -ImageView eventPoster
+    -Button backButton
+    +newInstance(Event event)
+}
+
+HomeFragment "1" o-- "0...*" EventDetailsFragment
+EventDetailsFragment "1" *-- "1" Event
 
 Fragment <|-- ProfileFragment
 Fragment <|-- CheckInFragment
