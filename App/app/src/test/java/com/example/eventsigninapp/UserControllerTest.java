@@ -120,7 +120,7 @@ public class UserControllerTest {
         userController.setUser(user);
         userController.checkIn(mockEvent);
 
-        verify(mockEvent).checkInUser(user);
+        verify(mockEvent).checkInUser(user.getId());
 
     }
 
@@ -138,7 +138,7 @@ public class UserControllerTest {
 
         verify(mockEvent).signUpUser(user.getId());
         Collection<String> attendingEvents = new HashSet<>();
-        attendingEvents.add(mockEvent.getId());
+        attendingEvents.add(mockEvent.getUuid());
         assertEquals(attendingEvents, user.getAttendingEvents());
     }
 

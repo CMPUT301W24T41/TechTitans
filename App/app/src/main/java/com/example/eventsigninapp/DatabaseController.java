@@ -22,13 +22,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+
 public class DatabaseController {
 
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    // cannot be final for testing purposes
+    private FirebaseFirestore db;
 
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    // cannot be final for testing purposes
+    private FirebaseStorage storage;
 
-    public DatabaseController() {}
+
+    public DatabaseController() {
+        this.db = FirebaseFirestore.getInstance();
+        this.storage= FirebaseStorage.getInstance();
+    }
+    public DatabaseController(FirebaseFirestore firestore, FirebaseStorage storage) {
+        this.db = firestore;
+        this.storage = storage;
+    }
+
 
     /**
      * This method stores a user or updates an existing user to the database
@@ -43,11 +55,13 @@ public class DatabaseController {
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
 
+
+
         DocumentReference userDocument = db.collection("users").document(user.getId());
 
-        userDocument.set(userData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
-                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
+        userDocument.set(userData, SetOptions.merge());
+//                .addOnSuccessListener(aVoid -> Log.d("Database", "putUserToFirestore: User data successfully updated"))
+//                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
     }
 
 
