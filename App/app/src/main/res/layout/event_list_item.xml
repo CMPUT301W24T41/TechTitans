@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/lightBlue"
-    android:padding="16dp"
-    tools:context=".HomeFragment">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true"
+    android:layout_margin="8dp">
 
-    <TextView
-        android:id="@+id/event_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="@string/event_title_text"
-        android:textSize="30sp"
-        android:textColor="@color/black"
-        android:background="@drawable/rounded_corner_bg"
-        android:padding="12dp"
-        android:elevation="4dp"
-        android:layout_marginTop="8dp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/event_layout"
+        android:layout_height="180dp"
+        android:background="@color/color2"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/event_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/event_title"
-        android:text="No description"
-        android:textSize="16sp"
-        android:textColor="@color/loveBlue"
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/event_title_text"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
 
-        android:textAlignment="center"
-        android:background="@drawable/rounded_corner_bg"
-        android:padding="12dp"
-        android:elevation="2dp"
-        android:layout_marginTop="8dp"/>
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_title"
+            android:layout_marginTop="8dp"
+            android:text="No description"
+            android:textAlignment="center"
+            android:textColor="@color/loveBlue"
+            android:textSize="16sp" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
