@@ -43,6 +43,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     TextView contact;
     ImageView profPic;
 
+    Uri profilePictureUri = userController.getUser().getPicture();
+    String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
+
 
 
 
@@ -95,8 +98,15 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-        //
-        Picasso.get().load(userController.getUser().getPicture()).into(profPic);
+
+        // this gives you a default dummy profile pic
+        // if there is no profile pic in the database
+        if (!profilePictureUrl.isEmpty()) {
+            Picasso.get().load(profilePictureUrl).into(profPic);
+        } else {
+            // Load a default image instead
+            Picasso.get().load(R.drawable.user).into(profPic);
+        }
 
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
