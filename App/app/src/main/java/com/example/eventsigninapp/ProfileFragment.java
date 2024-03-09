@@ -95,6 +95,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
+        //
         Picasso.get().load(userController.getUser().getPicture()).into(profPic);
 
         profPic.setOnClickListener(new View.OnClickListener() {
