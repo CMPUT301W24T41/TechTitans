@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
  */
 public class EditProfileFragment extends DialogFragment {
 
+
      DatabaseController databaseController = new DatabaseController();
 
 
@@ -35,6 +36,9 @@ public class EditProfileFragment extends DialogFragment {
     private EditText firstName, lastName, contact;
     private ImageView profPic;
     UserController userController = new UserController();
+
+    Uri profilePictureUri = userController.getUser().getPicture();
+    String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
     public EditProfileFragment(){}
 
@@ -62,7 +66,15 @@ public class EditProfileFragment extends DialogFragment {
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-        Picasso.get().load(userController.getUser().getPicture()).into(profPic);
+
+        // this gives you a default dummy profile pic
+        // if there is no profile pic in the database
+        if (!profilePictureUrl.isEmpty()) {
+            Picasso.get().load(profilePictureUrl).into(profPic);
+        } else {
+            // Load a default image instead
+            Picasso.get().load(R.drawable.user).into(profPic);
+        }
 
         profPic.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -85,7 +97,6 @@ public class EditProfileFragment extends DialogFragment {
 
                 userController.editProfile(newFirstName, newLastName, newContact, newProf);
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
-
 
 
                 dismiss();
