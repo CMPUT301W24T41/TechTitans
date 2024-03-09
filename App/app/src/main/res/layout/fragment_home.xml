@@ -4,17 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/blue">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/browse_events"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/browse_events_text"
-        android:textSize="50sp"
+        android:textSize="30sp"
         android:textColor="@color/black"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"/>
+        android:layout_marginStart="8dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@drawable/rounded_corner_bg"/>
+
 
     <ListView
         android:id="@+id/events_list"

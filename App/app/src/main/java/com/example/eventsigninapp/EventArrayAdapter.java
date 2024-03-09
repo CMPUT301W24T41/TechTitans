@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
+
 
     public EventArrayAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
@@ -40,7 +44,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         eventTitle.setText(event.getName());
         eventDescription.setText(event.getDescription());
-
         return view;
     }
 }
