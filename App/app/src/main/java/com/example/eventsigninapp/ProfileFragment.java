@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class ProfileFragment extends Fragment implements EditProfileFragment.OnProfileUpdateListener{
 
     // TODO: Rename parameter arguments, choose names that match
