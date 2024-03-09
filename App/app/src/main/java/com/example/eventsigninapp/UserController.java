@@ -112,7 +112,7 @@ public class UserController {
             user.setContact(contact);
         }
 
-        if (pictureUri != null) {
+        if (pictureUri != null ) {
             user.setPicture(pictureUri);
         }
 
@@ -184,6 +184,13 @@ public class UserController {
                 .compress(1024)
                 .maxResultSize(1028, 1028)
                 .start();
+    }
+
+
+    private Uri getDefaultPictureUri() {
+        // Provide the default picture URI here
+        // For example:
+        return Uri.parse("android.resource://com.example.eventsigninapp/drawable/user");
     }
 }
 
