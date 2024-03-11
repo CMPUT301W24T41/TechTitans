@@ -48,9 +48,6 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
 
-
-
-
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -118,6 +115,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
         });
 
+        // this supposed to open a fragment to edit the user info
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,7 +153,16 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
-        Picasso.get().load(newPicture).into(profPic);
+
+        // this gives you a default dummy profile pic
+        // if there is no profile pic in the database
+        if (!profilePictureUrl.isEmpty()) {
+            Picasso.get().load(profilePictureUrl).into(profPic);
+        } else {
+            // Load a default image instead
+            Picasso.get().load(R.drawable.user).into(profPic);
+        }
+
         databaseController.putUserToFirestore(userController.getUser());
 
 

@@ -118,6 +118,8 @@ public class EditProfileFragment extends DialogFragment {
             databaseController.putUserToFirestore(userController.getUser());
             Picasso.get().load(imageUri).into(profPic);
 
+            // Update profilePictureUrl with the new image URI
+            profilePictureUrl = imageUri.toString();
 
         }
     }
