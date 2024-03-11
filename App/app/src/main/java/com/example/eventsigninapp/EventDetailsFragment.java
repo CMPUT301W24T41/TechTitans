@@ -67,8 +67,9 @@ public class EventDetailsFragment extends Fragment {
         Event event = (Event) bundle.get("event");
         eventDescription.setText(event.getDescription());
 
-        backButton = view.findViewById(R.id.btnEventDetails);
 
+        // this is when we want to go back
+        backButton = view.findViewById(R.id.btnEventDetails);
         backButton.setOnClickListener(v -> {
             HomeFragment homeFrag = new HomeFragment();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
