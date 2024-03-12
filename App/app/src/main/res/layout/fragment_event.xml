@@ -1,94 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/lastName"
-    android:orientation="vertical"
-    android:background="@color/lightBlue"
-    tools:context=".EventCreationFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
 
-
-
-    <TextView
-        android:id="@+id/textView3"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/lastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="@string/create_your_own_event"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:background="@color/white"
+        tools:context=".EventCreationFragment">
 
-    <EditText
-        android:id="@+id/titleOfEvent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="50"
-        android:inputType="text"
-        android:hint="@string/titile_of_even"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:layout_marginBottom="15dp"/>
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/create_your_own_event"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <!-- Title of Event Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <EditText
+                android:id="@+id/titleOfEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="50"
+                android:inputType="text"
+                android:hint="@string/titile_of_even"
+                android:textColor="@color/black"
+                android:textColorHint="#A39755"
+                android:textSize="20sp"
+                android:layout_margin="3dp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Description of Event Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <EditText
+                android:id="@+id/descriptionOfEvent"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:hint="@string/description_of_event"
+                android:textColor="@color/black"
+                android:textColorHint="#A39755"
+                android:textSize="20sp"
+                android:layout_margin="3dp"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Attendee Limit Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <EditText
+                android:id="@+id/attendeeLimit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/attendee_limit"
+                android:inputType="number"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:textColorHint="#A39755"
+                android:layout_margin="3dp" />
+
+        </androidx.cardview.widget.CardView>
 
 
-    <EditText
-        android:id="@+id/descriptionOfEvent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="50"
-        android:inputType="text"
-        android:hint="@string/description_of_event"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:layout_marginBottom="15dp"/>
+        <!-- Image Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="4dp">
+
+            <ImageButton
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@color/lightBlue"
+                android:contentDescription="@string/event_poster"
+                android:contextClickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/event_image" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <Button
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upload_poster"
+                android:textSize="20sp"
+                android:background="@color/blue"
+                android:clickable="true"
+                android:layout_marginTop="1dp"/>
+        </androidx.cardview.widget.CardView>
 
 
-    <EditText
-        android:id="@+id/attendeeLimit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:ems="10"
-        android:hint="@string/attendee_limit"
-        android:inputType="number"
-        android:textSize="24sp" />
 
 
-    <ImageButton
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="286dp"
-        android:background="@color/lightBlue"
-        android:contentDescription="@string/event_poster"
-        android:contextClickable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:src="@drawable/event_image" />
+        <!-- Confirm Button Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
-    <Button
-        android:id="@+id/imageButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/upload_poster"
-        android:textSize="20sp"
-        android:background="@color/blue"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginTop="1dp"/>
+            <Button
+                android:id="@+id/confirmButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/confirm"
+                android:textSize="20sp"
+                android:background="@color/blue"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="1dp" />
 
+        </androidx.cardview.widget.CardView>
 
-    <Button
-        android:id="@+id/confirmButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/confirm"
-        android:textSize="20sp"
-        android:background="@color/blue"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginTop="35dp"/>
-
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

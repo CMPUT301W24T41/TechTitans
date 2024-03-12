@@ -112,14 +112,16 @@ public class UserController {
             user.setContact(contact);
         }
 
-        if (pictureUri != null) {
+        if (pictureUri != null ) {
             user.setPicture(pictureUri);
         }
 
     }
 
     /**
+     *
      * This method should be used to sign up a user for an event
+     * May be outdated/unnecessary for use
      * @param event the event to sign up for
      */
     public void checkIn(Event event) {
@@ -134,6 +136,7 @@ public class UserController {
 
     /**
      * This method should be used to sign up a user for an event
+     * May be outdated/unnecessary for use
      * @param event the event to sign up for
      */
     public void signUp(Event event) {
@@ -184,5 +187,10 @@ public class UserController {
     }
 
 
+    private Uri getDefaultPictureUri() {
+        // Provide the default picture URI here
+        // For example:
+        return Uri.parse("android.resource://com.example.eventsigninapp/drawable/user");
+    }
 }
 

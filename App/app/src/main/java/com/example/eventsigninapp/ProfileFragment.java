@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class ProfileFragment extends Fragment implements EditProfileFragment.OnProfileUpdateListener{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -43,8 +44,8 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     TextView contact;
     ImageView profPic;
 
-
-
+    Uri profilePictureUri = userController.getUser().getPicture();
+    String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
 
     public ProfileFragment() {
@@ -95,7 +96,15 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-        Picasso.get().load(userController.getUser().getPicture()).into(profPic);
+
+        // this gives you a default dummy profile pic
+        // if there is no profile pic in the database
+        if (!profilePictureUrl.isEmpty()) {
+            Picasso.get().load(profilePictureUrl).into(profPic);
+        } else {
+            // Load a default image instead
+            Picasso.get().load(R.drawable.user).into(profPic);
+        }
 
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +115,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
         });
 
+        // this supposed to open a fragment to edit the user info
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,7 +153,16 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
-        Picasso.get().load(newPicture).into(profPic);
+
+        // this gives you a default dummy profile pic
+        // if there is no profile pic in the database
+        if (!profilePictureUrl.isEmpty()) {
+            Picasso.get().load(profilePictureUrl).into(profPic);
+        } else {
+            // Load a default image instead
+            Picasso.get().load(R.drawable.user).into(profPic);
+        }
+
         databaseController.putUserToFirestore(userController.getUser());
 
 
