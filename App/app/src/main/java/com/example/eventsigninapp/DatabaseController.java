@@ -17,6 +17,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -72,6 +73,7 @@ public class DatabaseController {
         userData.put("contact", user.getContact());
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
+        userData.put("fcmToken", user.getFcmToken());
 
 
 
@@ -255,6 +257,11 @@ public class DatabaseController {
                 Log.e("Database", "Error retrieving checked in users");
             }
         });
+    }
+
+    public void removeUserFromEvent(String userID, String eventID) {
+        DocumentReference eventRef = db.collection("events").document(eventID);
+        eventRef.update("signedUpUsers", FieldValue.arrayRemove(userID));
     }
 
     /**

@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
        FirebaseApp.initializeApp(this);
 //        db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity{
         askNotificationPermission();
 
 
+
         frameLayout = findViewById(R.id.eventButton);
         tabLayout = findViewById(R.id.mainTabLayout);
         FirebaseMessaging.getInstance().getToken()
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity{
                             // Token retrieval successful, log the token
                             String token = task.getResult();
                             Log.d(TAG, "FCM Token: " + token);
+                            userController.setFcmToken(token);
+
                         } else {
                             // Token retrieval failed, log the error
                             Exception exception = task.getException();

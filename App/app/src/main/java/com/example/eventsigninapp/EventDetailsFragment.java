@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,6 +26,7 @@ public class EventDetailsFragment extends Fragment {
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
     private Button backButton, editEventButton, notifyUsersButton;
+    private ToggleButton signUpButton;
 
     /**
      * Used for passing in data through Bundle from
@@ -62,6 +64,7 @@ public class EventDetailsFragment extends Fragment {
         editEventButton = view.findViewById(R.id.editEventButton);
         notifyUsersButton = view.findViewById(R.id.notifyUsersButton);
         backButton = view.findViewById(R.id.btnEventDetails);
+        signUpButton = view.findViewById(R.id.signUpButton);
 
         Bundle bundle = getArguments();
         Event event = (Event) bundle.get("event");
@@ -70,11 +73,13 @@ public class EventDetailsFragment extends Fragment {
         if(userController.getUser().getId().equals(event.getCreatorUUID())){
             editEventButton.setVisibility(View.VISIBLE);
             notifyUsersButton.setVisibility(View.VISIBLE);
+            signUpButton.setVisibility(View.GONE);
 
         }
         else{
             editEventButton.setVisibility(View.GONE);
             notifyUsersButton.setVisibility(View.GONE);
+            signUpButton.setVisibility(View.VISIBLE);
         }
 
         notifyUsersButton.setOnClickListener(v -> {
@@ -82,21 +87,46 @@ public class EventDetailsFragment extends Fragment {
             bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
 
-
-
-
-
-
-
-
-
         backButton.setOnClickListener(v -> {
             HomeFragment homeFrag = new HomeFragment();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(((ViewGroup) getView().getParent()).getId(), homeFrag).commit();
         });
 
+        if(userController.getUser().getAttendingEvents().contains(event.getUuid())){
+            signUpButton.setChecked(true);
+            signUpButton.setText("Signed Up");
+        }
+        else{
+            signUpButton.setChecked(false);
+            signUpButton.setText("Sign Up");
+        }
+
+        signUpButton.setOnClickListener(v -> {
+            if(signUpButton.isChecked()){
+                signUpButton.setChecked(false);
+                signUpButton.setText("Sign Up");
+                //databaseController.
+            }
+            else{
+                signUpButton.setChecked(true);
+                signUpButton.setText("Signed Up");
+                //userController.addEventToUser(event.getUuid());
+            }
+        });
+
         return view;
+    }
+
+    public void onSignUpButtonClick(View view){
+        if(signUpButton.isChecked()){
+            signUpButton.setChecked(false);
+            signUpButton.setText("Sign Up");
+        }
+        else{
+            signUpButton.setChecked(true);
+            signUpButton.setText("Signed Up");
+        }
     }
 
 

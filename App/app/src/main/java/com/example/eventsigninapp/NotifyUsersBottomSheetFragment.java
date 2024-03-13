@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 public class NotifyUsersBottomSheetFragment extends BottomSheetDialogFragment {
 
@@ -39,4 +41,18 @@ public class NotifyUsersBottomSheetFragment extends BottomSheetDialogFragment {
         // Return the inflated view
         return view;
     }
-}
+
+//        sendButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String messageText = message.getText().toString();
+//                String titleText = title.getText().toString();
+//                String filter = spinnerOptions.getSelectedItem().toString();
+//            }
+
+
+
+
+    }
+
+

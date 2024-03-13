@@ -4,7 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
 public class MessagingService extends FirebaseMessagingService {
@@ -30,6 +34,16 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void sendRegistrationToServer(String token) {
 
+    }
+
+    public void sendMessage(String SENDER_ID, String title, String message) {
+        int messageId = 0;
+        FirebaseMessaging fm = FirebaseMessaging.getInstance();
+        fm.send(new RemoteMessage.Builder(SENDER_ID + "@fcm.googleapis.com")
+                .setMessageId(Integer.toString(messageId))
+                .addData("my_message", "Hello World")
+                .addData("my_action","SAY_HELLO")
+                .build());
     }
 
 
