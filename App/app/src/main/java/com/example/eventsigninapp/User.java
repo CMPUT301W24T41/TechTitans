@@ -52,6 +52,7 @@ public class User {
      */
     private Uri picture;
     private String imgUrl;
+    private String fcmtoken;
 
     protected User() {
         attendingEvents = new ArrayList<>();
@@ -63,6 +64,7 @@ public class User {
         contact = "";
         location = "";
         imgUrl = "";
+        fcmtoken = "";
     }
 
     protected User(String id) {
@@ -188,4 +190,11 @@ public class User {
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+    public void setFcmToken(String fcmtoken) {
+        this.fcmtoken = fcmtoken;
+    };
+    public String getFcmToken() {
+        return fcmtoken;
+    }
+
 }
