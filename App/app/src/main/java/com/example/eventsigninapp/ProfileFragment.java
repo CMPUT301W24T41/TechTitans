@@ -137,12 +137,12 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-
             Uri imageUri = data.getData();
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
+            // Update profilePictureUrl with the new URI
+            Picasso.get().invalidate(imageUri);
             Picasso.get().load(imageUri).into(profPic);
-
 
         }
     }
@@ -153,6 +153,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
+
+        // Update profilePictureUrl with the new URI
+        Picasso.get().invalidate(profilePictureUrl);
 
         // this gives you a default dummy profile pic
         // if there is no profile pic in the database
