@@ -21,9 +21,9 @@
     <string name="check_in_fragment">Check In Fragment</string>
     <string name="first_name">First Name</string>
     <string name="Last_name">Last Name</string>
-    <string name="user_first_name">User First Name</string>
-    <string name="user_last_name">user last name</string>
-    <string name="number">Contact</string>
+    <string name="user_first_name">First Name</string>
+    <string name="user_last_name">last name</string>
+    <string name="number">Phone Number</string>
     <string name="profile_picture_of_user">profile picture of user</string>
     <string name="save">Save</string>
     <string name="event_details_header">Event Details and Poster</string>
