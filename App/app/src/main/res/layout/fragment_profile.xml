@@ -43,8 +43,9 @@
             android:layout_marginBottom="8dp"
             android:clickable="true"
             android:contentDescription="@string/profile_picture_of_user"
+            android:clipToOutline="true"
             android:focusable="true"
-            android:background="@drawable/rounded_corner_bg"
+            android:background="@drawable/rounded_corner_profile_bg"
             android:src="@drawable/user" />
 
         <TextView
