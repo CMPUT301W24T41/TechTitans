@@ -151,6 +151,24 @@ public class DatabaseController {
                 });
     }
 
+    /**
+     * This method deletes the given picture uri from the storage for the given user
+     * @param user the user whose profile is being updated
+     */
+    public void deleteProfilePicture(User user) {
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("profile_pictures/" + user.getId());
+
+        // Delete the profile picture from Firebase Storage
+        profilePicRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Upon successful deletion, update the user's picture URI
+                    user.setPicture(null);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Database", "deleteProfilePicture: Error, failure to delete image", e);
+                });
+    }
 
     /**
      * This method uploads the given picture uri to the storage for the given user
@@ -159,23 +177,23 @@ public class DatabaseController {
      */
     public void uploadProfilePicture(Uri picture, User user) {
         StorageReference storageRef = storage.getReference();
-
-        // Reference to store the image
         StorageReference profilePicRef = storageRef.child("profile_pictures/" + user.getId());
 
-        // Upload file to Firebase Storage
-        profilePicRef.putFile(picture)
-                .addOnSuccessListener(taskSnapshot -> {
-                    profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        // Update upon successful completion
-                        user.setPicture(uri);
-                    }).addOnFailureListener(e -> {
-                        Log.e("Database", "uploadProfilePicture: Error, failure to get URL data", e);
+        if (picture != null) {
+            // Upload file to Firebase Storage
+            profilePicRef.putFile(picture)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            // Update upon successful completion
+                            user.setPicture(uri);
+                        }).addOnFailureListener(e -> {
+                            Log.e("Database", "uploadProfilePicture: Error, failure to get URL data", e);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Database", "uploadProfilePicture: Error, failure to upload image", e);
                     });
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Database", "uploadProfilePicture: Error, failure to upload image", e);
-                });
+        }
     }
 
 

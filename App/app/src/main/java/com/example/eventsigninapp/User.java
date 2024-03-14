@@ -188,4 +188,13 @@ public class User {
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+
+    /**
+     * This method should be used to delete the picture of the user
+     */
+    public void deletePicture() {
+        this.picture = null;
+        this.imgUrl="";
+    }
 }
+
