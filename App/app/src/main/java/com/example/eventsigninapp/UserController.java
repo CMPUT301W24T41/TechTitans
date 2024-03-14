@@ -31,11 +31,10 @@ public class UserController {
     private static final String prefName = "ID";
 
 
-
-
     /**
      * getter for acquiring locally stored user from the controller,
      * a user must be loaded first or this function throws an error
+     *
      * @return the current user of the controller
      */
     public User getUser() {
@@ -78,6 +77,7 @@ public class UserController {
     /**
      * Updates the users UUID in the shared preference of the provided context,
      * saving it for the next time the app is opened
+     *
      * @param context: the target context
      * @param id:      the new string value of the id
      */
@@ -89,14 +89,13 @@ public class UserController {
     }
 
 
-
     /**
      * This method edits the parameters of each of the users profile information
      * and updates the database with the new info
      *
-     * @param firstName the new first name
-     * @param lastName  the new last name
-     * @param contact   the new contact information
+     * @param firstName  the new first name
+     * @param lastName   the new last name
+     * @param contact    the new contact information
      * @param pictureUri the new URI of the profile picture
      */
     public void editProfile(String firstName, String lastName, String contact, Uri pictureUri) {
@@ -112,16 +111,16 @@ public class UserController {
             user.setContact(contact);
         }
 
-        if (pictureUri != null ) {
+        if (pictureUri != null) {
             user.setPicture(pictureUri);
         }
 
     }
 
     /**
-     *
      * This method should be used to sign up a user for an event
      * May be outdated/unnecessary for use
+     *
      * @param event the event to sign up for
      */
     public void checkIn(Event event) {
@@ -137,6 +136,7 @@ public class UserController {
     /**
      * This method should be used to sign up a user for an event
      * May be outdated/unnecessary for use
+     *
      * @param event the event to sign up for
      */
     public void signUp(Event event) {
@@ -150,18 +150,19 @@ public class UserController {
         try {
             eventController.signUpUser(this.getUser().getId());
             this.getUser().getAttendingEvents().add(event.getUuid());          // add event to user's list of events
-        } catch (EventController.EventFullException | EventController.AlreadySignedUpException e) { // catch exception
+        } catch (EventController.EventFullException |
+                 EventController.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message
         }
     }
 
 
-
     /**
      * This creates a instance of imagepicker when called in the given activity
+     *
      * @param activity the activity that calls the imagepicker
-     * ImagePicker library by Dhaval Sodha Parmar
-     * Github: github.com/dhaval2404/imagePicker
+     *                 ImagePicker library by Dhaval Sodha Parmar
+     *                 Github: github.com/dhaval2404/imagePicker
      */
     public static void selectImage(Activity activity) {
         ImagePicker.with(activity)
@@ -174,11 +175,12 @@ public class UserController {
 
     /**
      * This creates a instance of imagepicker when called in the given fragment
+     *
      * @param fragment the fragment that calls the imagepicker
-     * ImagePicker library by Dhaval Sodha Parmar
-     * Github: github.com/dhaval2404/imagePicker
+     *                 ImagePicker library by Dhaval Sodha Parmar
+     *                 Github: github.com/dhaval2404/imagePicker
      */
-    public static void selectImage(Fragment fragment){
+    public static void selectImage(Fragment fragment) {
         ImagePicker.with(fragment)
                 .crop()
                 .compress(1024)
@@ -186,7 +188,23 @@ public class UserController {
                 .start();
     }
 
+    /**
+     * Deletes the profile picture of the user.
+     * This method sets the picture to null in the User object.
+     *
+     * @param context The context of the application.
+     */
+    public void deleteProfilePicture(Context context) {
+        user.deletePicture(); // Set the picture to null in User object
+    }
 
+    /**
+     * Retrieves the default picture URI.
+     * This method provides the default picture URI.
+     *
+     * @return The default picture URI.
+     * For example: "android.resource://com.example.eventsigninapp/drawable/user"
+     */
     private Uri getDefaultPictureUri() {
         // Provide the default picture URI here
         // For example:

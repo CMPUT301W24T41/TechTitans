@@ -92,11 +92,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         contact = rootView.findViewById(R.id.user_number);
         profPic = rootView.findViewById(R.id.profilePicture);
 
-
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-
         // this gives you a default dummy profile pic
         // if there is no profile pic in the database
         if (!profilePictureUrl.isEmpty()) {
@@ -111,8 +109,6 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             public void onClick(View v) {
                 UserController.selectImage(ProfileFragment.this);
             }
-
-
         });
 
         // this supposed to open a fragment to edit the user info
@@ -121,12 +117,22 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             public void onClick(View v) {
                 EditProfileFragment editProfileFragment = new EditProfileFragment();
                 editProfileFragment.setOnProfileUpdateListener(ProfileFragment.this);
-
                 editProfileFragment.show(getChildFragmentManager(), "profileEditDialog");
-
             }
+        });
 
+        // this supposed to delete your profile image
+        Button deletePictureButton = rootView.findViewById(R.id.deleteButton);
+        deletePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call the deleteProfilePicture() method of your UserController
+                userController.deleteProfilePicture(getContext());
+                databaseController.deleteProfilePicture(userController.getUser());
 
+                // update your UI to reflect the deletion of the picture
+                profPic.setImageResource(R.drawable.user);
+            }
         });
 
         return rootView;
@@ -137,13 +143,12 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-
             Uri imageUri = data.getData();
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
+            // Update profilePictureUrl with the new URI
+            //Picasso.get().invalidate(imageUri);
             Picasso.get().load(imageUri).into(profPic);
-
-
         }
     }
 
@@ -153,6 +158,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
+
+        // Update profilePictureUrl with the new URI
+        Picasso.get().invalidate(profilePictureUrl);
 
         // this gives you a default dummy profile pic
         // if there is no profile pic in the database

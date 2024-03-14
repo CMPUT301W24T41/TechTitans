@@ -197,4 +197,12 @@ public class User {
         return fcmtoken;
     }
 
+
+    /**
+     * This method should be used to delete the picture of the user
+     */
+    public void deletePicture() {
+        this.picture = null;
+        this.imgUrl="";
+    }
 }
