@@ -7,7 +7,7 @@
     android:id="@+id/lastName"
     android:orientation="vertical"
     android:background="@color/lightBlue"
-    tools:context=".EventFragment">
+    tools:context=".EventDetailsFragment">
 
     <Button
         android:id="@+id/btnEventDetails"
