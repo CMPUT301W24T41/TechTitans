@@ -210,5 +210,12 @@ public class UserController {
         // For example:
         return Uri.parse("android.resource://com.example.eventsigninapp/drawable/user");
     }
+    public void setFcmToken(String token) {
+        user.setFcmToken(token);
+    }
+    public String getFcmToken() {
+        return user.getFcmToken();
+    }
+
 }
 

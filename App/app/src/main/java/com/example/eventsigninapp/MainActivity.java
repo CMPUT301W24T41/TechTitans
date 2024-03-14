@@ -1,16 +1,30 @@
 package com.example.eventsigninapp;
 
+import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
+
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.Manifest;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +48,43 @@ public class MainActivity extends AppCompatActivity{
     UserController userController = new UserController();
     DatabaseController databaseController = new DatabaseController();
 
+    // Declare the launcher at the top of your Activity/Fragment:
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                } else {
+                    // Inform user that your app will not show notifications.
+                    Toast.makeText(MainActivity.this, "Notifications permission denied. App will not show notifications.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+    private void askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // FCM SDK (and your app) can post notifications.
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                // TODO: display an educational UI explaining to the user the features that will be enabled
+                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+                //       If the user selects "No thanks," allow the user to continue without notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
        FirebaseApp.initializeApp(this);
 //        db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
@@ -45,10 +93,33 @@ public class MainActivity extends AppCompatActivity{
         // this finds the current user and sends the result to userController
         String defaultID = userController.getUserID(this);
         databaseController.updateWithUserFromFirestore(defaultID, userController);
+        Log.d(TAG, "User ID: " + defaultID);
+
+        //FCM Notification Permission
+        askNotificationPermission();
+
 
 
         frameLayout = findViewById(R.id.eventButton);
         tabLayout = findViewById(R.id.mainTabLayout);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            // Token retrieval successful, log the token
+                            String token = task.getResult();
+                            Log.d(TAG, "FCM Token: " + token);
+                            userController.setFcmToken(token);
+
+                        } else {
+                            // Token retrieval failed, log the error
+                            Exception exception = task.getException();
+                            Log.e(TAG, "Error fetching FCM registration token: " + exception.getMessage());
+                        }
+                    }
+                });
+
 
 
         // Set the selected tab to the second tab (index 1, which is the "Home" tab)
@@ -87,6 +158,9 @@ public class MainActivity extends AppCompatActivity{
                         .replace(R.id.fragmentContainer, fragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
+
+
+
             }
 
             @Override
@@ -97,6 +171,8 @@ public class MainActivity extends AppCompatActivity{
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+
 
 
         /* Testing Database

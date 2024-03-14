@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -42,13 +43,16 @@
         <activity
             android:name=".MapActivity"
             android:exported="true">
-            <intent-filter>
+            <!-- Remove intent-filter to avoid multiple launchers -->
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
-        <activity android:name=".CaptureAct"
+
+        <activity
+            android:name=".CaptureAct"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"/>
@@ -56,11 +60,19 @@
         <activity
             android:name=".AttendeeListActivity"
             android:exported="true">
-            <intent-filter>
+            <!-- Remove intent-filter to avoid multiple launchers -->
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
+        <service
+            android:name=".MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
     </application>
 
