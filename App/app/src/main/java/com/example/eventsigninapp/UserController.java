@@ -198,18 +198,6 @@ public class UserController {
         user.deletePicture(); // Set the picture to null in User object
     }
 
-    /**
-     * Retrieves the default picture URI.
-     * This method provides the default picture URI.
-     *
-     * @return The default picture URI.
-     * For example: "android.resource://com.example.eventsigninapp/drawable/user"
-     */
-    private Uri getDefaultPictureUri() {
-        // Provide the default picture URI here
-        // For example:
-        return Uri.parse("android.resource://com.example.eventsigninapp/drawable/user");
-    }
     public void setFcmToken(String token) {
         user.setFcmToken(token);
     }

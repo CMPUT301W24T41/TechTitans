@@ -3,6 +3,12 @@ package com.example.eventsigninapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -47,6 +54,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     Uri profilePictureUri = userController.getUser().getPicture();
     String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
+    //This will deal with the profile picture/initials
+    String userInitials = userController.getUser().getInitials();
+    Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -95,13 +105,26 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-        // this gives you a default dummy profile pic
-        // if there is no profile pic in the database
+
+
+        profPic.setImageDrawable(initialsDrawable);
+
         if (!profilePictureUrl.isEmpty()) {
-            Picasso.get().load(profilePictureUrl).into(profPic);
+            // Load the profile picture
+            Picasso.get().load(profilePictureUrl).into(profPic, new Callback() {
+                @Override
+                public void onSuccess() {
+                    // Do nothing, image loaded successfully
+                }
+                @Override
+                public void onError(Exception e) {
+                    // If there's an error loading the image, fallback to displaying the initials drawable
+                    profPic.setImageDrawable(initialsDrawable);
+                }
+            });
         } else {
-            // Load a default image instead
-            Picasso.get().load(R.drawable.user).into(profPic);
+            // If no profile picture URL is available, set the initials drawable directly
+            profPic.setImageDrawable(initialsDrawable);
         }
 
         profPic.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +141,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
                 EditProfileFragment editProfileFragment = new EditProfileFragment();
                 editProfileFragment.setOnProfileUpdateListener(ProfileFragment.this);
                 editProfileFragment.show(getChildFragmentManager(), "profileEditDialog");
+
             }
         });
 
@@ -129,9 +153,9 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
                 // Call the deleteProfilePicture() method of your UserController
                 userController.deleteProfilePicture(getContext());
                 databaseController.deleteProfilePicture(userController.getUser());
-
+                profilePictureUrl = "";
                 // update your UI to reflect the deletion of the picture
-                profPic.setImageResource(R.drawable.user);
+                profPic.setImageDrawable(initialsDrawable);
             }
         });
 
@@ -147,8 +171,15 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
             // Update profilePictureUrl with the new URI
+            Uri profilePictureUri = userController.getUser().getPicture();
+            String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
             //Picasso.get().invalidate(imageUri);
-            Picasso.get().load(imageUri).into(profPic);
+            if (!profilePictureUrl.isEmpty()) {
+                Picasso.get().load(imageUri).into(profPic);
+            } else {
+                // Load Initials instead
+                profPic.setImageDrawable(initialsDrawable);
+            }
         }
     }
 
@@ -160,15 +191,19 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         contact.setText(newContact);
 
         // Update profilePictureUrl with the new URI
-        Picasso.get().invalidate(profilePictureUrl);
+        //Picasso.get().invalidate(profilePictureUrl);
 
         // this gives you a default dummy profile pic
         // if there is no profile pic in the database
+
+        Uri profilePictureUri = userController.getUser().getPicture();
+        String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
+
         if (!profilePictureUrl.isEmpty()) {
             Picasso.get().load(profilePictureUrl).into(profPic);
         } else {
-            // Load a default image instead
-            Picasso.get().load(R.drawable.user).into(profPic);
+            // Load Initials instead
+            profPic.setImageDrawable(initialsDrawable);
         }
 
         databaseController.putUserToFirestore(userController.getUser());
