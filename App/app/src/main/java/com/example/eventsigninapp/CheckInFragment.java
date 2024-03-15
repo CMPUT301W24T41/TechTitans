@@ -1,18 +1,27 @@
 package com.example.eventsigninapp;
 
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.util.Objects;
 
 /**
  * This class acts as a controller for the check in process.
@@ -27,6 +36,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
     // Variable to track the number of scans
     private int scanCount = 0;
+    private FusedLocationProviderClient fusedLocationClient;
 
     /**
      * Called when the fragment is created.
@@ -37,6 +47,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
         super.onCreate(savedInstanceState);
 
         scanLauncher = registerForActivityResult(new ScanContract(), this::processResult);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
     }
 
     /**
@@ -50,6 +61,32 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
             databaseController = new DatabaseController();
             databaseController.getEventFromFirestore(result.getContents(), this);
+        }
+    }
+
+    /**
+     * This method gets the user location
+     */
+    private void getUserLocation(ScanIntentResult result) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                databaseController.addCheckInLocationToFirestore(event, location);
+                            } else {
+                                Log.e("DEBUG", "Failed to fetch location");
+                            }
+                        }
+                    });
         }
     }
 
