@@ -28,10 +28,14 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment implements DatabaseController.GetAllEventsCallback {
+    UserController userController = new UserController();
     DatabaseController dbController;
-    ArrayList<Event> events;
-    ListView eventsList;
-    EventArrayAdapter eventsArrayAdapter;
+    ArrayList<Event> allEvents;
+    ListView allEventsList;
+    EventArrayAdapter allEventsArrayAdapter;
+    ArrayList<Event> myEvents;
+    ListView myEventsList;
+    EventArrayAdapter myEventsArrayAdapter;
 
     EventDetailsFragment frag;
 
@@ -71,7 +75,6 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
     }
 
     @Override
@@ -80,24 +83,44 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        eventsList = rootView.findViewById(R.id.events_list);
+        allEventsList = rootView.findViewById(R.id.all_events_list);
+        myEventsList = rootView.findViewById(R.id.my_events_list);
 
         dbController = new DatabaseController();
-        events = new ArrayList<Event>();
+        allEvents = new ArrayList<Event>();
+        myEvents = new ArrayList<Event>();
 
-        eventsArrayAdapter = new EventArrayAdapter(getContext(), events);
-        eventsList.setAdapter(eventsArrayAdapter);
+        allEventsArrayAdapter = new EventArrayAdapter(getContext(), allEvents);
+        allEventsList.setAdapter(allEventsArrayAdapter);
+
+        myEventsArrayAdapter = new EventArrayAdapter(getContext(), myEvents);
+        myEventsList.setAdapter(myEventsArrayAdapter);
 
         dbController.getAllEventsFromFirestore(this);
-        eventsArrayAdapter.notifyDataSetChanged();
+        allEventsArrayAdapter.notifyDataSetChanged();
 
-        eventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        allEventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Log.e("DEBUG", "item clicked");
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("event", events.get(position));
+                bundle.putSerializable("event", allEvents.get(position));
+                frag = new EventDetailsFragment();
+                frag.setArguments(bundle);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
+            }
+        });
+
+        myEventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.e("DEBUG", "item clicked");
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", myEvents.get(position));
                 frag = new EventDetailsFragment();
                 frag.setArguments(bundle);
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -114,7 +137,11 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
      */
     @Override
     public void onGetAllEventsCallback(Event event) {
-        events.add(event);
-        eventsArrayAdapter.notifyDataSetChanged();
+        allEvents.add(event);
+        if(userController.getUser().getId().equals(event.getCreatorUUID())){
+            myEvents.add(event);
+        }
+        allEventsArrayAdapter.notifyDataSetChanged();
+        myEventsArrayAdapter.notifyDataSetChanged();
     }
 }
