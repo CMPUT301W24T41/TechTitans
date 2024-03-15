@@ -478,7 +478,39 @@ public class DatabaseController {
      * @param callback callback function to get check-in locations
      */
     public void getCheckInLocationsFromFirestore(Event event, GetCheckInLocationCallback callback) {
-        // TODO: Implement
+        final ArrayList<?>[] checkInLocations = new ArrayList<?>[1]; // effectively final
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot doc = task.getResult();
+                checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
+                if (checkInLocations[0] != null) {
+                    callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
+                    Log.e("DEBUG", "Success retrieving check-in locations");
+                } else {
+                    Log.e("DEBUG", "Error retrieving check-in locations");
+                }
+            }
+        });
+
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
+            if (checkInLocations[0] != null) {
+                callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
+            } else {
+                Log.e("DEBUG", "Error retrieving checked in users");
+            }
+        });
     }
 
     public interface GetEventCallback {
@@ -486,8 +518,7 @@ public class DatabaseController {
     }
 
     public interface GetCheckInLocationCallback {
-        // TODO: Implement
-        void onGetCheckInLocationCallback(Event event);
+        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
     }
 
     public interface EventImageUriCallbacks {
