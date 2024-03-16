@@ -3,6 +3,12 @@ package com.example.eventsigninapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,28 +21,19 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment that displays the user profile information and allows for editing.
+ * Implements {@link EditProfileFragment.OnProfileUpdateListener} to handle profile updates.
  */
-
 public class ProfileFragment extends Fragment implements EditProfileFragment.OnProfileUpdateListener{
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     UserController userController = new UserController();
     DatabaseController databaseController = new DatabaseController();
 
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     Button editButton;
     TextView firstName;
@@ -45,46 +42,21 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     ImageView profPic;
 
     Uri profilePictureUri = userController.getUser().getPicture();
-    String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
-
+    /**
+     * Default constructor for the ProfileFragment.
+     * Constructs a new instance of the ProfileFragment.
+     */
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-
 
         editButton = rootView.findViewById(R.id.editButton);
         firstName = rootView.findViewById(R.id.user_first_name);
@@ -95,14 +67,10 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-        // this gives you a default dummy profile pic
-        // if there is no profile pic in the database
-        if (!profilePictureUrl.isEmpty()) {
-            Picasso.get().load(profilePictureUrl).into(profPic);
-        } else {
-            // Load a default image instead
-            Picasso.get().load(R.drawable.user).into(profPic);
-        }
+
+
+        //profPic.setImageDrawable(initialsDrawable);
+        updateProfilePicture(profilePictureUri);
 
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +86,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
                 EditProfileFragment editProfileFragment = new EditProfileFragment();
                 editProfileFragment.setOnProfileUpdateListener(ProfileFragment.this);
                 editProfileFragment.show(getChildFragmentManager(), "profileEditDialog");
+
             }
         });
 
@@ -129,9 +98,8 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
                 // Call the deleteProfilePicture() method of your UserController
                 userController.deleteProfilePicture(getContext());
                 databaseController.deleteProfilePicture(userController.getUser());
-
                 // update your UI to reflect the deletion of the picture
-                profPic.setImageResource(R.drawable.user);
+                updateProfilePicture(null);
             }
         });
 
@@ -147,8 +115,8 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
             // Update profilePictureUrl with the new URI
-            //Picasso.get().invalidate(imageUri);
-            Picasso.get().load(imageUri).into(profPic);
+            updateProfilePicture(imageUri);
+
         }
     }
 
@@ -159,20 +127,34 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         lastName.setText(newLastName);
         contact.setText(newContact);
 
-        // Update profilePictureUrl with the new URI
-        Picasso.get().invalidate(profilePictureUrl);
-
-        // this gives you a default dummy profile pic
-        // if there is no profile pic in the database
-        if (!profilePictureUrl.isEmpty()) {
-            Picasso.get().load(profilePictureUrl).into(profPic);
-        } else {
-            // Load a default image instead
-            Picasso.get().load(R.drawable.user).into(profPic);
-        }
-
+        updateProfilePicture(newPicture);
+        // user has been updated now we going to put it in the DB
         databaseController.putUserToFirestore(userController.getUser());
 
+    }
 
+    /**
+     * Updates the profile picture displayed in the ImageView using the provided URI.
+     *
+     * @param newPicture The URI of the new profile picture. If null, a placeholder image will be used.
+     */
+    private void updateProfilePicture(Uri newPicture) {
+        // Update profile picture
+        Picasso picasso = Picasso.get();
+        Uri pictureUri;
+        String userInitials = userController.getUser().getInitials();
+        Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
+
+        if (newPicture != null) {
+            pictureUri = newPicture;
+        } else {
+            pictureUri = Uri.EMPTY;
+        }
+
+        // Load the pictureUri using Picasso
+        picasso.load(pictureUri)
+                .placeholder(initialsDrawable)
+                .error(initialsDrawable)
+                .into(profPic);
     }
 }
