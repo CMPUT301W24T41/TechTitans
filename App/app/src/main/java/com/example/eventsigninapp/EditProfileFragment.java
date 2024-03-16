@@ -97,10 +97,8 @@ public class EditProfileFragment extends DialogFragment {
                 String newContact = contact.getText().toString();
                 Uri newProf = userController.getUser().getPicture();
 
-                // save your initials
 
-
-
+                // user gets updated here
                 userController.editProfile(newFirstName, newLastName, newContact, newProf);
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
@@ -120,9 +118,11 @@ public class EditProfileFragment extends DialogFragment {
         if (resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
 
+            // for speed purposes
+            userController.getUser().setPicture(imageUri);
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
-            //Picasso.get().load(imageUri).into(profPic);
+
 
             if (imageUri != null) {
                 Picasso.get().load(imageUri).into(profPic);
