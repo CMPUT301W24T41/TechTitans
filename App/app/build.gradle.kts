@@ -47,6 +47,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.google.android.gms:play-services-cast-framework:21.4.0")
     implementation("androidx.fragment:fragment:$fragment_version")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
