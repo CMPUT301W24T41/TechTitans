@@ -24,7 +24,10 @@ import androidx.fragment.app.Fragment;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * A fragment that displays the user profile information and allows for editing.
+ * Implements {@link EditProfileFragment.OnProfileUpdateListener} to handle profile updates.
+ */
 public class ProfileFragment extends Fragment implements EditProfileFragment.OnProfileUpdateListener{
 
 
@@ -40,7 +43,10 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
     Uri profilePictureUri = userController.getUser().getPicture();
 
-
+    /**
+     * Default constructor for the ProfileFragment.
+     * Constructs a new instance of the ProfileFragment.
+     */
     public ProfileFragment() {
         // Required empty public constructor
     }
