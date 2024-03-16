@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -471,8 +473,70 @@ public class DatabaseController {
                 });
     }
 
+    /**
+     * This method puts a check-in location to the database
+     * @param event the event to put the check-in location to
+     * @param location user location when they checked in
+     */
+    public void addCheckInLocationToFirestore(Event event, Location location) {
+        GeoPoint loc = new GeoPoint(location.getLatitude(), location.getLongitude());
+        DocumentReference eventsRef = db.collection("events").document(event.getUuid());
+        eventsRef.update("checkInLocations", FieldValue.arrayUnion(loc))
+                .addOnSuccessListener(avoid -> {
+                    Log.e("DEBUG", "Successfully added check in location");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DEBUG", "Failed to check in location");
+                });
+    }
+
+    /**
+     * This method gets all the check in locations for an event from the database.
+     * @param event the event to get check-in locations from
+     * @param callback callback function to get check-in locations
+     */
+    public void getCheckInLocationsFromFirestore(Event event, GetCheckInLocationCallback callback) {
+        final ArrayList<?>[] checkInLocations = new ArrayList<?>[1]; // effectively final
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot doc = task.getResult();
+                checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
+                if (checkInLocations[0] != null) {
+                    callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
+                    Log.e("DEBUG", "Success retrieving check-in locations");
+                } else {
+                    Log.e("DEBUG", "Error retrieving check-in locations");
+                }
+            }
+        });
+
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
+            if (checkInLocations[0] != null) {
+                callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
+            } else {
+                Log.e("DEBUG", "Error retrieving checked in users");
+            }
+        });
+    }
+
     public interface GetEventCallback {
         void onGetEventCallback(Event event);
+    }
+
+    public interface GetCheckInLocationCallback {
+        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
     }
 
     public interface EventImageUriCallbacks {
