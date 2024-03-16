@@ -43,6 +43,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
+
         backButton.setOnClickListener(listener -> {
             Intent goBack = new Intent(MapActivity.this, AttendeeListActivity.class);
             startActivity(goBack);
@@ -59,7 +60,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-        addMarkersToMap();
     }
 
     @Override
@@ -71,6 +71,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             loc.setLongitude(gPoint.getLongitude());
             locations.add(loc);
         }
+
+        addMarkersToMap();
     }
 
 }
