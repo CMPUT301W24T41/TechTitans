@@ -1,134 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/lastName"
-    android:orientation="vertical"
-    android:background="@color/lightBlue"
-    tools:context=".EventDetailsFragment">
+    android:fillViewport="true">
 
-
-    <Button
-        android:id="@+id/btnEventDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/lightBlue"
-        android:text="←"
-        android:textSize="50dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Button
-        android:id="@+id/editEventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#176B87"
-        android:text="Edit Event"
-        android:textColor="#EEF5FF"
-        android:visibility="gone"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Button
-        android:id="@+id/notifyUsersButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#176B87"
-        android:text="Notify Users"
-        android:textColor="#EEF5FF"
-        android:visibility="gone"
-        android:layout_toEndOf="@id/btnEventDetails"
-        android:layout_toStartOf="@id/editEventButton"
-        android:layout_alignTop="@id/btnEventDetails"
-        android:layout_alignBottom="@id/editEventButton"/>
-
-    <ToggleButton
-        android:id="@+id/signUpButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Up"
-        android:checked="false"
-        android:backgroundTint="#176B87"
-        android:textColor="#EEF5FF"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:visibility="visible"/>
-
-
-
-
-    <TextView
-        android:id="@+id/eventDetailsHeader"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/event_details_header"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_below="@id/btnEventDetails"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"/>
-
-    <TextView
-        android:id="@+id/eventDetails"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/eventDetailsHeader"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="@string/event_details"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
-
-    <ImageButton
-        android:id="@+id/poster"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="match_parent"
+        android:id="@+id/lastName"
+        android:orientation="vertical"
         android:background="@color/lightBlue"
-        android:contentDescription="@string/event_poster"
-        android:contextClickable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:src="@drawable/event_image"
-        android:layout_below="@id/eventDetails"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:id="@+id/eventAnnouncementsHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/poster"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="@string/event_announcements_header"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/eventAnnouncements"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/eventAnnouncementsHeader"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="@string/event_announcements"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
-
-</RelativeLayout>
+        tools:context=".EventDetailsFragment">
+    
+    
+        <Button
+            android:id="@+id/btnEventDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightBlue"
+            android:text="←"
+            android:textSize="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"/>
+    
+        <Button
+            android:id="@+id/editEventButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#176B87"
+            android:text="Edit Event"
+            android:textColor="#EEF5FF"
+            android:visibility="gone"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"/>
+    
+        <Button
+            android:id="@+id/notifyUsersButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#176B87"
+            android:text="Notify Users"
+            android:textColor="#EEF5FF"
+            android:visibility="gone"
+            android:layout_toEndOf="@id/btnEventDetails"
+            android:layout_toStartOf="@id/editEventButton"
+            android:layout_alignTop="@id/btnEventDetails"
+            android:layout_alignBottom="@id/editEventButton"/>
+    
+        <ToggleButton
+            android:id="@+id/signUpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:checked="false"
+            android:backgroundTint="#176B87"
+            android:textColor="#EEF5FF"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:visibility="visible"/>
+    
+    
+    
+    
+        <TextView
+            android:id="@+id/eventDetailsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_details_header"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_below="@id/btnEventDetails"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
+    
+        <TextView
+            android:id="@+id/eventDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventDetailsHeader"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/event_details"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    
+        <ImageButton
+            android:id="@+id/poster"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="@color/lightBlue"
+            android:contentDescription="@string/event_poster"
+            android:contextClickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/event_image"
+            android:layout_below="@id/eventDetails"
+            android:layout_marginTop="16dp"/>
+    
+        <TextView
+            android:id="@+id/eventAnnouncementsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/poster"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/event_announcements_header"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    
+        <TextView
+            android:id="@+id/eventAnnouncements"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventAnnouncementsHeader"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/event_announcements"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    
+    </RelativeLayout>
+</ScrollView>
