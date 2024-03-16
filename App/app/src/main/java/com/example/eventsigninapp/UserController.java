@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
@@ -149,7 +150,8 @@ public class UserController {
 
         try {
             eventController.signUpUser(this.getUser().getId());
-            this.getUser().getAttendingEvents().add(event.getUuid());          // add event to user's list of events
+            this.getUser().getAttendingEvents().add(event.getUuid());// add event to user's list of events
+            Log.d("UserController", "Attending Events: " + user.getAttendingEvents());
         } catch (EventController.EventFullException |
                  EventController.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message

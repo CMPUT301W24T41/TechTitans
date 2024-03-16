@@ -1,17 +1,31 @@
 package com.example.eventsigninapp;
 
 
+import static com.google.firebase.messaging.Constants.TAG;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +35,8 @@ import androidx.fragment.app.FragmentTransaction;
 public class EventDetailsFragment extends Fragment {
     DatabaseController databaseController = new DatabaseController();
     UserController userController = new UserController();
+
+
 
 
     private TextView eventDescription, announcement;
@@ -41,6 +57,7 @@ public class EventDetailsFragment extends Fragment {
         eventFragment.setArguments(args);
         return eventFragment;
     }
+
 
     /**
      *
@@ -93,42 +110,90 @@ public class EventDetailsFragment extends Fragment {
             transaction.replace(((ViewGroup) getView().getParent()).getId(), homeFrag).commit();
         });
 
-        if(userController.getUser().getAttendingEvents().contains(event.getUuid())){
+
+        if (event.isFull()){
+            signUpButton.setClickable(false);
+            signUpButton.setText("Event Full");
+        }
+        else if (userController.getUser().getAttendingEvents().contains(event.getUuid())){
             signUpButton.setChecked(true);
             signUpButton.setText("Signed Up");
+            signUpButton.setClickable(false);
         }
         else{
             signUpButton.setChecked(false);
             signUpButton.setText("Sign Up");
-        }
+            signUpButton.setOnClickListener(v -> {
+                showSignUpPopup(event);
+            });
 
-        signUpButton.setOnClickListener(v -> {
-            if(signUpButton.isChecked()){
-                signUpButton.setChecked(false);
-                signUpButton.setText("Sign Up");
-                //databaseController.
-            }
-            else{
-                signUpButton.setChecked(true);
-                signUpButton.setText("Signed Up");
-                //userController.addEventToUser(event.getUuid());
-            }
-        });
+        }
 
         return view;
     }
 
-    public void onSignUpButtonClick(View view){
-        if(signUpButton.isChecked()){
-            signUpButton.setChecked(false);
-            signUpButton.setText("Sign Up");
-        }
-        else{
-            signUpButton.setChecked(true);
-            signUpButton.setText("Signed Up");
-        }
+    private void showSignUpPopup(Event event) {
+
+        String[] signupOptions = {"All", "Important updates only", "Reminders only", "None"};
+
+        // Inflate the custom layout
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.notification_preferences_dialog, null);
+        Spinner spinner = dialogView.findViewById(R.id.notification_preferences_spinner);
+
+        // Populate the spinner with data
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, signupOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        // Build the dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(dialogView);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle signup confirmation
+                confirmSignUp(spinner.getSelectedItem().toString(), event);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    
+
     }
 
+    private void confirmSignUp(String selectedItem, Event event) {
+
+        // Sign up the user for the event
+        Log.d("EventDetailsFragment", "User id: " + userController.getUser().getId());
+
+        userController.signUp(event);
+        Log.d("EventDetailsFragment", "User signed up for event: " + event.getSignedUpUsersUUIDs());
+        databaseController.pushEventToFirestore(event);
+        signUpButton.setChecked(true);
+        signUpButton.setText("Signed Up");
+        signUpButton.setClickable(false);
+        subscripeToNotifications(selectedItem, event);
+    }
+
+    private void subscripeToNotifications(String selectedItem, Event event) {
+        FirebaseMessaging.getInstance().subscribeToTopic(selectedItem + event.getUuid())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d(TAG, msg);
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 
 }

@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,6 +117,7 @@ public class EditProfileFragment extends DialogFragment {
 
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
+            Log.d("EditProfileFragment", "Profile picture uploaded to Firestore");
             Picasso.get().load(imageUri).into(profPic);
 
             // Update profilePictureUrl with the new image URI

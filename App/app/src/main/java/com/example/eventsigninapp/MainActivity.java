@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity{
                             String token = task.getResult();
                             Log.d(TAG, "FCM Token: " + token);
                             userController.setFcmToken(token);
+                            Log.d(TAG, "FCM token user controller: " + userController.getFcmToken());
+                            databaseController.updateWithUserFromFirestore(defaultID, userController);
 
                         } else {
                             // Token retrieval failed, log the error

@@ -105,6 +105,7 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("fcmToken"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents")
                         );
@@ -143,6 +144,7 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("fcmToken"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents")
                         );
@@ -275,11 +277,6 @@ public class DatabaseController {
                 Log.e("Database", "Error retrieving checked in users");
             }
         });
-    }
-
-    public void removeUserFromEvent(String userID, String eventID) {
-        DocumentReference eventRef = db.collection("events").document(eventID);
-        eventRef.update("signedUpUsers", FieldValue.arrayRemove(userID));
     }
 
     /**
