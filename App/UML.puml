@@ -132,6 +132,21 @@ class HomeFragment {
     -EventArrayAdapter eventsArrayAdapter
 }
 
+class MapActivity {
+    -Button backButton
+    -TextView eventTitle
+    -DatabaseController dbController
+    -ArrayList<Location> locations
+    -Event event
+    -GoogleMap map
+    -addMarkersToMap()
+    -getAvgLatLng(): LatLng
+}
+
+interface GetCheckInLocationCallback {
+    +onGetCheckInLocationCallback()
+}
+
 class MessagingService {
     +void sendNotification()
     +void onMessageReceived()
@@ -147,9 +162,12 @@ FirebaseMessagingService <|-- MessagingService : extends
 
 AppCompatActivity <|-- MainActivity : extends
 AppCompatActivity <|-- ProfileActivity : extends
+AppCompatActivity <|-- MapActivity : extends
 
 ProfileActivity <|.. OnProfileUpdateListener : implements
 GetAllEventsCallback <|.. HomeFragment : implements
+GetCheckInLocationCallback <|.. MapActivity : implements
+GetEventCallback <|.. MapActivity : implements
 
 UserController "1" o-- "1" ProfileActivity : has
 UserController "1" o-- "1" User : has
