@@ -95,7 +95,6 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-
         editButton = rootView.findViewById(R.id.editButton);
         firstName = rootView.findViewById(R.id.user_first_name);
         lastName = rootView.findViewById(R.id.user_last_name);
@@ -171,13 +170,11 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
             // Update profilePictureUrl with the new URI
-            Uri profilePictureUri = userController.getUser().getPicture();
-            String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
             //Picasso.get().invalidate(imageUri);
-            if (!profilePictureUrl.isEmpty()) {
+            if (imageUri != null) {
                 Picasso.get().load(imageUri).into(profPic);
             } else {
-                // Load Initials instead
+                // Load initials instead
                 profPic.setImageDrawable(initialsDrawable);
             }
         }
@@ -193,21 +190,41 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         // Update profilePictureUrl with the new URI
         //Picasso.get().invalidate(profilePictureUrl);
 
-        // this gives you a default dummy profile pic
-        // if there is no profile pic in the database
+        String userInitials = userController.getUser().getInitials();
+        Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
 
-        Uri profilePictureUri = userController.getUser().getPicture();
-        String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
-
-        if (!profilePictureUrl.isEmpty()) {
-            Picasso.get().load(profilePictureUrl).into(profPic);
+        if (newPicture != null) {
+            Picasso.get().load(newPicture).into(profPic);
         } else {
-            // Load Initials instead
+            // Load a default image instead
             profPic.setImageDrawable(initialsDrawable);
         }
 
         databaseController.putUserToFirestore(userController.getUser());
 
 
+    }
+
+    /**
+     * Updates the profile picture displayed in the ImageView using the provided URI.
+     *
+     * @param newPicture The URI of the new profile picture. If null, a placeholder image will be used.
+     */
+    private void updateProfilePicture(Uri newPicture) {
+        // Update profile picture
+        Picasso picasso = Picasso.get();
+        Uri pictureUri;
+
+        if (newPicture != null) {
+            pictureUri = newPicture;
+        } else {
+            pictureUri = Uri.EMPTY;
+        }
+
+        // Load the pictureUri using Picasso
+        picasso.load(pictureUri)
+                .placeholder(initialsDrawable)
+                .error(initialsDrawable)
+                .into(profPic);
     }
 }
