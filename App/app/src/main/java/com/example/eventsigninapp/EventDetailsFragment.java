@@ -1,7 +1,9 @@
 package com.example.eventsigninapp;
 
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,9 @@ import android.widget.ToggleButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import com.example.eventsigninapp.DatabaseController.EventImageUriCallbacks;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,6 +74,13 @@ public class EventDetailsFragment extends Fragment {
         Bundle bundle = getArguments();
         Event event = (Event) bundle.get("event");
         eventDescription.setText(event.getDescription());
+
+        DatabaseController databaseController = new DatabaseController();
+        // Call the getEventPoster method with the event UUID and implement the callback interface
+
+
+        // Call the getEventPoster function
+        databaseController.getEventPoster(event.getUuid(), callback);
 
         if(userController.getUser().getId().equals(event.getCreatorUUID())){
             editEventButton.setVisibility(View.VISIBLE);
@@ -129,6 +141,33 @@ public class EventDetailsFragment extends Fragment {
         }
     }
 
+
+
+    EventImageUriCallbacks callback = new EventImageUriCallbacks() {
+        @Override
+        public void onEventPosterCallback(Uri imageUri) {
+            // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
+            System.out.println("EventPoster Image URI retrieved: " + imageUri.toString());
+            Picasso.get().load(imageUri).into(eventPoster);
+
+        }
+
+        @Override
+        public void onEventCheckInQRCodeCallback(Uri imageUri) {
+            // to be implement
+        }
+
+        @Override
+        public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+            // to be implemented
+        }
+
+        @Override
+        public void onError(Exception e) {
+            // Handle failure to retrieve the image URI
+            Log.e("EventPoster", "Error getting image URI", e);
+        }
+    };
 
 
 }
