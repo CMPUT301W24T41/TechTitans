@@ -27,7 +27,9 @@ public class CheckInConfirmationDialog extends AlertDialog {
         setMessage("You have successfully checked in to this event!");
         setCancelable(true);
         setButton(BUTTON_POSITIVE, "OK", (dialog, which) -> dialog.dismiss());
-        Picasso.get().load(event.getPosterUri()).into(imageView);
+        if (event.getPosterUri() != null) {
+            Picasso.get().load(event.getPosterUri()).into(imageView);
+        }
         show();
     }
 }

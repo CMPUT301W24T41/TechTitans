@@ -17,12 +17,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.GeoPoint;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.util.Objects;
 
 /**
  * This class acts as a controller for the check in process.
@@ -139,7 +136,10 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
     @Override
     public void onEventPosterCallback(Uri imageUri) {
-        event.setPosterUri(imageUri);
+        if (!(imageUri == null)) {
+            event.setPosterUri(imageUri);
+        }
+
         showCheckInConfirmation();
     }
 
