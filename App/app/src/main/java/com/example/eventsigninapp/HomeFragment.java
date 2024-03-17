@@ -1,24 +1,15 @@
 package com.example.eventsigninapp;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -27,14 +18,14 @@ import java.util.ArrayList;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment implements DatabaseController.GetAllEventsCallback {
+public class HomeFragment extends Fragment implements DatabaseController.GetAllEventsCallback, EventArrayAdapter.OnItemClickListener {
     UserController userController = new UserController();
     DatabaseController dbController;
     ArrayList<Event> allEvents;
-    ListView allEventsList;
+    RecyclerView allEventsList;
     EventArrayAdapter allEventsArrayAdapter;
     ArrayList<Event> myEvents;
-    ListView myEventsList;
+    RecyclerView myEventsList;
     EventArrayAdapter myEventsArrayAdapter;
 
     EventDetailsFragment frag;
@@ -43,10 +34,6 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -74,7 +61,10 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        allEvents = new ArrayList<>();
+        myEvents = new ArrayList<>();
+        dbController = new DatabaseController();
+        dbController.getAllEventsFromFirestore(this);
     }
 
     @Override
@@ -86,47 +76,17 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
         allEventsList = rootView.findViewById(R.id.all_events_list);
         myEventsList = rootView.findViewById(R.id.my_events_list);
 
-        dbController = new DatabaseController();
-        allEvents = new ArrayList<Event>();
-        myEvents = new ArrayList<Event>();
+        allEventsList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        myEventsList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        allEventsArrayAdapter = new EventArrayAdapter(getContext(), allEvents);
+        allEventsArrayAdapter = new EventArrayAdapter(getContext(), allEvents, this);
         allEventsList.setAdapter(allEventsArrayAdapter);
 
-        myEventsArrayAdapter = new EventArrayAdapter(getContext(), myEvents);
+        myEventsArrayAdapter = new EventArrayAdapter(getContext(), myEvents, this);
         myEventsList.setAdapter(myEventsArrayAdapter);
 
         dbController.getAllEventsFromFirestore(this);
         allEventsArrayAdapter.notifyDataSetChanged();
-
-
-        allEventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.e("DEBUG", "item clicked");
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", allEvents.get(position));
-                frag = new EventDetailsFragment();
-                frag.setArguments(bundle);
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
-            }
-        });
-
-        myEventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.e("DEBUG", "item clicked");
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", myEvents.get(position));
-                frag = new EventDetailsFragment();
-                frag.setArguments(bundle);
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
-            }
-        });
 
         return rootView;
     }
@@ -137,11 +97,42 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
      */
     @Override
     public void onGetAllEventsCallback(Event event) {
-        allEvents.add(event);
-        if(userController.getUser().getId().equals(event.getCreatorUUID())){
-            myEvents.add(event);
+        if (!allEvents.contains(event)) {
+            allEvents.add(event);
+
+            if (allEventsArrayAdapter != null) {
+                allEventsArrayAdapter.notifyItemInserted(-1);
+            }
         }
+
+        if (!myEvents.contains(event) && userController.getUser().getId().equals(event.getCreatorUUID())) {
+            myEvents.add(event);
+
+            if (myEventsArrayAdapter != null) {
+                myEventsArrayAdapter.notifyItemInserted(-1);
+            }
+        }
+
+        updateAdapters();
+    }
+
+    private void updateAdapters() {
+        if (allEventsArrayAdapter == null || myEventsArrayAdapter == null) {
+            return;
+        }
+
         allEventsArrayAdapter.notifyDataSetChanged();
         myEventsArrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(Event event, int position) {
+        Log.e("DEBUG", "item clicked");
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+        frag = new EventDetailsFragment();
+        frag.setArguments(bundle);
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
     }
 }
