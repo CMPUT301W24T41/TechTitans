@@ -439,12 +439,15 @@ public class DatabaseController {
      */
     public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
         CollectionReference events = db.collection("events");
+
         events.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        ArrayList<Event> eventList = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                            callback.onGetAllEventsCallback(doc.toObject(Event.class));
+                            eventList.add(doc.toObject(Event.class));
                         }
+                        callback.onGetAllEventsCallback(eventList);
                     } else {
                         Log.e("DEBUG", "Error retrieving events");
                     }
@@ -542,7 +545,7 @@ public class DatabaseController {
      * This interface allows an event to be retrieved from the database and added to the list of events.
      */
     public interface GetAllEventsCallback {
-        void onGetAllEventsCallback(Event event);
+        void onGetAllEventsCallback(ArrayList<Event> events);
     }
 
 

@@ -11,12 +11,9 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class acts as a controller for the event details page.
  */
 public class EventDetailsFragment extends Fragment {
     DatabaseController databaseController = new DatabaseController();
@@ -28,19 +25,6 @@ public class EventDetailsFragment extends Fragment {
     private Button backButton, editEventButton, notifyUsersButton;
     private ToggleButton signUpButton;
 
-    /**
-     * Used for passing in data through Bundle from
-     * Event list fragment. Data passed should be Event Class.
-     */
-    static EventDetailsFragment newInstance(Event event) {
-        Bundle args = new Bundle();
-        args.putSerializable("event", event);
-        EventController eventController = new EventController(event);
-
-        EventDetailsFragment eventFragment = new EventDetailsFragment();
-        eventFragment.setArguments(args);
-        return eventFragment;
-    }
 
     /**
      *
@@ -87,11 +71,7 @@ public class EventDetailsFragment extends Fragment {
             bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
 
-        backButton.setOnClickListener(v -> {
-            HomeFragment homeFrag = new HomeFragment();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(((ViewGroup) getView().getParent()).getId(), homeFrag).commit();
-        });
+        backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
 
         if(userController.getUser().getAttendingEvents().contains(event.getUuid())){
             signUpButton.setChecked(true);
