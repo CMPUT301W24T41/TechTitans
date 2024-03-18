@@ -21,6 +21,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -87,10 +88,16 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     }
 
     private void showCheckInConfirmation() {
+        System.out.println(event);
         if (event != null) {
             checkInConfirmationDialog.showEvent(event);
+        } else {
+            // Handle the case where the event is null
+            // or it does not exist anymore
+            System.out.println("Event is null!");
         }
     }
+
 
     @Override
     public void onGetEventCallback(Event event) {
@@ -140,6 +147,9 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     @Override
     public void onEventPosterCallback(Uri imageUri) {
         event.setPosterUri(imageUri);
+        if (!(imageUri == null)) {
+            event.setPosterUri(imageUri);
+        }
         showCheckInConfirmation();
     }
 
@@ -155,5 +165,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
     @Override
     public void onError(Exception e) {
+        showCheckInConfirmation();
+        //System.out.println("onError");
     }
 }
