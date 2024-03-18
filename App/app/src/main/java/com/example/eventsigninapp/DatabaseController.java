@@ -376,7 +376,7 @@ public class DatabaseController {
             callback.onEventPosterCallback(uri);
         }).addOnFailureListener(e -> {
             Log.e("Database", "getEventPoster: Failed to retrieve image", e);
-            callback.onError(e);
+            callback.onEventPosterCallback(null);
         });
     }
 

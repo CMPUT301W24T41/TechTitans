@@ -140,6 +140,10 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     @Override
     public void onEventPosterCallback(Uri imageUri) {
         event.setPosterUri(imageUri);
+        if (!(imageUri == null)) {
+            event.setPosterUri(imageUri);
+        }
+
         showCheckInConfirmation();
     }
 
