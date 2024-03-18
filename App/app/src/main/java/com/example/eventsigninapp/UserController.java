@@ -24,6 +24,8 @@ public class UserController {
     // this represents the current user
     private static User user = new User();
 
+    private static Boolean isAdmin = false;
+
 
     //this represents the key to the default id of the user
     private static final String deafaultUUID = "UUID_Default";
@@ -51,11 +53,13 @@ public class UserController {
     }
 
     public void setUser(Admin admin){UserController.user = admin;
-
-        if(user.isAdmin()){
-            Log.d("admin", "this is an admin");
-        }
+        isAdmin = true;
     }
+
+    public Boolean isAdmin() {
+        return isAdmin;
+    }
+
 
     /**
      * Gets the user's UUID if it exists, otherwise generates a new one and saves it
@@ -225,6 +229,7 @@ public class UserController {
     public String getFcmToken() {
         return user.getFcmToken();
     }
+
 
 }
 
