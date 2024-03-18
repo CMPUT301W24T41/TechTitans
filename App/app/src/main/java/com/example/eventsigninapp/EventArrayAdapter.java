@@ -69,7 +69,7 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
         EventViewHolder viewHolder = (EventViewHolder) holder;
         viewHolder.getEventTitleTextView().setText(events.get(position).getName());
         viewHolder.getEventDescriptionTextView().setText(events.get(position).getDescription());
-        //viewHolder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(events.get(position), position));
+
 //      Create an instance of DatabaseController
         DatabaseController databaseController = new DatabaseController();
 
