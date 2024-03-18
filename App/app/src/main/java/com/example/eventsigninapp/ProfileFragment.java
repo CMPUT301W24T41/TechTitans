@@ -135,6 +135,11 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             }
         });
 
+        Button adminControlsButton = rootView.findViewById(R.id.adminButton);
+        if(!userController.isAdmin()){
+            adminControlsButton.setVisibility(rootView.INVISIBLE);
+        }
+
         return rootView;
     }
 

@@ -50,11 +50,12 @@ public class UserController {
      */
     public void setUser(User user) {
         UserController.user = user;
+        if(user.isAdmin()){
+            isAdmin = true;
+        };
     }
 
-    public void setUser(Admin admin){UserController.user = admin;
-        isAdmin = true;
-    }
+
 
     public Boolean isAdmin() {
         return isAdmin;
