@@ -1,6 +1,6 @@
 package com.example.eventsigninapp;
 
-import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
+//import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
 
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -24,7 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
+//import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +93,9 @@ public class MainActivity extends AppCompatActivity{
         // this finds the current user and sends the result to userController
         String defaultID = userController.getUserID(this);
         databaseController.updateWithUserFromFirestore(defaultID, userController);
-        Log.d(TAG, "User ID: " + defaultID);
+        Log.d("admin", "User ID: " + defaultID);
+
+        Log.d("admin", "User is an admin " + userController.getUser().isAdmin());
 
         //FCM Notification Permission
         askNotificationPermission();
@@ -102,23 +104,23 @@ public class MainActivity extends AppCompatActivity{
 
         frameLayout = findViewById(R.id.eventButton);
         tabLayout = findViewById(R.id.mainTabLayout);
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (task.isSuccessful()) {
-                            // Token retrieval successful, log the token
-                            String token = task.getResult();
-                            Log.d(TAG, "FCM Token: " + token);
-                            userController.setFcmToken(token);
-
-                        } else {
-                            // Token retrieval failed, log the error
-                            Exception exception = task.getException();
-                            Log.e(TAG, "Error fetching FCM registration token: " + exception.getMessage());
-                        }
-                    }
-                });
+//        FirebaseMessaging.getInstance().getToken()
+//                .addOnCompleteListener(new OnCompleteListener<String>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<String> task) {
+//                        if (task.isSuccessful()) {
+//                            // Token retrieval successful, log the token
+//                            String token = task.getResult();
+//                            Log.d(TAG, "FCM Token: " + token);
+//                            userController.setFcmToken(token);
+//
+//                        } else {
+//                            // Token retrieval failed, log the error
+//                            Exception exception = task.getException();
+//                            Log.e(TAG, "Error fetching FCM registration token: " + exception.getMessage());
+//                        }
+//                    }
+//                });
 
 
 

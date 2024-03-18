@@ -197,6 +197,11 @@ public class User {
         return fcmtoken;
     }
 
+    public Boolean isAdmin() {
+        return false;
+    }
+
+
 
     /**
      * This method should be used to delete the picture of the user

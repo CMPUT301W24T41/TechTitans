@@ -74,7 +74,12 @@ public class DatabaseController {
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
         userData.put("fcmToken", user.getFcmToken());
-
+        // this checks if the user is an admin
+        if (user.isAdmin()){
+            userData.put("isAdmin", true);
+        }else {
+            userData.put("isAdmin", false);
+        }
 
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
@@ -100,16 +105,32 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(
-                                id,
-                                document.getString("firstName"),
-                                document.getString("lastName"),
-                                document.getString("contact"),
-                                (ArrayList<String>) document.get("attendingEvents"),
-                                (ArrayList<String>) document.get("hostingEvents")
-                        );
-                        userController.setUser(pulledUser);
-                        this.updateWithProfPictureFromWeb(pulledUser);
+                        Boolean isAdminValue = document.getBoolean("isAdmin");
+//                        Log.d("admin", "is user admin?:" + isAdminValue);
+                        if (Boolean.TRUE.equals(isAdminValue)) {
+                            Admin pulledUser = new Admin(
+                                    id,
+                                    document.getString("firstName"),
+                                    document.getString("lastName"),
+                                    document.getString("contact"),
+                                    (ArrayList<String>) document.get("attendingEvents"),
+                                    (ArrayList<String>) document.get("hostingEvents")
+                            );
+                            userController.setUser(pulledUser);
+                            this.updateWithProfPictureFromWeb(pulledUser);
+
+                        } else {
+                            User pulledUser = new User(
+                                    id,
+                                    document.getString("firstName"),
+                                    document.getString("lastName"),
+                                    document.getString("contact"),
+                                    (ArrayList<String>) document.get("attendingEvents"),
+                                    (ArrayList<String>) document.get("hostingEvents")
+                            );
+                            userController.setUser(pulledUser);
+                            this.updateWithProfPictureFromWeb(pulledUser);
+                        }
                     } else {
                         // user does not exist, create a new user
                         User createdUser = new User(id);
@@ -138,20 +159,59 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        User pulledUser = new User(
-                                id,
-                                document.getString("firstName"),
-                                document.getString("lastName"),
-                                document.getString("contact"),
-                                (ArrayList<String>) document.get("attendingEvents"),
-                                (ArrayList<String>) document.get("hostingEvents")
-                        );
-                        callback.onCallback(pulledUser);
+                        Boolean isAdminValue = document.getBoolean("isAdmin");
+
+                        if (Boolean.TRUE.equals(isAdminValue)) {
+                            Admin pulledUser = new Admin(
+                                    id,
+                                    document.getString("firstName"),
+                                    document.getString("lastName"),
+                                    document.getString("contact"),
+                                    (ArrayList<String>) document.get("attendingEvents"),
+                                    (ArrayList<String>) document.get("hostingEvents")
+                            );
+                            callback.onCallback(pulledUser);
+                        }else{
+                            User pulledUser = new User(
+                                    id,
+                                    document.getString("firstName"),
+                                    document.getString("lastName"),
+                                    document.getString("contact"),
+                                    (ArrayList<String>) document.get("attendingEvents"),
+                                    (ArrayList<String>) document.get("hostingEvents")
+
+                            );
+                            callback.onCallback(pulledUser);
+                        }
+
+
                     } else {
                         callback.onError(new Exception("failed to retrieve user"));
                     }
                 });
     }
+
+
+    /**
+     * This method deletes the given picture uri from the storage for the given event
+     * @param event the user whose profile is being updated
+     */
+    public void deleteEventPicture(Event event) {
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("event_posters/" + event.getUuid());
+
+        // Delete the profile picture from Firebase Storage
+        profilePicRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Upon successful deletion, update the user's picture URI
+                    event.setPosterUri(null);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Database", "deleteProfilePicture: Error, failure to delete image", e);
+                });
+    }
+
+
 
     /**
      * This method deletes the given picture uri from the storage for the given user
@@ -239,6 +299,47 @@ public class DatabaseController {
         });
     }
 
+
+    public void deleteUserInfo(User user){
+        db.collection("users").document(user.getId()).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Handle successful deletion
+                        Log.d("Database", "User document deleted successfully");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors
+                    Log.e("Database", "Error deleting user document", e);
+                });
+    }
+
+
+    public void deleteEventInfo(Event event){
+        db.collection("users").document(event.getUuid()).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Handle successful deletion
+                        Log.d("Database", "event document deleted successfully");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors
+                    Log.e("Database", "Error deleting event document", e);
+                });
+    }
+
+
+    public void deleteUser(User user){
+
+    }
+
+
+    public void deleteEvent(Event event){
+        //TODO
+    }
     /**
      * This function retrieves users that signed up to an event from the database.
      * @param event the event we are retrieving signed up users for
@@ -470,6 +571,7 @@ public class DatabaseController {
                     }
                 });
     }
+
 
     public interface GetEventCallback {
         void onGetEventCallback(Event event);

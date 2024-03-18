@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
@@ -49,6 +50,12 @@ public class UserController {
         UserController.user = user;
     }
 
+    public void setUser(Admin admin){UserController.user = admin;
+
+        if(user.isAdmin()){
+            Log.d("admin", "this is an admin");
+        }
+    }
 
     /**
      * Gets the user's UUID if it exists, otherwise generates a new one and saves it
@@ -197,6 +204,8 @@ public class UserController {
     public void deleteProfilePicture(Context context) {
         user.deletePicture(); // Set the picture to null in User object
     }
+
+
 
     /**
      * Retrieves the default picture URI.
