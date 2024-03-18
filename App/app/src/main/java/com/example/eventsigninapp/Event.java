@@ -2,12 +2,14 @@ package com.example.eventsigninapp;
 
 
 import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Event implements Serializable {
@@ -218,5 +220,23 @@ public class Event implements Serializable {
 
     public Uri getDescriptionQRCodeUri() {
         return descriptionQRCodeUri;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // check if object is an event
+        if (!(o instanceof Event)) {
+            return false;
+        }
+
+        if (!Objects.equals(((Event) o).getUuid(), this.getUuid())) {
+            return false;
+        }
+
+        return this.toMap().equals(((Event) o).toMap());
+    }
+
+    public boolean isSameEvent(Event event) {
+        return this.getUuid().equals(event.getUuid());
     }
 }

@@ -19,9 +19,7 @@ import com.example.eventsigninapp.DatabaseController.EventImageUriCallbacks;
 import com.squareup.picasso.Picasso;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class acts as a controller for the event details page.
  */
 public class EventDetailsFragment extends Fragment {
     DatabaseController databaseController = new DatabaseController();
@@ -99,11 +97,7 @@ public class EventDetailsFragment extends Fragment {
             bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
 
-        backButton.setOnClickListener(v -> {
-            HomeFragment homeFrag = new HomeFragment();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(((ViewGroup) getView().getParent()).getId(), homeFrag).commit();
-        });
+        backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
 
         if(userController.getUser().getAttendingEvents().contains(event.getUuid())){
             signUpButton.setChecked(true);
