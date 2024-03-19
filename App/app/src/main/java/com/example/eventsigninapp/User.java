@@ -54,6 +54,8 @@ public class User {
     private String imgUrl;
     private String fcmtoken;
 
+    private Boolean admin;
+
     protected User() {
         attendingEvents = new ArrayList<>();
         hostingEvents = new ArrayList<>();
@@ -65,6 +67,7 @@ public class User {
         location = "";
         imgUrl = "";
         fcmtoken = "";
+        admin = false;
     }
 
     protected User(String id) {
@@ -85,11 +88,12 @@ public class User {
         this.contact = contact;
     }
 
-    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents) {
+    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin) {
         this(id, first, last);
         this.contact = contact;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
+        this.admin = admin;
     }
 
 
@@ -198,7 +202,7 @@ public class User {
     }
 
     public Boolean isAdmin() {
-        return false;
+        return admin;
     }
 
 

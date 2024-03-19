@@ -105,32 +105,21 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        Boolean isAdminValue = document.getBoolean("isAdmin");
-//                        Log.d("admin", "is user admin?:" + isAdminValue);
-                        if (Boolean.TRUE.equals(isAdminValue)) {
-                            Admin pulledUser = new Admin(
-                                    id,
-                                    document.getString("firstName"),
-                                    document.getString("lastName"),
-                                    document.getString("contact"),
-                                    (ArrayList<String>) document.get("attendingEvents"),
-                                    (ArrayList<String>) document.get("hostingEvents")
-                            );
-                            userController.setUser(pulledUser);
-                            this.updateWithProfPictureFromWeb(pulledUser);
+//                        Boolean isAdminValue = document.getBoolean("isAdmin");
+////                        Log.d("admin", "is user admin?:" + isAdminValue);
 
-                        } else {
                             User pulledUser = new User(
                                     id,
                                     document.getString("firstName"),
                                     document.getString("lastName"),
                                     document.getString("contact"),
                                     (ArrayList<String>) document.get("attendingEvents"),
-                                    (ArrayList<String>) document.get("hostingEvents")
+                                    (ArrayList<String>) document.get("hostingEvents"),
+                                    document.getBoolean("isAdmin")
                             );
                             userController.setUser(pulledUser);
                             this.updateWithProfPictureFromWeb(pulledUser);
-                        }
+
                     } else {
                         // user does not exist, create a new user
                         User createdUser = new User(id);
@@ -159,30 +148,20 @@ public class DatabaseController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        Boolean isAdminValue = document.getBoolean("isAdmin");
 
-                        if (Boolean.TRUE.equals(isAdminValue)) {
-                            Admin pulledUser = new Admin(
-                                    id,
-                                    document.getString("firstName"),
-                                    document.getString("lastName"),
-                                    document.getString("contact"),
-                                    (ArrayList<String>) document.get("attendingEvents"),
-                                    (ArrayList<String>) document.get("hostingEvents")
-                            );
-                            callback.onCallback(pulledUser);
-                        }else{
+
                             User pulledUser = new User(
                                     id,
                                     document.getString("firstName"),
                                     document.getString("lastName"),
                                     document.getString("contact"),
                                     (ArrayList<String>) document.get("attendingEvents"),
-                                    (ArrayList<String>) document.get("hostingEvents")
+                                    (ArrayList<String>) document.get("hostingEvents"),
+                                    document.getBoolean("isAdmin")
 
                             );
                             callback.onCallback(pulledUser);
-                        }
+
 
 
                     } else {
@@ -572,6 +551,27 @@ public class DatabaseController {
                 });
     }
 
+    public void getAllUsersFromFirestore(GetAllUsersCallback callback) {
+        CollectionReference events = db.collection("users");
+        events.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                callback.onGetUserCallback(doc.toObject(User.class));
+                            }
+                        } else {
+                            Log.e("DEBUG", "Error retrieving events");
+                        }
+                    }
+                });
+    }
+
+
+    public interface GetAllUsersCallback{
+        void onGetUserCallback(User user);
+    }
 
     public interface GetEventCallback {
         void onGetEventCallback(Event event);

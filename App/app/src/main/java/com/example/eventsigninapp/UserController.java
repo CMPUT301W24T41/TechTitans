@@ -24,7 +24,6 @@ public class UserController {
     // this represents the current user
     private static User user = new User();
 
-    private static Boolean isAdmin = false;
 
 
     //this represents the key to the default id of the user
@@ -50,15 +49,12 @@ public class UserController {
      */
     public void setUser(User user) {
         UserController.user = user;
-        if(user.isAdmin()){
-            isAdmin = true;
-        };
     }
 
 
 
-    public Boolean isAdmin() {
-        return isAdmin;
+    public Boolean userIsAdmin() {
+        return user.isAdmin();
     }
 
 
