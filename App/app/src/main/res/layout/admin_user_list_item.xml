@@ -69,6 +69,19 @@
             android:layout_marginBottom="5dp"
             >
         </TextView>
+        <Button
+            android:layout_toEndOf="@id/adminViewContact"
+            android:layout_below="@id/adminViewLastName"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_button_background"
+            android:backgroundTint="@color/Red"
+            android:id="@+id/adminViewDeleteUser"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="40dp"
+            android:text="Delete">
+
+        </Button>
 
 
     </RelativeLayout>

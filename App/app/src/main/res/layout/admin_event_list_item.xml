@@ -45,7 +45,7 @@
             android:id="@+id/adminViewOrganizerID"
             android:text="OraganzierID"
             android:textSize="12sp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
         </TextView>
 
@@ -59,18 +59,21 @@
             >
         </TextView>
 
-        <TextView
-            android:layout_alignParentEnd="true"
+
+        <Button
+            android:layout_toEndOf="@id/adminViewOrganizerID"
             android:layout_below="@id/adminViewEventCapacity"
-            android:layout_width="75dp"
-            android:layout_height="15dp"
-            android:id="@+id/adminViewEventDate"
-            android:text="Date"
-            android:textSize="12sp"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_button_background"
+            android:backgroundTint="@color/Red"
+            android:id="@+id/adminViewDeleteEvent"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            >
-        </TextView>
+            android:layout_marginLeft="50dp"
+            android:layout_marginBottom="8dp"
+            android:text="Delete">
+
+        </Button>
 
 
 
