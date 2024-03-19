@@ -20,11 +20,21 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
+    private int layoutID;
+
 
     public EventArrayAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
         this.events = events;
         this.context = context;
+
+    }
+
+    public EventArrayAdapter(Context context, int layoutID, ArrayList<Event> events) {
+        super(context, layoutID, events);
+        this.events = events;
+        this.context = context;
+        this.layoutID = layoutID;
     }
 
     @NonNull
@@ -34,16 +44,29 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.event_list_item, parent, false);
+
+            Event event = events.get(position);
+            Log.e("DEBUG", String.format("Looking at %s", event.getName()));
+
+            TextView eventTitle = view.findViewById(R.id.event_title);
+            TextView eventDescription = view.findViewById(R.id.event_description);
+
+            eventTitle.setText(event.getName());
+            eventDescription.setText(event.getDescription());
+        } else if (layoutID == R.layout.admin_event_list_item) {
+            view = LayoutInflater.from(context).inflate(layoutID, parent, false);
+
+            Event event = events.get(position);
+
+            TextView eventTitle = view.findViewById(R.id.adminViewEventName);
+            TextView organizerID = view.findViewById(R.id.adminViewOrganizerID);
+
+            organizerID.setText("OrganizerID: ")
+            eventTitle.setText(event.getName());
+
         }
 
-        Event event = events.get(position);
-        Log.e("DEBUG", String.format("Looking at %s", event.getName()));
 
-        TextView eventTitle = view.findViewById(R.id.event_title);
-        TextView eventDescription = view.findViewById(R.id.event_description);
-
-        eventTitle.setText(event.getName());
-        eventDescription.setText(event.getDescription());
         return view;
     }
 }

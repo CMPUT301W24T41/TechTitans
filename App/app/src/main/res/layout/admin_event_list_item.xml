@@ -37,6 +37,8 @@
         </TextView>
 
 
+
+
         <TextView
             android:layout_toEndOf="@id/adminViewEventPoster"
             android:layout_below="@id/adminViewEventName"
@@ -46,6 +48,17 @@
             android:text="OraganzierID"
             android:textSize="12sp"
             android:layout_marginTop="10dp"
+            >
+        </TextView>
+        <TextView
+            android:layout_toEndOf="@id/adminViewEventPoster"
+            android:layout_below="@id/adminViewOrganizerID"
+            android:layout_width="150dp"
+            android:layout_height="15dp"
+            android:id="@+id/adminViewEventID"
+            android:text="EventID"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp">
         </TextView>
 
