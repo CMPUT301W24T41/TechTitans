@@ -75,11 +75,8 @@ public class DatabaseController {
         userData.put("hostingEvents", user.getHostingEvents());
         userData.put("fcmToken", user.getFcmToken());
         // this checks if the user is an admin
-        if (user.isAdmin()){
-            userData.put("isAdmin", true);
-        }else {
-            userData.put("isAdmin", false);
-        }
+        userData.put("admin", user.isAdmin());
+
 
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
@@ -115,7 +112,7 @@ public class DatabaseController {
                                     document.getString("contact"),
                                     (ArrayList<String>) document.get("attendingEvents"),
                                     (ArrayList<String>) document.get("hostingEvents"),
-                                    document.getBoolean("isAdmin")
+                                    document.getBoolean("admin")
                             );
                             userController.setUser(pulledUser);
                             this.updateWithProfPictureFromWeb(pulledUser);
@@ -157,7 +154,7 @@ public class DatabaseController {
                                     document.getString("contact"),
                                     (ArrayList<String>) document.get("attendingEvents"),
                                     (ArrayList<String>) document.get("hostingEvents"),
-                                    document.getBoolean("isAdmin")
+                                    document.getBoolean("admin")
 
                             );
                             callback.onCallback(pulledUser);
@@ -551,27 +548,7 @@ public class DatabaseController {
                 });
     }
 
-    public void getAllUsersFromFirestore(GetAllUsersCallback callback) {
-        CollectionReference events = db.collection("users");
-        events.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc : task.getResult()) {
-                                callback.onGetUserCallback(doc.toObject(User.class));
-                            }
-                        } else {
-                            Log.e("DEBUG", "Error retrieving events");
-                        }
-                    }
-                });
-    }
-
-
-    public interface GetAllUsersCallback{
-        void onGetUserCallback(User user);
-    }
+    
 
     public interface GetEventCallback {
         void onGetEventCallback(Event event);

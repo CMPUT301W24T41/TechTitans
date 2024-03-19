@@ -1,6 +1,6 @@
 package com.example.eventsigninapp;
 
-public class adminEventListFragment {
+public class AdminEventListFragment {
 
     DatabaseController databaseController = new DatabaseController();
 

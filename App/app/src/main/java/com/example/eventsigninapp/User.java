@@ -93,7 +93,11 @@ public class User {
         this.contact = contact;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
-        this.admin = admin;
+        if(admin == null){
+            this.admin = false;
+        }else {
+            this.admin = admin;
+        }
     }
 
 
