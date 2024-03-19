@@ -38,7 +38,7 @@ public class Event implements Serializable {
         checkInQRCodeUri = null;
         location = null;
         date = null;
-        capacity = 10000000;
+        capacity = 0;
     }
 
     public Event(String creatorUUID) {
