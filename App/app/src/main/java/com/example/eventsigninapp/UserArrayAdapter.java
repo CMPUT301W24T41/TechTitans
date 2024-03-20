@@ -64,14 +64,13 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
         } else if (layoutID == R.layout.admin_user_list_item) {
             User user = users.get(position);
 
-            view = LayoutInflater.from(context).inflate(R.layout.admin_user_list_item, parent, false);
+            view = LayoutInflater.from(context).inflate(layoutID, parent, false);
 
             TextView firstName = view.findViewById(R.id.adminViewFirstName);
             TextView lastName = view.findViewById(R.id.adminViewLastName);
             TextView userID = view.findViewById(R.id.adminViewID);
             TextView contact = view.findViewById(R.id.adminViewContact);
             ImageView profilePic = view.findViewById(R.id.adminViewProfilePicture);
-
 
             firstName.setText(user.getFirstName());
             lastName.setText(user.getLastName());

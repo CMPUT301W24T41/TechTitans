@@ -22,6 +22,8 @@ public class AdminEventListFragment extends Fragment implements DatabaseControll
 
     ArrayList<Event> events;
     EventArrayAdapter eventsArrayAdapter;
+
+    public AdminEventListFragment(){};
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class AdminEventListFragment extends Fragment implements DatabaseControll
 
         events = new ArrayList<Event>();
 
-        eventsArrayAdapter = new EventArrayAdapter(getContext(), R.layout.admin_list, events);
+        eventsArrayAdapter = new EventArrayAdapter(getContext(), R.layout.admin_event_list_item, events);
         eventList.setAdapter(eventsArrayAdapter);
 
 

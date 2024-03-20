@@ -2,6 +2,9 @@ package com.example.eventsigninapp;
 
 //import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
 
+import static java.security.AccessController.getContext;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -37,55 +40,64 @@ public class AdminActivity extends AppCompatActivity{
 
 
 
-        // Set the selected tab to the second tab (index 1, which is the "Home" tab)
-//        TabLayout.Tab tab = tabLayout.getTabAt(1);
-//        if (tab != null) {
-//            tab.select();
-//        }
 
-//        //TODO
-//        // Set the default selected tab to HomeFragment
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragmentContainer, new AdminEventListFragment())
-//                .addToBackStack(null)
-//                .commit();
-//
-//        // Set listener for tab selection
-//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                Fragment fragment = null;
-//                switch (tab.getPosition()) {
-//
-//                    //TODO
-//                    case 0:
-//                        fragment = new EventCreationFragment();
-//                        break;
-//                    case 1:
-//                        fragment = new HomeFragment();
-//                        break;
-//                    case 2:
-//                        fragment = new CheckInFragment();
-//                        break;
-//                }
-//
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.fragmentContainer, fragment)
-//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                        .commit();
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//            }
-//        });
+        TabLayout.Tab tab = tabLayout.getTabAt(0);
+        if (tab != null) {
+            tab.select();
+        }
+
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.adminMain, new AdminEventListFragment())
+                .addToBackStack(null)
+                .commit();
+
+        // Set listener for tab selection
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment fragment = null;
+                switch (tab.getPosition()) {
+
+                    //TODO
+                    case 0:
+                        fragment = new AdminEventListFragment();
+                        break;
+                    case 1:
+                        fragment = new AdminUserListFragment();
+                        break;
+                    case 2:
+                        //TODO add all images fragment
+//                        fragment = new ();
+                        break;
+                    case 3:
+                        break;
+
+                }
+                if(tab.getPosition() == 3) {
+                    Intent intent = new Intent(AdminActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                }else{
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.adminMain, fragment)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
+                }
+
+
+
+            }
+
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
 
 

@@ -22,6 +22,9 @@ public class AdminUserListFragment extends Fragment implements DatabaseControlle
 
     ArrayList<User> users;
     UserArrayAdapter userArrayAdapter;
+
+    public AdminUserListFragment(){};
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +43,7 @@ public class AdminUserListFragment extends Fragment implements DatabaseControlle
 
         users = new ArrayList<User>();
 
-        userArrayAdapter  = new UserArrayAdapter(getContext(), R.layout.admin_list, users);
+        userArrayAdapter  = new UserArrayAdapter(getContext(), R.layout.admin_user_list_item, users);
         userList.setAdapter(userArrayAdapter);
 
 
@@ -66,6 +69,7 @@ public class AdminUserListFragment extends Fragment implements DatabaseControlle
 
         return view;
     }
+
 
 
     @Override

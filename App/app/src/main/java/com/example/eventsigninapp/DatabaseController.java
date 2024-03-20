@@ -570,8 +570,8 @@ public class DatabaseController {
 
 
     public void getAllUsersFromFirestore(GetAllUserCallback callback) {
-        CollectionReference events = db.collection("events");
-        events.get()
+        CollectionReference users = db.collection("users");
+        users.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -586,6 +586,8 @@ public class DatabaseController {
                                         (ArrayList<String>) doc.get("hostingEvents"),
                                         doc.getBoolean("admin")
                                 );
+
+                                Log.d("userCreated", "onComplete: New User created" + doc.getString("id"));
                                 callback.onGetAllUserCallback(user);
                             }
                         } else {

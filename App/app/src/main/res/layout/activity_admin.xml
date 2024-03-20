@@ -20,7 +20,6 @@
         android:layout_alignParentBottom="true"
         android:background="@color/blue"
         android:paddingBottom="8dp"
-
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white">
 
