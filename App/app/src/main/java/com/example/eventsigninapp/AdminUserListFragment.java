@@ -72,6 +72,8 @@ public class AdminUserListFragment extends Fragment implements DatabaseControlle
 
 
 
+
+
     @Override
     public void onGetAllUserCallback(User user) {
         users.add(user);

@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +24,14 @@ import com.squareup.picasso.Picasso;
 /**
  * The UserArrayAdapter class allows the list of users to be displayed in a list view.
  */
-public class UserArrayAdapter extends ArrayAdapter<User> {
+public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseController.ImageUriCallback{
     private List<User> users;
     private Context context;
     private int layoutID;
 
+    private DatabaseController databaseController = new DatabaseController();
+
+    private ImageView profilePic;
     public UserArrayAdapter(Context context, List<User> users) {
         super(context, 0,  users);
         this.users = users;
@@ -70,19 +74,37 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
             TextView lastName = view.findViewById(R.id.adminViewLastName);
             TextView userID = view.findViewById(R.id.adminViewID);
             TextView contact = view.findViewById(R.id.adminViewContact);
-            ImageView profilePic = view.findViewById(R.id.adminViewProfilePicture);
+            profilePic = view.findViewById(R.id.adminViewProfilePicture);
+
+
+
+            databaseController.getUserProfilePicture(user.getId(), this);
 
             firstName.setText(user.getFirstName());
             lastName.setText(user.getLastName());
             contact.setText(user.getContact());
             userID.setText(user.getId());
-            Picasso.get().load(user.getPicture()).into(profilePic);
+
+
+//            Picasso.get().load(user.getPicture()).into(profilePic);
 
 
 
         }
 
         return view;
+    }
+
+    public void onImageUriCallback(Uri uri) {
+        // Handle the retrieved URI here
+        String imageUrl = uri.toString();
+        Picasso.get().load(imageUrl).into(profilePic);
+    }
+
+    @Override
+    public void onError(Exception e) {
+        //load dummy picture
+//        Picasso.get().load(R.drawable.user).into(profilePic);
     }
 
 }

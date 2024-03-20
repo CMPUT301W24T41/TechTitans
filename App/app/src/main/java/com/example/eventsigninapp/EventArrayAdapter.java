@@ -22,13 +22,15 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class EventArrayAdapter extends ArrayAdapter<Event> {
+public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseController.EventImageUriCallbacks{
     DatabaseController databaseController = new DatabaseController();
 
     private ArrayList<Event> events;
     private Context context;
 
     private int layoutID;
+
+    private ImageView eventPoster;
 
 
     public EventArrayAdapter(Context context, ArrayList<Event> events) {
@@ -70,18 +72,41 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             TextView organizerID = view.findViewById(R.id.adminViewOrganizerID);
             TextView eventID = view.findViewById(R.id.adminViewEventID);
             TextView eventCapacity = view.findViewById(R.id.adminViewEventCapacity);
-            ImageView eventPoster = view.findViewById(R.id.adminViewEventPoster);
+            eventPoster = view.findViewById(R.id.adminViewEventPoster);
 
+
+            databaseController.getEventPoster(event.getUuid(), this);
 
             eventTitle.setText(event.getName());
             organizerID.setText(String.format(context.getString(R.string.organizerid), event.getCreatorUUID()));
             eventID.setText(String.format(context.getString(R.string.eventid), event.getUuid()));
             eventCapacity.setText(String.format(context.getString(R.string.division), event.getSignedUpUsersUUIDs().size(), event.getCapacity()));
-            Picasso.get().load(event.getPosterUri()).into(eventPoster);
 
         }
 
 
         return view;
+    }
+
+    public void onEventPosterCallback(Uri uri) {
+        // Handle the retrieved URI here
+        String imageUrl = uri.toString();
+        Picasso.get().load(imageUrl).into(eventPoster);
+    }
+
+    @Override
+    public void onEventCheckInQRCodeCallback(Uri imageUri) {
+        return;
+    }
+
+    @Override
+    public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+        return;
+    }
+
+    @Override
+    public void onError(Exception e) {
+        //load dummy picture
+//        Picasso.get().load(R.drawable.user).into(profilePic);
     }
 }
