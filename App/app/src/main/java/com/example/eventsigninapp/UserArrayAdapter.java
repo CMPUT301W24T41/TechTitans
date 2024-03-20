@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -75,7 +76,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             TextView userID = view.findViewById(R.id.adminViewID);
             TextView contact = view.findViewById(R.id.adminViewContact);
             profilePic = view.findViewById(R.id.adminViewProfilePicture);
-
+            Button deleteButton = view.findViewById(R.id.adminViewDeleteUser);
 
 
             databaseController.getUserProfilePicture(user.getId(), this);
@@ -84,6 +85,16 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             lastName.setText(user.getLastName());
             contact.setText(user.getContact());
             userID.setText(user.getId());
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    users.remove(user);
+                    notifyDataSetChanged();
+                    databaseController.deleteUser(user);
+
+                }
+            });
 
 
 //            Picasso.get().load(user.getPicture()).into(profilePic);

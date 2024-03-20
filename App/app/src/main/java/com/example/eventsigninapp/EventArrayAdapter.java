@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,6 +74,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
             TextView eventID = view.findViewById(R.id.adminViewEventID);
             TextView eventCapacity = view.findViewById(R.id.adminViewEventCapacity);
             eventPoster = view.findViewById(R.id.adminViewEventPoster);
+            Button deleteButton = view.findViewById(R.id.adminViewDeleteEvent);
 
 
             databaseController.getEventPoster(event.getUuid(), this);
@@ -81,6 +83,17 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
             organizerID.setText(String.format(context.getString(R.string.organizerid), event.getCreatorUUID()));
             eventID.setText(String.format(context.getString(R.string.eventid), event.getUuid()));
             eventCapacity.setText(String.format(context.getString(R.string.division), event.getSignedUpUsersUUIDs().size(), event.getCapacity()));
+
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    events.remove(event);
+                    notifyDataSetChanged();
+                    databaseController.deleteEvent(event);
+                }
+            });
+
 
         }
 
