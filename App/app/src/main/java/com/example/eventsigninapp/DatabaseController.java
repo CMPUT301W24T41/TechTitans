@@ -170,7 +170,7 @@ public class DatabaseController {
 
     /**
      * This method deletes the given picture uri from the storage for the given event
-     * @param event the user whose profile is being updated
+     * @param event the event picture is being deleted
      */
     public void deleteEventPicture(Event event) {
         StorageReference storageRef = storage.getReference();
@@ -183,7 +183,7 @@ public class DatabaseController {
                     event.setPosterUri(null);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Database", "deleteProfilePicture: Error, failure to delete image", e);
+                    Log.e("Database", "deleteEventPicture: Error, failure to delete image", e);
                 });
     }
 
@@ -275,6 +275,10 @@ public class DatabaseController {
         });
     }
 
+    /**
+    Deletes the information of the given user
+     @param user the user to be deleted
+     */
 
     public void deleteUserInfo(User user){
         db.collection("users").document(user.getId()).delete()
@@ -292,6 +296,11 @@ public class DatabaseController {
     }
 
 
+    /**
+     Deletes the information of the given event
+     @param event the event to be deleted
+     */
+
     public void deleteEventInfo(Event event){
         db.collection("users").document(event.getUuid()).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -308,13 +317,24 @@ public class DatabaseController {
     }
 
 
-    public void deleteUser(User user){
+    /**
+     * Deletes both the users information and their user profile picture
+     * @param user the user to be deleted
+     */
 
+    public void deleteUser(User user){
+        deleteUserInfo(user);
+        deleteProfilePicture(user);
     }
 
 
+    /**
+     * Deletes both the event information and the event poster
+     * @param event the user to be deleted
+     */
     public void deleteEvent(Event event){
-        //TODO
+        deleteEventInfo(event);
+        deleteEventPicture(event);
     }
     /**
      * This function retrieves users that signed up to an event from the database.
@@ -548,7 +568,40 @@ public class DatabaseController {
                 });
     }
 
-    
+
+    public void getAllUsersFromFirestore(GetAllUserCallback callback) {
+        CollectionReference events = db.collection("events");
+        events.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                User user = new User(
+                                        doc.getString("id"),
+                                        doc.getString("firstName"),
+                                        doc.getString("lastName"),
+                                        doc.getString("contact"),
+                                        (ArrayList<String>) doc.get("attendingEvents"),
+                                        (ArrayList<String>) doc.get("hostingEvents"),
+                                        doc.getBoolean("admin")
+                                );
+                                callback.onGetAllUserCallback(user);
+                            }
+                        } else {
+                            Log.e("DEBUG", "Error retrieving events");
+                        }
+                    }
+                });
+    }
+
+
+
+    public interface GetAllUserCallback{
+        void onGetAllUserCallback(User user);
+    }
+
+
 
     public interface GetEventCallback {
         void onGetEventCallback(Event event);

@@ -6,13 +6,20 @@
     android:layout_height="match_parent">
 
 
+    <FrameLayout
+
+        android:id="@+id/adminMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/adminTabs" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/adminTabs"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:background="@color/blue"
-        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
 
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white">
@@ -38,17 +45,17 @@
             android:layout_marginBottom="10dp"
             android:text="All Images" />
 
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/ReturnButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Return" />
 
 
 
 
     </com.google.android.material.tabs.TabLayout>
 
-    <FrameLayout
-
-        android:id="@+id/adminMain"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/adminTabs" />
 
 </RelativeLayout>

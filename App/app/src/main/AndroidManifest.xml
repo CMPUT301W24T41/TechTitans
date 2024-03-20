@@ -66,6 +66,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
+
+        <activity
+            android:name=".AdminActivity"
+            android:exported="true">
+
+
+        </activity>
         <service
             android:name=".MessagingService"
             android:exported="false">

@@ -46,4 +46,9 @@
     <string name="Qr_Code_Message">Scan the QR code to check in and enjoy the event !</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="organizerid">OrganizerID: %1$s\n</string>
+    <string name="eventid">EventID: %1$s\n</string>
+    <string name="division">%1$d/%2$d</string>
+    <string name="eventListTitle">Events:</string>
+    <string name="userListTitle">Users:\n</string>
 </resources>

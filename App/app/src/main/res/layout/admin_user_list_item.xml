@@ -60,11 +60,11 @@
         <TextView
             android:layout_toEndOf="@id/adminViewProfilePicture"
             android:layout_below="@id/adminViewContact"
-            android:layout_width="150dp"
+            android:layout_width="200dp"
             android:layout_height="15dp"
             android:id="@+id/adminViewID"
             android:text="User ID"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             >

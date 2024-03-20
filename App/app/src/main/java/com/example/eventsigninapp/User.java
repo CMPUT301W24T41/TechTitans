@@ -4,11 +4,12 @@ import android.net.Uri;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class User {
+public class User implements Serializable {
 
     private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures/";
 
