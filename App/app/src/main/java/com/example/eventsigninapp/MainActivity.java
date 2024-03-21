@@ -147,9 +147,12 @@ public class MainActivity extends AppCompatActivity{
                         fragment = new HomeFragment();
                         break;
                     case 2:
-                        fragment = new CheckInFragment();
+                        fragment = new MyEventsFragment();
                         break;
                     case 3:
+                        fragment = new CheckInFragment();
+                        break;
+                    case 4:
                         fragment = new ProfileFragment();
                         break;
                 }

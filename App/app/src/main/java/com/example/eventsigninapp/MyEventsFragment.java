@@ -8,26 +8,22 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-/**
- * This class acts as a controller for the home page.
- * It is responsible for displaying the list of events and handling the user's interaction with the events.
- */
-public class HomeFragment extends Fragment implements DatabaseController.GetAllEventsCallback, EventArrayAdapter.OnItemClickListener {
+public class MyEventsFragment extends Fragment implements DatabaseController.GetAllEventsCallback, EventArrayAdapter.OnItemClickListener {
     UserController userController;
     DatabaseController dbController;
-    ArrayList<Event> allEventsArrayList;
-    EventArrayAdapter allEventsArrayAdapter;
     ArrayList<Event> myEventsArrayList;
     EventArrayAdapter myEventsArrayAdapter;
-    HomeView homeView;
+    MyEventsView myEventsView;
     EventDetailsFragment frag;
+    Collection<String> checkedInUsers;
+    ArrayList<String> signedUpEvents;
 
-    public HomeFragment() {
+    public MyEventsFragment() {
         userController = new UserController();
         dbController = new DatabaseController();
 
-        allEventsArrayList = new ArrayList<>();
         myEventsArrayList = new ArrayList<>();
     }
 
@@ -35,9 +31,7 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        allEventsArrayAdapter = new EventArrayAdapter(getContext(), allEventsArrayList, this);
         myEventsArrayAdapter = new EventArrayAdapter(getContext(), myEventsArrayList, this);
-
         dbController.getAllEventsFromFirestore(this);
     }
 
@@ -45,12 +39,11 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        homeView = new HomeView(inflater, container);
+        myEventsView = new MyEventsView(inflater, container);
 
-        homeView.setAllEventsListArrayAdapter(allEventsArrayAdapter);
-        homeView.setMyEventsListArrayAdapter(myEventsArrayAdapter);
+        myEventsView.setMyEventsListArrayAdapter(myEventsArrayAdapter);
 
-        return homeView.getRootView();
+        return myEventsView.getRootView();
     }
 
     /**
@@ -64,18 +57,37 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
     }
 
     /**
-     * This function adds new events to allEventsArrayList and myEventsArrayList.
+     * This function adds new events to myEventsArrayList.
      * @param newEventsArrayList The list of events to be added to the list of events.
      */
     private void addNewEventsToArrayLists(ArrayList<Event> newEventsArrayList) {
         newEventsArrayList.forEach(newEvent -> {
-            allEventsArrayList.add(newEvent);
-            allEventsArrayAdapter.notifyItemInserted(allEventsArrayList.indexOf(newEvent));
+//            myEventsArrayList.add(newEvent);
+//            myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
 
-            if (newEvent.getCreatorUUID().equals(userController.getUser().getId()) && !myEventsArrayList.contains(newEvent)) {
+
+            checkedInUsers = newEvent.getCheckedInUsersUUIDs();
+            // For Testing
+            if (checkedInUsers.size() > 0) {
                 myEventsArrayList.add(newEvent);
-                myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
             }
+
+            for (String users : checkedInUsers) {
+                if (users.equals(userController.getUser().getId())) {
+                    myEventsArrayList.add(newEvent);
+                    myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
+                }
+            }
+
+            // Working
+            signedUpEvents = userController.getUser().getAttendingEvents();
+            for (int i=0; i<signedUpEvents.size(); i++) {
+                if (signedUpEvents.get(i).equals(newEvent.getUuid())) {
+                    myEventsArrayList.add(newEvent);
+                    myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
+                }
+            }
+
         });
     }
 
@@ -85,25 +97,17 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
      */
     private void purgeOldEventsFromArrayLists(ArrayList<Event> newEventsArrayList) {
         // Create a copy of allEventsArrayList to avoid ConcurrentModificationException
-        ArrayList<Event> allEventsArrayListCopy = new ArrayList<>(allEventsArrayList);
+        ArrayList<Event> myEventsArrayListCopy = new ArrayList<>(myEventsArrayList);
 
         // Remove old events that are not in the new list or have been updated
-        allEventsArrayListCopy.stream()
+        myEventsArrayListCopy.stream()
                 .filter(oldEvent -> newEventsArrayList.stream().noneMatch(newEvent -> newEvent.equals(oldEvent) || newEvent.getUuid().equals(oldEvent.getUuid())))
                 .forEach(oldEvent -> {
-                    int _allEventsIndex = allEventsArrayList.indexOf(oldEvent);
-                    allEventsArrayList.remove(oldEvent);
-                    allEventsArrayAdapter.notifyItemRemoved(_allEventsIndex);
+                    int myEventsIndex = myEventsArrayList.indexOf(oldEvent);
+                    myEventsArrayList.remove(oldEvent);
+                    myEventsArrayAdapter.notifyItemRemoved(myEventsIndex);
                 });
 
-        // Remove events that are in myEventsArrayList but not in allEventsArrayList
-        myEventsArrayList.stream()
-                .filter(oldEvent -> !allEventsArrayList.contains(oldEvent))
-                .forEach(oldEvent -> {
-                    int _myEventsIndex = myEventsArrayList.indexOf(oldEvent);
-                    myEventsArrayList.remove(oldEvent);
-                    myEventsArrayAdapter.notifyItemRemoved(_myEventsIndex);
-                });
     }
 
     @Override
@@ -118,4 +122,5 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
                 .addToBackStack(null)
                 .commit();
     }
+
 }

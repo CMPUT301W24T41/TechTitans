@@ -183,17 +183,23 @@ public class IntentTest {
     @Test
     public void testHomeFragment() {
         onView(withText("Home")).perform(click());
-        onView(withText("Browse events")).check(matches(isDisplayed()));
+        onView(withText("Browse All Events")).check(matches(isDisplayed()));
     }
 
     @Test
     public void testEventDetailsFragment() {
         onView(withText("Home")).perform(click());
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events_list
-        )).atPosition(0).perform(click());
+        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list)).atPosition(0).perform(click());
         onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testMyEventsFragment() {
+        onView(withText("My Events")).perform(click());
+        onView(withText("My Events")).check(matches(isDisplayed()));
+        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.allMyEventsList)).atPosition(0).perform(click());
+        onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
+    }
 
 
 }
