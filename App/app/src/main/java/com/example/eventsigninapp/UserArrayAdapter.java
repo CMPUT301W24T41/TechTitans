@@ -75,9 +75,9 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             TextView lastName = view.findViewById(R.id.adminViewLastName);
             TextView userID = view.findViewById(R.id.adminViewID);
             TextView contact = view.findViewById(R.id.adminViewContact);
-            profilePic = view.findViewById(R.id.adminViewProfilePicture);
+            profilePic = view.findViewById(R.id.adminViewProfilePictureImage);
             Button deleteButton = view.findViewById(R.id.adminViewDeleteUser);
-
+            ImageView xButton = view.findViewById(R.id.adminViewUserXButton);
 
             databaseController.getUserProfilePicture(user.getId(), this);
 
@@ -93,6 +93,15 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
                     notifyDataSetChanged();
                     databaseController.deleteUser(user);
 
+                }
+            });
+
+            xButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    users.get(position).deletePicture();
+                    databaseController.deleteProfilePicture(user);
+                    notifyDataSetChanged();
                 }
             });
 

@@ -73,7 +73,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
             TextView organizerID = view.findViewById(R.id.adminViewOrganizerID);
             TextView eventID = view.findViewById(R.id.adminViewEventID);
             TextView eventCapacity = view.findViewById(R.id.adminViewEventCapacity);
-            eventPoster = view.findViewById(R.id.adminViewEventPoster);
+            eventPoster = view.findViewById(R.id.adminViewEventPosterImage);
             Button deleteButton = view.findViewById(R.id.adminViewDeleteEvent);
 
 
