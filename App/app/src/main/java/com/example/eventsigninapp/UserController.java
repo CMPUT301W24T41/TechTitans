@@ -200,12 +200,7 @@ public class UserController {
         user.deletePicture(); // Set the picture to null in User object
     }
 
-    public void setFcmToken(String token) {
-        user.setFcmToken(token);
-    }
-    public String getFcmToken() {
-        return user.getFcmToken();
-    }
+
 
 }
 

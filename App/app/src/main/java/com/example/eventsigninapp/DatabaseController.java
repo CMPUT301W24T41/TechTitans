@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -56,7 +58,6 @@ public class DatabaseController {
         userData.put("contact", user.getContact());
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
-        userData.put("fcmToken", user.getFcmToken());
 
 
 
@@ -88,10 +89,8 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
-                                document.getString("fcmToken"),
                                 (ArrayList<String>) document.get("attendingEvents"),
-                                (ArrayList<String>) document.get("hostingEvents")
-                        );
+                                (ArrayList<String>) document.get("hostingEvents"));
                         userController.setUser(pulledUser);
                         this.updateWithProfPictureFromWeb(pulledUser);
                     } else {
@@ -127,7 +126,6 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
-                                document.getString("fcmToken"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents")
                         );
@@ -260,6 +258,11 @@ public class DatabaseController {
                 Log.e("Database", "Error retrieving checked in users");
             }
         });
+    }
+
+    public void removeUserFromEvent(String userID, String eventID) {
+        DocumentReference eventRef = db.collection("events").document(eventID);
+        eventRef.update("signedUpUsers", FieldValue.arrayRemove(userID));
     }
 
     /**
@@ -508,11 +511,75 @@ public class DatabaseController {
             }
         });
     }
+    /** This method takes an event of type Event and a String newUserId. It then adds this user to
+     * the event on firestore under the singedUpUsers array. It will not add duplicates*/
+    public void addSignedUpUser(Event event, User user) {
 
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        eventRef.update("signedUpUsers", FieldValue.arrayUnion(user.getId()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("SignUpUser", "User Signed-up to Event.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("SignUpUser", "Error Signing-up to Event: " + e.getMessage());
+                    }
+                });
+    }
+
+    public void addEventToUser(User user, Event event){
+        DocumentReference eventRef = db.collection("users").document(user.getId());
+        eventRef.update("attendingEvents", FieldValue.arrayUnion(user.getId()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("AddAttendingEvents", "Attending Events updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("AddAttendingEvents", "Error Adding to Attending Events: " + e.getMessage());
+                    }
+                });
+
+
+    };
+    public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback){
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        // Fetch the event document
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                // DocumentSnapshot contains data read from a document in Firestore
+                DocumentSnapshot document = task.getResult();
+
+                // Check if the document exists and contains the creator UUID field
+                if (document.exists()) {
+                    String creatorUUID = document.getString("creatorUUID");
+
+                    // Invoke the callback with the creator UUID
+                    callback.onGetEventCreatorUUIDCallback(event, creatorUUID);
+                } else {
+                    // Document doesn't exist or creator UUID field is not found
+                    callback.onGetEventCreatorUUIDCallback(event, null);
+                }
+            } else {
+                // Error handling
+                Log.e("getEventCreatorUUID", "Error getting event document", task.getException());
+                callback.onGetEventCreatorUUIDCallback(event, null);
+            }
+        });
+    }
     public interface GetEventCallback {
         void onGetEventCallback(Event event);
     }
-
+    public interface GetEventCreatorUUIDCallback{
+        void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
+    }
     public interface GetCheckInLocationCallback {
         void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
     }

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 

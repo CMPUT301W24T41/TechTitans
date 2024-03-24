@@ -16,7 +16,7 @@ public class EventController {
     }
 
     public void signUpUser(String uuid) throws EventFullException, AlreadySignedUpException {
-        if (event.isFull()) { //Removed || isCapped() from if statement
+        if (event.isFull() || event.isCapped()) {
             throw new EventFullException("Event is full");
         }
 
@@ -25,10 +25,6 @@ public class EventController {
         }
 
         event.addSignedUpUser(uuid);
-    }
-
-    public void removeUser(String uuid) {
-        event.getSignedUpUsersUUIDs().remove(uuid);
     }
 
     /**

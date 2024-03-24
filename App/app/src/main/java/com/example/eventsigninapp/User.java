@@ -65,7 +65,6 @@ public class User {
         contact = "";
         location = "";
         imgUrl = "";
-        fcmtoken = "";
         initials = "";
     }
 
@@ -87,12 +86,12 @@ public class User {
         this.contact = contact;
     }
 
-    protected User(String id, String first, String last, String contact,String fcmtoken, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents) {
+    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents) {
         this(id, first, last);
         this.contact = contact;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
-        this.fcmtoken = fcmtoken;
+
     }
 
 

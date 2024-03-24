@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
 
         homeView.setAllEventsListArrayAdapter(allEventsArrayAdapter);
         homeView.setMyEventsListArrayAdapter(myEventsArrayAdapter);
+
 
         return homeView.getRootView();
     }
@@ -108,10 +110,12 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
 
     @Override
     public void onItemClick(Event event, int position) {
+        Log.d("HomeFragment", "Event Clicked: " + event.getSignedUpUsersUUIDs());
         Bundle bundle = new Bundle();
         bundle.putSerializable("event", event);
         frag = new EventDetailsFragment();
         frag.setArguments(bundle);
+        Log.d("HomeFragment", "Event Signed Up Users: " + event.getSignedUpUsersUUIDs());
 
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, frag)
