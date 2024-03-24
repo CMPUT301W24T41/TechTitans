@@ -93,32 +93,36 @@ public class MainActivity extends AppCompatActivity{
         // this finds the current user and sends the result to userController
         String defaultID = userController.getUserID(this);
         databaseController.updateWithUserFromFirestore(defaultID, userController);
-        Log.d(TAG, "User ID: " + defaultID);
+        Log.d("userId", "User ID: " + defaultID);
 
         //FCM Notification Permission
         askNotificationPermission();
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
 
 
         frameLayout = findViewById(R.id.eventButton);
         tabLayout = findViewById(R.id.mainTabLayout);
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (task.isSuccessful()) {
-                            // Token retrieval successful, log the token
-                            String token = task.getResult();
-                            Log.d(TAG, "FCM Token: " + token);
-                            userController.setFcmToken(token);
 
-                        } else {
-                            // Token retrieval failed, log the error
-                            Exception exception = task.getException();
-                            Log.e(TAG, "Error fetching FCM registration token: " + exception.getMessage());
-                        }
-                    }
-                });
+
 
 
 
@@ -175,6 +179,8 @@ public class MainActivity extends AppCompatActivity{
 
 
 
+
+
         /* Testing Database
         userController = new UserIdController();
         // testing on creating an event and saving it to firebase
@@ -201,5 +207,6 @@ public class MainActivity extends AppCompatActivity{
          */
 
     }
+
 
 }

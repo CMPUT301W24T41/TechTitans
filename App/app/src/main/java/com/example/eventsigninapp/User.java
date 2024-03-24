@@ -65,7 +65,6 @@ public class User {
         contact = "";
         location = "";
         imgUrl = "";
-        fcmtoken = "";
         initials = "";
     }
 
@@ -92,7 +91,9 @@ public class User {
         this.contact = contact;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
+
     }
+
 
 
     /**

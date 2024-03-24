@@ -47,5 +47,9 @@
     <string name="Qr_Code_Message">Scan the QR code to check in and enjoy the event !</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="notification_preferences_message">You are all set! Would you like to receive
+        notifications from this event organizer? Notifications can include important updates like
+        changes in venue.</string>
     <string name="image_of_an_event">Image of an event</string>
+    <string name="default_notification_channel_id">com.example.eventsigninapp</string>
 </resources>
