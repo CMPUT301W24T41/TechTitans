@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,9 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
-public class MyEventsFragment extends Fragment implements DatabaseController.GetAllEventsCallback, EventArrayAdapter.OnItemClickListener {
+public class MyEventsFragment extends Fragment implements DatabaseController.GetAllEventsCallback, EventArrayAdapter.OnItemClickListener, DatabaseController.GetCheckedInUsersCallback {
     UserController userController;
     DatabaseController dbController;
     ArrayList<Event> myEventsArrayList;
@@ -25,6 +27,8 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
         dbController = new DatabaseController();
 
         myEventsArrayList = new ArrayList<>();
+        checkedInUsers = new ArrayList<>();
+        signedUpEvents = new ArrayList<>();
     }
 
     @Override
@@ -61,25 +65,10 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
      * @param newEventsArrayList The list of events to be added to the list of events.
      */
     private void addNewEventsToArrayLists(ArrayList<Event> newEventsArrayList) {
-        newEventsArrayList.forEach(newEvent -> {
-//            myEventsArrayList.add(newEvent);
-//            myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
+         newEventsArrayList.forEach(newEvent -> {
 
+            dbController.getCheckedInUsersFromFirestore(newEvent, this);
 
-            checkedInUsers = newEvent.getCheckedInUsersUUIDs();
-            // For Testing
-            if (checkedInUsers.size() > 0) {
-                myEventsArrayList.add(newEvent);
-            }
-
-            for (String users : checkedInUsers) {
-                if (users.equals(userController.getUser().getId())) {
-                    myEventsArrayList.add(newEvent);
-                    myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
-                }
-            }
-
-            // Working
             signedUpEvents = userController.getUser().getAttendingEvents();
             for (int i=0; i<signedUpEvents.size(); i++) {
                 if (signedUpEvents.get(i).equals(newEvent.getUuid())) {
@@ -89,6 +78,41 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
             }
 
         });
+    }
+
+    @Override
+    public void onGetCheckedInUsersCallback(Event event, ArrayList<?> users) {
+        Log.e("DEBUG", "callback called!");
+        try {
+            for (int i = 0; i < users.size(); i++) {
+                event.addCheckedInUser((String) users.get(i));
+
+                // If checked in event is already displayed by signed up event
+                for (int j=0; j<myEventsArrayList.size(); j++) {
+                    if (myEventsArrayList.get(j).equals(event)) {
+                        return;
+                    }
+                }
+
+                if (users.get(i).equals(userController.getUser().getId())) {
+                    myEventsArrayList.add(event);
+                    myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(event));
+                    }
+                dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
+                    @Override
+                    public void onCallback(User user) {
+                        checkedInUsers.add(user.getId());
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("DEBUG", String.format("Error getting checked in users: %s", e.getMessage()));
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
+        }
     }
 
     /**

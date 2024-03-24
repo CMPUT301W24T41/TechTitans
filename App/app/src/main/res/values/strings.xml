@@ -10,7 +10,7 @@
     <string name="attendee_limit">Attendee limit - Optional:</string>
     <string name="upload_poster_text">Click on image to upload a Poster</string>
     <string name="description_of_event">Description of Event:</string>
-    <string name="titile_of_even">Titile of Event:</string>
+    <string name="title_of_even">Title of Event:</string>
     <string name="main_page"><![CDATA[<—Main Page]]></string>
     <string name="create_your_own_event">Create Your Own Event</string>
     <string name="event_poster">Event Poster</string>

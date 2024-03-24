@@ -276,32 +276,34 @@ public class DatabaseController {
         eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Log.e("db", "Called on complete");
                 DocumentSnapshot document = task.getResult();
                 usersCheckedIn[0] = (ArrayList<?>) document.get("checkedInUsers");
                 if (usersCheckedIn[0] != null) {
+                    Log.e("db", "The retrieval was successful");
                     callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
                 } else {
                     Log.e("Database", "Error retrieving checked in users");
                 }
             }
         });
-        eventsRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
-                return;
-            }
-            if (value == null) {
-                return;
-            }
-
-            DocumentSnapshot doc = value.getDocuments().get(0);
-            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
-            if (usersCheckedIn[0] != null) {
-                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
-            } else {
-                Log.e("Database", "Error retrieving checked in users");
-            }
-        });
+//        eventsRef.addSnapshotListener((value, error) -> {
+//            if (error != null) {
+//                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+//                return;
+//            }
+//            if (value == null) {
+//                return;
+//            }
+//
+//            DocumentSnapshot doc = value.getDocuments().get(0);
+//            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
+//            if (usersCheckedIn[0] != null) {
+//                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
+//            } else {
+//                Log.e("Database", "Error retrieving checked in users");
+//            }
+//        });
     }
 
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
