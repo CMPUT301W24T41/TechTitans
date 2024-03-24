@@ -172,21 +172,26 @@ public class EventDetailsFragment extends Fragment {
     }
 
     private void subscribeToNotifications(String selectedItem, Event event) {
+        //signupOptions = {"All including promotions", "Important updates only", "Reminders and Updates", "None"};
+        //<item>Important Update</item>
+        //        <item>Reminders</item>
+        //        <item>Promotion</item>
         if(selectedItem.equals("None")){
             return;
         }
-        FirebaseMessaging.getInstance().subscribeToTopic(selectedItem + event.getUuid())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Subscribed";
-                        if (!task.isSuccessful()) {
-                            msg = "Subscribe failed";
-                        }
-                        Log.d("EventDetails", msg);
-                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if(selectedItem.equals("Important updates only")){
+            subscribeToTopic("Important Update");
+        }
+        if(selectedItem.equals("Reminders and Updates")){
+            subscribeToTopic("Reminders");
+            subscribeToTopic("Important Update");
+        }
+        if(selectedItem.equals("All including promotions")){
+            subscribeToTopic("Promotion");
+            subscribeToTopic("Important Update");
+            subscribeToTopic("Reminders");
+        }
+
     }
 
 
@@ -304,5 +309,19 @@ public class EventDetailsFragment extends Fragment {
         }
     }
 
+    private void subscribeToTopic(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic + event.getUuid())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d("EventDetails", msg);
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 }

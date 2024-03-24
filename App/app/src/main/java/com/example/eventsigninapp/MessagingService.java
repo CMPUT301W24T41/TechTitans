@@ -11,6 +11,7 @@ import android.content.Intent;
 
 
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -24,7 +25,7 @@ public class MessagingService extends FirebaseMessagingService {
     DatabaseController databaseController = new DatabaseController();
     UserController userController = new UserController();
     private static final String TAG = "MessagingService";
-    private String channel_id = "channel_id";
+    private static final String channel_id = "channel_id";
     private final String channel_name = "channel_com.example.EventSignInApp";
 
     /**
@@ -74,7 +75,7 @@ public class MessagingService extends FirebaseMessagingService {
 
 
 
-    //generate notification
+
     public void generateNotification(String title, String message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -83,12 +84,14 @@ public class MessagingService extends FirebaseMessagingService {
         // Create a notification builder
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
                 .setSmallIcon(R.drawable.logo_placeholder)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent);
+
 
         // Set custom layout
         builder.setContent(getRemoteView(title, message));
@@ -97,7 +100,7 @@ public class MessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Check if the notification channel exists
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = notificationManager.getNotificationChannel(channel_id);
             if (channel == null) {
                 // Create the notification channel if it doesn't exist
@@ -107,6 +110,10 @@ public class MessagingService extends FirebaseMessagingService {
                 channel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000});
                 channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
                 channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    channel.setAllowBubbles(true);
+                }
                 notificationManager.createNotificationChannel(channel);
             }
         }
