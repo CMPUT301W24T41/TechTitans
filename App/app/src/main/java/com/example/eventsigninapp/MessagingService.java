@@ -25,7 +25,7 @@ public class MessagingService extends FirebaseMessagingService {
     UserController userController = new UserController();
     private static final String TAG = "MessagingService";
     private String channel_id = "channel_id";
-    private final String channel_name = "channel_com.example.eventsigninapp";
+    private final String channel_name = "channel_com.example.EventSignInApp";
 
     /**
      * There are two scenarios when onNewToken is called:
@@ -47,11 +47,12 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void sendRegistrationToServer(String token) {
+        databaseController.addFCMTokenToUser(userController.getUser().getId(), token);
 
     }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ

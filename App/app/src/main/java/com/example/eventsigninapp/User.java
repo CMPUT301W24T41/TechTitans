@@ -52,7 +52,7 @@ public class User {
      */
     private Uri picture;
     private String imgUrl;
-    private String fcmtoken;
+    private String fcmToken;
     private String initials;
 
     protected User() {
@@ -66,6 +66,7 @@ public class User {
         location = "";
         imgUrl = "";
         initials = "";
+        fcmToken = "";
     }
 
     protected User(String id) {
@@ -205,14 +206,14 @@ public class User {
         this.imgUrl = imgUrl;
     }
 
-    public void setFcmToken(String fcmtoken) {
-        this.fcmtoken = fcmtoken;
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     ;
 
     public String getFcmToken() {
-        return fcmtoken;
+        return fcmToken;
     }
 
 

@@ -549,6 +549,22 @@ public class DatabaseController {
 
 
     };
+    public void addFCMTokenToUser(String userID, String token){
+        DocumentReference eventRef = db.collection("users").document(userID);
+        eventRef.update("fcmToken", token)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("AddFCMToken", "FCM Token updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("AddFCMToken", "Error Adding to FCM Token: " + e.getMessage());
+                    }
+                });
+    }
     public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback){
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         // Fetch the event document

@@ -125,7 +125,7 @@ public class EventDetailsFragment extends Fragment {
 
     private void showSignUpPopup(Event event) {
 
-        String[] signupOptions = {"All", "Important updates only", "Reminders only", "None"};
+        String[] signupOptions = {"All including promotions", "Important updates only", "Reminders and Updates", "None"};
 
         // Inflate the custom layout
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.notification_preferences_dialog, null);
@@ -172,6 +172,9 @@ public class EventDetailsFragment extends Fragment {
     }
 
     private void subscribeToNotifications(String selectedItem, Event event) {
+        if(selectedItem.equals("None")){
+            return;
+        }
         FirebaseMessaging.getInstance().subscribeToTopic(selectedItem + event.getUuid())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
