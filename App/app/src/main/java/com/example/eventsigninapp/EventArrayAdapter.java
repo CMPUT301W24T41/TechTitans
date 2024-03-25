@@ -2,8 +2,10 @@ package com.example.eventsigninapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,12 +120,14 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
         ArrayList<String> checkedInUsers = (ArrayList<String>) checkEvent.getCheckedInUsersUUIDs();
         for (int i=0; i<checkedInUsers.size(); i++) {
             if (checkedInUsers.get(i).equals(userController.getUser().getId())) {
-                viewHolder.getLayoutBackground().setBackgroundColor(Color.BLACK);
-                viewHolder.getEventDescriptionTextView().setText("Event Checked In!");
+                viewHolder.getEventTitleTextView().setTextColor(Color.WHITE);
+                viewHolder.getLayoutBackground().setBackgroundColor(Color.parseColor("#007c41"));
+                viewHolder.getEventDescriptionTextView().setTextColor(Color.parseColor("#ffdb05"));
+                viewHolder.getEventDescriptionTextView().setText("\nEvent Checked In!");
+                viewHolder.getEventDescriptionTextView().setTypeface(null, Typeface.BOLD);
+                viewHolder.getEventDescriptionTextView().setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
         }
-
-
 
         viewHolder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(events.get(position), position));
     }
