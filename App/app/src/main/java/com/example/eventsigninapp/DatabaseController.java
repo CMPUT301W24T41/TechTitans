@@ -433,6 +433,33 @@ public class DatabaseController {
         });
     }
 
+    public void findEventByQrResult(String qrResult, GetEventCallback callback) {
+        db.collection("events")
+                .whereEqualTo("uuid", qrResult)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        Event event = document.toObject(Event.class);
+                        callback.onGetEventCallback(event);
+                    } else {
+                        callback.onGetEventCallback(null);
+                    }
+                });
+        db.collection("events")
+                .whereEqualTo("eventDetailsQrCodeString", qrResult)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        Event event = document.toObject(Event.class);
+                        callback.onGetEventCallback(event);
+                    } else {
+                        callback.onGetEventCallback(null);
+                    }
+                });
+    }
+
     /**
      * This function gets all the events from the database.
      * @param callback callback to add the events to the list of events
