@@ -168,27 +168,26 @@ public class EventDetailsFragment extends Fragment {
         signUpButton.setClickable(false);
         databaseController.addSignedUpUser(event, userController.getUser());
         databaseController.addEventToUser(userController.getUser(),event);
-        subscribeToNotifications(selectedItem, event);
+        subscribeToNotifications(selectedItem);
     }
 
-    private void subscribeToNotifications(String selectedItem, Event event) {
-        //signupOptions = {"All including promotions", "Important updates only", "Reminders and Updates", "None"};
-        //<item>Important Update</item>
-        //        <item>Reminders</item>
-        //        <item>Promotion</item>
+    private void subscribeToNotifications(String selectedItem) {
+        // Subscribe to the appropriate topic based on the user's selection
+        // The topic name will be in the format "eventUUID-option"
+        // Example: "0f3389e5-1b6c-4c3a-b2be-88d5d5ef0260-Important"
         if(selectedItem.equals("None")){
             return;
         }
         if(selectedItem.equals("Important updates only")){
-            subscribeToTopic("Important Update");
+            subscribeToTopic("Important");
         }
         if(selectedItem.equals("Reminders and Updates")){
             subscribeToTopic("Reminders");
-            subscribeToTopic("Important Update");
+            subscribeToTopic("Important");
         }
         if(selectedItem.equals("All including promotions")){
             subscribeToTopic("Promotion");
-            subscribeToTopic("Important Update");
+            subscribeToTopic("Important");
             subscribeToTopic("Reminders");
         }
 
@@ -309,14 +308,17 @@ public class EventDetailsFragment extends Fragment {
         }
     }
 
-    private void subscribeToTopic(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic + event.getUuid())
+    private void subscribeToTopic(String option) {
+        String topic = event.getUuid() + "-" + option;
+        Log.d("EventDetails", "Topic name: " + topic);
+
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Subscribed";
+                        String msg = "Subscribed: "+ topic;
                         if (!task.isSuccessful()) {
-                            msg = "Subscribe failed";
+                            msg = "Subscribe failed: " + topic;
                         }
                         Log.d("EventDetails", msg);
                         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();

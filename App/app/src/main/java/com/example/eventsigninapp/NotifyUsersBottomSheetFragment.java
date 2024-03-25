@@ -38,21 +38,23 @@ public class NotifyUsersBottomSheetFragment extends BottomSheetDialogFragment {
         title = view.findViewById(R.id.editTextTitle);
         spinnerOptions = view.findViewById(R.id.spinnerFilter);
 
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String messageText = message.getText().toString();
+                String titleText = title.getText().toString();
+                String filter = spinnerOptions.getSelectedItem().toString();
+            }
+        });
         // Return the inflated view
         return view;
-    }
-
-//        sendButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String messageText = message.getText().toString();
-//                String titleText = title.getText().toString();
-//                String filter = spinnerOptions.getSelectedItem().toString();
-//            }
-
-
-
 
     }
+
+    private void sendNotification(String message, String title, String filter) {
+        //send the notification to the users
+        //may need to implement backend logic to send the notification
+    }
+}
 
 
