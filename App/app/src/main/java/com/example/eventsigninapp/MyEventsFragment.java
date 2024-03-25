@@ -95,7 +95,7 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
                 }
 
                 if (users.get(i).equals(userController.getUser().getId())) {
-                    myEventsArrayList.add(event);
+                    myEventsArrayList.add(0, event);
                     myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(event));
                     }
                 dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
