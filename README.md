@@ -39,6 +39,15 @@ Browse Functionality: Browse through events, profiles, and images for administra
 Installation
 Clone the repository from GitHub.
 
+Contributing
+We welcome contributions from the community. Please follow these guidelines:
+
+Fork the repository.
+Create your feature branch (git checkout -b feature/YourFeature).
+Commit your changes (git commit -am 'Add some feature').
+Push to the branch (git push origin feature/YourFeature).
+Create a new Pull Request.
+
 #### Google Maps API Configuration
 
 This app utilizes the Google Maps API for displaying a dynamic map. To use this API in a local build, the following steps must be followed.
