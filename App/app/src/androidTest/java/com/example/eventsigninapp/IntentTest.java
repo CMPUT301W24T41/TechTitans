@@ -1,6 +1,5 @@
 package com.example.eventsigninapp;
 
-import static android.icu.number.NumberRangeFormatter.with;
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -10,24 +9,16 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
-
-import com.journeyapps.barcodescanner.ScanContract;
 
 import org.junit.After;
 import org.junit.Before;
@@ -189,7 +180,7 @@ public class IntentTest {
     @Test
     public void testEventDetailsFragment() {
         onView(withText("Home")).perform(click());
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events_list
+        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list
         )).atPosition(0).perform(click());
         onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
     }
