@@ -36,6 +36,9 @@ For Administrators
 Event and Profile Management: Ability to remove events, profiles, and images.
 Browse Functionality: Browse through events, profiles, and images for administrative purposes.
 
+Installation
+Clone the repository from GitHub.
+
 #### Google Maps API Configuration
 
 This app utilizes the Google Maps API for displaying a dynamic map. To use this API in a local build, the following steps must be followed.
