@@ -2,7 +2,8 @@
 
 Event Management App
 
-Overview
+Overview: 
+
 The Event Management App is a comprehensive solution designed to streamline event organization, attendee management, and communication for both organizers and attendees. 
 With a focus on simplicity and convenience, the app facilitates seamless check-ins, updates, and engagement before and during events.
 
