@@ -5,6 +5,20 @@ Event Management App
 Overview
 The Event Management App is a comprehensive solution designed to streamline event organization, attendee management, and communication for both organizers and attendees. With a focus on simplicity and convenience, the app facilitates seamless check-ins, updates, and engagement before and during events.
 
+Features
+
+For Attendees
+Quick Check-in: Attendees can effortlessly check into events by scanning the provided QR code.
+Profile Customization: Attendees can upload, remove, or update their profile picture for a personalized experience.
+Profile Management: Attendees can update their information such as name, homepage, and contact details.
+Push Notifications: Receive important updates and announcements from event organizers via push notifications.
+Event Details: Access event details and announcements within the app.
+Automatic Profile Picture Generation: Profile pictures are deterministically generated from the profile name if not uploaded.
+No Login Required: Attendees can use the app without the need for a username or password.
+Event Registration: Attendees can sign up to attend events directly from event details.
+Browse Other Events: Attendees can browse event posters and details of other events.
+Event Registration History: View a history of events signed up for, current and future.
+
 #### Google Maps API Configuration
 
 This app utilizes the Google Maps API for displaying a dynamic map. To use this API in a local build, the following steps must be followed.
