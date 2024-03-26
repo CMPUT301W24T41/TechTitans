@@ -19,6 +19,19 @@ Event Registration: Attendees can sign up to attend events directly from event d
 Browse Other Events: Attendees can browse event posters and details of other events.
 Event Registration History: View a history of events signed up for, current and future.
 
+For Organizers
+Event Creation: Organizers can create new events and generate unique QR codes for attendee check-ins.
+QR Code Management: Option to reuse existing QR codes for attendee check-ins.
+Attendee Management: View the list of attendees who have checked into the event.
+Communication: Send notifications to all attendees through the app.
+Event Promotion: Upload event posters and generate unique promotion QR codes linking to event details.
+Real-time Attendance Tracking: Track real-time attendance and receive alerts for important milestones.
+QR Code Sharing: Share generated QR code images to other apps for dissemination.
+Geolocation Insights: View attendee check-in locations on a map.
+Attendance History: Monitor the frequency of attendee check-ins.
+Attendee Registration: See who is signed up to attend the event.
+Optional Attendance Limits: Optionally limit the number of attendees that can sign up for an event.
+
 #### Google Maps API Configuration
 
 This app utilizes the Google Maps API for displaying a dynamic map. To use this API in a local build, the following steps must be followed.
