@@ -109,11 +109,15 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             DatabaseController DatabaseController = new DatabaseController();
             DatabaseController.pushEventToFirestore(event);
 
-            QRCodeFragment qrCodeFragment = QRCodeFragment.newInstance(bitmap);
-            qrCodeFragment.show(getParentFragmentManager(), "qr_code_fragment");
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
+            eventDetailsFragment.setArguments(bundle);
 
-            QRCodeFragment eventDetailsQRCodeFragment = QRCodeFragment.newInstance(eventDetailsBitmap);
-            eventDetailsQRCodeFragment.show(getParentFragmentManager(), "event_details_qr_code_fragment");
+            getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, eventDetailsFragment)
+                .addToBackStack(null)
+                .commit();
         } else {
             Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
         }

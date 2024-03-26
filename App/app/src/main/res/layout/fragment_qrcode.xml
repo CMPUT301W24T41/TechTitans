@@ -10,28 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/event_image"
-         />
-
-    <Button
-        android:id="@+id/btnShare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/qrCodeImageView"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/Share" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/qrCodeImageView"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_toEndOf="@id/btnShare"
-        android:text="@string/cancel" />
+        android:contentDescription="@string/image_of_an_event"
+        android:src="@drawable/event_image" />
 
 </RelativeLayout>

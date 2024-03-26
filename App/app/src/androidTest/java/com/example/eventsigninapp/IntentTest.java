@@ -117,7 +117,7 @@ public class IntentTest {
 
         onView(withId(R.id.qrCodeImageView)).check((matches(isDisplayed())));
 
-        onView(withId(R.id.btnCancel)).perform(click());
+        onView(withText("Cancel")).perform(click());
 
         onView(withText("Home")).perform(click());
 
@@ -175,7 +175,7 @@ public class IntentTest {
 
         onView(withId(R.id.qrCodeImageView)).check((matches(isDisplayed())));
 
-        onView(withId(R.id.btnShare)).perform(click());
+        onView(withText("Share")).perform(click());
 
         intended(hasAction(android.content.Intent.ACTION_CHOOSER));
     }

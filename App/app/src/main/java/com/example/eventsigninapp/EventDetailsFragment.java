@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +19,8 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-
-import com.example.eventsigninapp.DatabaseController.EventImageUriCallbacks;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,12 +32,13 @@ import java.util.ArrayList;
 /**
  * This class acts as a controller for the event details page.
  */
-public class EventDetailsFragment extends Fragment {
+public class EventDetailsFragment extends Fragment implements DatabaseController.EventImageUriCallbacks {
     DatabaseController databaseController = new DatabaseController();
     UserController userController = new UserController();
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
     private Button backButton, editEventButton, notifyUsersButton;
+    private AppCompatButton detailsQrCodeButton, checkInQrCodeButton;
     private ToggleButton signUpButton;
     private Event event;
     private ArrayList<String> signedUpUsersUUIDs = new ArrayList<>();
@@ -94,19 +95,25 @@ public class EventDetailsFragment extends Fragment {
         notifyUsersButton = view.findViewById(R.id.notifyUsersButton);
         backButton = view.findViewById(R.id.btnEventDetails);
         signUpButton = view.findViewById(R.id.signUpButton);
+        detailsQrCodeButton = view.findViewById(R.id.detailsQrCodeButton);
+        checkInQrCodeButton = view.findViewById(R.id.checkInQrCodeButton);
 
 
         // Retrieve the event from the bundle passed from the EventListFragment
         if (event != null) {
             // Use the event object to update the UI
             // Call the getEventPoster function
-            databaseController.getEventPoster(event.getUuid(), callback);
+            databaseController.getEventPoster(event.getUuid(), this);
             // get Event from firestore - possibly not used or implemented correctly
             databaseController.getEventFromFirestore(event.getUuid(), getEventCallback);
             // get signed uo users from firestore
             databaseController.getSignedUpUsersFromFirestore(event, getSignedUpUsersCallback);
             //get event creator
             databaseController.getEventCreatorUUID(event, getEventCreatorUUIDCallback);
+            // get check in qr code
+            databaseController.getEventCheckInQRCode(event.getUuid(), this);
+            // get event description qr code
+            databaseController.getEventDescriptionQRCode(event.getUuid(), this);
         } else {
             // Handle the case where event is null
             Log.e("EventDetails", "Event is null. Cannot populate UI.");
@@ -119,6 +126,19 @@ public class EventDetailsFragment extends Fragment {
 
         backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
 
+        detailsQrCodeButton.setOnClickListener(v -> {
+            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getUuid());
+            QRCodeFragment qrCodeFragment = new QRCodeFragment(getContext(), container, qrCodeBitmap);
+            qrCodeFragment.setTitle("Event Details QR Code");
+            qrCodeFragment.show();
+        });
+
+        checkInQrCodeButton.setOnClickListener(v -> {
+            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getEventDetailsQrCodeString());
+            QRCodeFragment qrCodeFragment = new QRCodeFragment(getContext(), container, qrCodeBitmap);
+            qrCodeFragment.setTitle("Event Check In QR Code");
+            qrCodeFragment.show();
+        });
 
         return view;
     }
@@ -185,34 +205,29 @@ public class EventDetailsFragment extends Fragment {
                     }
                 });
     }
+    @Override
+    public void onEventPosterCallback(Uri imageUri) {
+        // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
+        System.out.println("EventPoster Image URI retrieved: " + imageUri.toString());
+        Picasso.get().load(imageUri).into(eventPoster);
 
+    }
 
+    @Override
+    public void onEventCheckInQRCodeCallback(Uri imageUri) {
+        // to be implement
+    }
 
-    EventImageUriCallbacks callback = new EventImageUriCallbacks() {
-        @Override
-        public void onEventPosterCallback(Uri imageUri) {
-            // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
-            System.out.println("EventPoster Image URI retrieved: " + imageUri.toString());
-            Picasso.get().load(imageUri).into(eventPoster);
+    @Override
+    public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+        // to be implemented
+    }
 
-        }
-
-        @Override
-        public void onEventCheckInQRCodeCallback(Uri imageUri) {
-            // to be implement
-        }
-
-        @Override
-        public void onEventDescriptionQRCodeCallback(Uri imageUri) {
-            // to be implemented
-        }
-
-        @Override
-        public void onError(Exception e) {
-            // Handle failure to retrieve the image URI
-            Log.e("EventPoster", "Error getting image URI", e);
-        }
-    };
+    @Override
+    public void onError(Exception e) {
+        // Handle failure to retrieve the image URI
+        Log.e("EventPoster", "Error getting image URI", e);
+    }
 
     DatabaseController.GetEventCallback getEventCallback = new DatabaseController.GetEventCallback() {
         @Override
@@ -300,6 +315,4 @@ public class EventDetailsFragment extends Fragment {
             });
         }
     }
-
-
 }
