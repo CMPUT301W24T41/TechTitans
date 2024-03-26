@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:ems="50"
                 android:inputType="text"
-                android:hint="@string/titile_of_even"
+                android:hint="@string/title_of_even"
                 android:textColor="@color/black"
                 android:textColorHint="#A39755"
                 android:textSize="20sp"
@@ -57,7 +57,7 @@
             <EditText
                 android:id="@+id/descriptionOfEvent"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:gravity="top"
                 android:inputType="textMultiLine"
                 android:hint="@string/description_of_event"

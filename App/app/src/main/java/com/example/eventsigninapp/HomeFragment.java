@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment implements DatabaseController.GetAllE
             allEventsArrayList.add(newEvent);
             allEventsArrayAdapter.notifyItemInserted(allEventsArrayList.indexOf(newEvent));
 
-            if (newEvent.getCreatorUUID().equals(userController.getUser().getId())) {
+            if (newEvent.getCreatorUUID().equals(userController.getUser().getId()) && !myEventsArrayList.contains(newEvent)) {
                 myEventsArrayList.add(newEvent);
                 myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
             }
