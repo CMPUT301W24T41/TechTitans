@@ -1,8 +1,8 @@
 # TechTitans
 
-Event Management App
+# Event Management App
 
-Overview: 
+#### Overview: 
 
 The Event Management App is a comprehensive solution designed to streamline event organization, attendee management, and communication for both organizers and attendees. 
 With a focus on simplicity and convenience, the app facilitates seamless check-ins, updates, and engagement before and during events.
@@ -10,7 +10,7 @@ With a focus on simplicity and convenience, the app facilitates seamless check-i
 Features
 
 
-For Attendees
+#### For Attendees
 
 Quick Check-in: Attendees can effortlessly check into events by scanning the provided QR code.
 
@@ -31,7 +31,7 @@ Browse Other Events: Attendees can browse event posters and details of other eve
 Event Registration History: View a history of events signed up for, current and future.
 
 
-For Organizers
+#### For Organizers
 
 Event Creation: Organizers can create new events and generate unique QR codes for attendee check-ins.
 
@@ -56,19 +56,19 @@ Attendee Registration: See who is signed up to attend the event.
 Optional Attendance Limits: Optionally limit the number of attendees that can sign up for an event.
 
 
-For Administrators
+#### For Administrators
 
 Event and Profile Management: Ability to remove events, profiles, and images.
 
 Browse Functionality: Browse through events, profiles, and images for administrative purposes.
 
 
-Installation
+#### Installation
 
 Clone the repository from GitHub.
 
 
-Contributing
+#### Contributing
 
 We welcome contributions from the community. Please follow these guidelines:
 
@@ -82,6 +82,7 @@ Push to the branch (git push origin feature/YourFeature).
 
 Create a new Pull Request.
 
+---------------------------------------------
 #### Google Maps API Configuration
 
 This app utilizes the Google Maps API for displaying a dynamic map. To use this API in a local build, the following steps must be followed.
