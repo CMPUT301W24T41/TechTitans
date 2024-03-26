@@ -29,6 +29,8 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
     private UserController userController;
 
     private OnItemClickListener onItemClickListener;
+    private Event checkEvent;
+    private ArrayList<String> checkedInUsers;
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
@@ -115,9 +117,10 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
         }
         );
 
+        // Checks to see if the event is one that the user checked into
+        checkEvent = events.get(position);
+        checkedInUsers = (ArrayList<String>) checkEvent.getCheckedInUsersUUIDs();
 
-        Event checkEvent = events.get(position);
-        ArrayList<String> checkedInUsers = (ArrayList<String>) checkEvent.getCheckedInUsersUUIDs();
         for (int i=0; i<checkedInUsers.size(); i++) {
             if (checkedInUsers.get(i).equals(userController.getUser().getId())) {
                 viewHolder.getEventTitleTextView().setTextColor(Color.WHITE);

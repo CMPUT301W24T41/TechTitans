@@ -7,9 +7,9 @@
     <string name="check_in">Check In With Qr Code</string>
     <string name="host_event">Host Event</string>
     <string name="confirm">Confirm</string>
-    <string name="attendee_limit">Attendee limit - Optional:</string>
+    <string name="attendee_limit">Attendee Limit - Optional:</string>
     <string name="upload_poster_text">Click on image to upload a Poster</string>
-    <string name="description_of_event">Description of Event:</string>
+    <string name="description_of_event">Event Description:</string>
     <string name="title_of_even">Title of Event:</string>
     <string name="main_page"><![CDATA[<—Main Page]]></string>
     <string name="create_your_own_event">Create Your Own Event</string>
@@ -42,7 +42,7 @@
     <string name="signed_up_title_text">SIGNED UP (0)</string>
     <string name="go_to_map_text">View check-in location</string>
     <string name="msg_token_fmt">FCM Registration Token: %1$s</string>
-
+    <string name="my_events">My Signed Up Events</string>
 
     <string name="Qr_Code_Message">Scan the QR code to check in and enjoy the event !</string>
     <string name="scan_qr_code">Scan QR Code</string>
