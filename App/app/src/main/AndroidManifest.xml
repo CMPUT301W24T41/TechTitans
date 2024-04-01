@@ -65,6 +65,11 @@
         </activity>
 
         <activity
+            android:name=".SignedUpUsersActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
             android:name=".CaptureAct"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"

@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -162,17 +163,32 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         actionSelectionPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);
                 switch (position) {
-                    case 0:
+                    case 0: // organizer chooses "notify users"
                         NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
                         bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
                         actionSelectionPopup.dismiss();
                         break;
-                    case 1:
-                        // TODO: implement opening signed up users fragment
+                    case 1: // organizer chooses "see signed up users"
+                        SignedUpUsersFragment signedUpFrag = new SignedUpUsersFragment();
+                        signedUpFrag.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, signedUpFrag)
+                                .addToBackStack(null)
+                                .commit();
+                        actionSelectionPopup.dismiss();
                         break;
-                    case 2:
-                        // TODO: implement opening checked in users fragment
+                    case 2: // organizer chooses "see checked in users"
+                        CheckedInUsersFragment checkedInFrag = new CheckedInUsersFragment();
+                        checkedInFrag.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, checkedInFrag)
+                                .addToBackStack(null)
+                                .commit();
+                        actionSelectionPopup.dismiss();
+                        break;
                     default:
                         actionSelectionPopup.dismiss();
                         break;
