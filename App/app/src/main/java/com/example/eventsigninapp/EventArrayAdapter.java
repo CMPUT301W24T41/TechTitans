@@ -76,6 +76,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
             eventPoster = view.findViewById(R.id.adminViewEventPosterImage);
             Button deleteButton = view.findViewById(R.id.adminViewDeleteEvent);
 
+            ImageView deleteImage = view.findViewById(R.id.adminViewEventXButton);
 
             databaseController.getEventPoster(event.getUuid(), this);
 
@@ -93,6 +94,17 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
                     databaseController.deleteEvent(event);
                 }
             });
+
+            deleteImage.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    events.get(position).setPosterUri(null);
+                    databaseController.deleteEventPicture(event);
+                    notifyDataSetChanged();
+                }
+            });
+
+
 
 
         }

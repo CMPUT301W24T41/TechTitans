@@ -67,8 +67,7 @@ public class AdminActivity extends AppCompatActivity{
                         fragment = new AdminUserListFragment();
                         break;
                     case 2:
-                        //TODO add all images fragment
-//                        fragment = new ();
+                       fragment = new AdminImageListFragment();
                         break;
                     case 3:
                         break;

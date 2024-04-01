@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -595,6 +596,71 @@ public class DatabaseController {
                         }
                     }
                 });
+    }
+
+
+    public void getAllImagesFromFirestore(GetAllImagesCallback callback) {
+        ArrayList<Uri> allImages = new ArrayList<>();
+
+        // Fetch all profile pictures
+        getAllImagesInFolder("event_posters", new ImageUriCallback() {
+            @Override
+            public void onImageUriCallback(Uri imageUri) {
+                allImages.add(imageUri);
+                callback.onGetAllImagesCallback(allImages);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle error
+                Log.d("Database", "no profile pictures", e);
+            }
+        });
+
+        // Fetch all poster images
+        getAllImagesInFolder("profile_pictures", new ImageUriCallback() {
+            @Override
+            public void onImageUriCallback(Uri imageUri) {
+                allImages.add(imageUri);
+                callback.onGetAllImagesCallback(allImages);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle error
+                Log.d("Database", "no poster images", e);
+            }
+        });
+    }
+
+    public void getAllImagesInFolder(String folderName, ImageUriCallback callback) {
+        // Get a reference to the desired folder in Firebase Storage
+        StorageReference folderRef = storage.getReference().child(folderName);
+
+        // List all items (folders and files) within the specified folder
+        folderRef.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference item : listResult.getItems()) {
+                    // Get the download URL of the image and pass it to the callback
+                    item.getDownloadUrl().addOnSuccessListener(uri -> {
+                        callback.onImageUriCallback(uri);
+                        Log.d("succes found", "getAllImagesInFolder: foundImage" + uri
+                        );
+                    }).addOnFailureListener(e -> {
+                        // Handle any errors
+                        callback.onError(e);
+                    });
+                }
+
+        }).addOnFailureListener(e -> {
+            // Handle any errors
+            callback.onError(e);
+        });
+    }
+
+    public interface GetAllImagesCallback {
+        void onGetAllImagesCallback(ArrayList<Uri> allImages);
     }
 
 

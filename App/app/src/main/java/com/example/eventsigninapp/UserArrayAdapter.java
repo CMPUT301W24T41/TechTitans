@@ -10,7 +10,10 @@ import android.widget.ArrayAdapter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import android.content.Context;
 import android.widget.Button;
@@ -30,9 +33,15 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
     private Context context;
     private int layoutID;
 
+
+    private UserController userController = new UserController();
+
     private DatabaseController databaseController = new DatabaseController();
 
     private ImageView profilePic;
+
+    private Map<String, ImageView> imageViewMap = new HashMap<>();
+
     public UserArrayAdapter(Context context, List<User> users) {
         super(context, 0,  users);
         this.users = users;
@@ -75,26 +84,36 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             TextView lastName = view.findViewById(R.id.adminViewLastName);
             TextView userID = view.findViewById(R.id.adminViewID);
             TextView contact = view.findViewById(R.id.adminViewContact);
-            profilePic = view.findViewById(R.id.adminViewProfilePictureImage);
             Button deleteButton = view.findViewById(R.id.adminViewDeleteUser);
             ImageView xButton = view.findViewById(R.id.adminViewUserXButton);
 
-            databaseController.getUserProfilePicture(user.getId(), this);
+
+            ImageView profilePic = view.findViewById(R.id.adminViewProfilePictureImage);
+            // Set tag with user ID
+            profilePic.setTag(user.getId());
+            // Add to map for association
+            imageViewMap.put(user.getId(), profilePic);
 
             firstName.setText(user.getFirstName());
             lastName.setText(user.getLastName());
             contact.setText(user.getContact());
             userID.setText(user.getId());
 
+
+            databaseController.getUserProfilePicture(user.getId(), this);
+
+            if(Objects.equals(user.getId(), userController.getUser().getId())) {
+                deleteButton.setVisibility(View.INVISIBLE);
+            }
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     users.remove(user);
                     notifyDataSetChanged();
                     databaseController.deleteUser(user);
-
                 }
             });
+
 
             xButton.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -116,14 +135,24 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
     }
 
     public void onImageUriCallback(Uri uri) {
-        // Handle the retrieved URI here
-        String imageUrl = uri.toString();
-        Picasso.get().load(imageUrl).into(profilePic);
+        for (Map.Entry<String, ImageView> entry : imageViewMap.entrySet()) {
+            String userId = entry.getKey();
+            ImageView imageView = entry.getValue();
+            if (imageView != null && userId != null && uri != null) {
+                // If the tag of the ImageView matches the user ID, load the image
+                if (userId.equals(imageView.getTag())) {
+                    // Load the image into the correct ImageView
+                    Picasso.get().load(uri.toString()).into(imageView);
+                    // Break the loop after finding the correct ImageView
+                    break;
+                }
+            }
+        }
     }
 
     @Override
     public void onError(Exception e) {
-        //load dummy picture
+        // load dummy picture
 //        Picasso.get().load(R.drawable.user).into(profilePic);
     }
 

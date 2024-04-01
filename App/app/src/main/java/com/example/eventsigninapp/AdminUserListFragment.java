@@ -48,7 +48,6 @@ public class AdminUserListFragment extends Fragment implements DatabaseControlle
 
 
         databaseController.getAllUsersFromFirestore(this);
-        userArrayAdapter.notifyDataSetChanged();
 
 
         // TODO: maybe add a expanded view of someones profile

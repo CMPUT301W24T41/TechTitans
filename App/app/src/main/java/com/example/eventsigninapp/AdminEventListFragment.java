@@ -59,19 +59,19 @@ public class AdminEventListFragment extends Fragment implements DatabaseControll
 
 
         //TODO fix this does not work
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.e("DEBUG", "item clicked");
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", events.get(position));
-                frag = new EventDetailsFragment();
-                frag.setArguments(bundle);
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
-            }
-        });
+//        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                Log.e("DEBUG", "item clicked");
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("event", events.get(position));
+//                frag = new EventDetailsFragment();
+//                frag.setArguments(bundle);
+//                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                transaction.replace(((ViewGroup) getView().getParent()).getId(), frag).commit();
+//            }
+//        });
 
 
 
