@@ -20,6 +20,7 @@ public class ImageGridAdapter extends ArrayAdapter<Uri> {
     private Context Context;
     private List<Uri> ImageUrls; // List of image URLs
 
+    private DatabaseController databaseController = new DatabaseController();
     private int layoutID;
 
     public ImageGridAdapter(Context context, int layoutID, List<Uri> imageUrls) {
@@ -43,9 +44,21 @@ public class ImageGridAdapter extends ArrayAdapter<Uri> {
 
         // Load image into ImageView using Picasso
         ImageView imageView = gridItemView.findViewById(R.id.gridImage);
+        ImageView xButton = gridItemView.findViewById(R.id.gridImageXButtons);
         Log.d("success found", "getView: loading:" + ImageUrls.get(position));
         Picasso.get().load(ImageUrls.get(position)).into(imageView);
 
+
+        xButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                ImageUrls.remove(position);
+                notifyDataSetChanged();
+
+                databaseController.deleteImageFromUri(ImageUrls.get(position));
+
+            }
+        });
         return gridItemView;
     }
 }

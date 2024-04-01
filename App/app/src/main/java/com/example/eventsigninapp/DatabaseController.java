@@ -209,6 +209,25 @@ public class DatabaseController {
                 });
     }
 
+
+    public void deleteImageFromUri(Uri uri) {
+        StorageReference storageRef = storage.getReference();
+        String path = uri.getPath();
+        path = path.substring(path.indexOf("/o/") + 3);
+
+        StorageReference profilePicRef = storageRef.child(path);
+        Log.d("deldel'", "deleteImageFromUri: " + profilePicRef);
+        // Delete the profile picture from Firebase Storage
+        profilePicRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Upon successful deletion, update the user's picture URI
+                    Log.d("deldel", "deleteImageFromUri: Successfully deleted");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("deldel", "deleteEventPicture: Error, failure to delete image", e);
+                });
+    }
+
     /**
      * This method uploads the given picture uri to the storage for the given user
      * @param picture the picture to upload
@@ -659,6 +678,8 @@ public class DatabaseController {
         });
     }
 
+
+
     public interface GetAllImagesCallback {
         void onGetAllImagesCallback(ArrayList<Uri> allImages);
     }
@@ -680,7 +701,11 @@ public class DatabaseController {
         void onEventCheckInQRCodeCallback(Uri imageUri);
         void onEventDescriptionQRCodeCallback(Uri imageUri);
         void onError(Exception e);
+
+
     }
+
+
 
     /**
      * This interface allows the users that signed up for an event to be retrieved from the database.
