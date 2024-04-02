@@ -80,8 +80,9 @@ public class AdminEventListFragment extends Fragment implements DatabaseControll
     }
 
     @Override
-    public void onGetAllEventsCallback(Event event) {
-        events.add(event);
+    public void onGetAllEventsCallback(ArrayList<Event> allEvents) {
+        events.clear();
+        events.addAll(allEvents);
         eventsArrayAdapter.notifyDataSetChanged();
     }
 

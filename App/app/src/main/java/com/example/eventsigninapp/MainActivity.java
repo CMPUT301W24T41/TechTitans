@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 //import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            Log.w("test", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity{
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
+                        Log.d("test", msg);
                         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });

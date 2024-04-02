@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import android.location.Location;
+import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
@@ -37,11 +38,11 @@ public class DatabaseController {
     private FirebaseStorage storage;
 
 
-
     public DatabaseController() {
         this.db = FirebaseFirestore.getInstance();
-        this.storage= FirebaseStorage.getInstance();
+        this.storage = FirebaseStorage.getInstance();
     }
+
     public DatabaseController(FirebaseFirestore firestore, FirebaseStorage storage) {
         this.db = firestore;
         this.storage = storage;
@@ -50,6 +51,7 @@ public class DatabaseController {
 
     /**
      * This method stores a user or updates an existing user to the database
+     *
      * @param user the user to add
      */
     public void putUserToFirestore(User user) {
@@ -65,7 +67,6 @@ public class DatabaseController {
         userData.put("admin", user.isAdmin());
 
 
-
         DocumentReference userDocument = db.collection("users").document(user.getId());
 
         userDocument.set(userData, SetOptions.merge());
@@ -74,12 +75,12 @@ public class DatabaseController {
     }
 
 
-
     /**
      * This function gets a user from the database using the given id and updates the current
      * user of a given userController object with information of that user
      * if the task fails, this creates a new user instead to add
-     * @param id the id of the user to acquire
+     *
+     * @param id             the id of the user to acquire
      * @param userController the UserController to update
      */
     public void updateWithUserFromFirestore(String id, UserController userController) {
@@ -92,17 +93,17 @@ public class DatabaseController {
 //                        Boolean isAdminValue = document.getBoolean("isAdmin");
 ////                        Log.d("admin", "is user admin?:" + isAdminValue);
 
-                            User pulledUser = new User(
-                                    id,
-                                    document.getString("firstName"),
-                                    document.getString("lastName"),
-                                    document.getString("contact"),
-                                    (ArrayList<String>) document.get("attendingEvents"),
-                                    (ArrayList<String>) document.get("hostingEvents"),
-                                    document.getBoolean("admin")
-                            );
-                            userController.setUser(pulledUser);
-                            this.updateWithProfPictureFromWeb(pulledUser);
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents"),
+                                document.getBoolean("admin")
+                        );
+                        userController.setUser(pulledUser);
+                        this.updateWithProfPictureFromWeb(pulledUser);
 
                     } else {
                         // user does not exist, create a new user
@@ -113,7 +114,8 @@ public class DatabaseController {
     }
 
 
-    /**Finds a user based on their unique id in the database and fetches it from the database,
+    /**
+     * Finds a user based on their unique id in the database and fetches it from the database,
      * returning the user in a callback
      *
      * @param id:       the unique id of the user to be fetched
@@ -121,7 +123,7 @@ public class DatabaseController {
      *                  to access a user fetched from the database, use the following code:
      *                  userIDController.getOtherUserFromFirestore(userID, new UserIDController.userCallback() {
      *                  public void onCallback(User user) {
-     *
+     *                  <p>
      *                  }
      *                  });
      */
@@ -134,18 +136,17 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
 
 
-                            User pulledUser = new User(
-                                    id,
-                                    document.getString("firstName"),
-                                    document.getString("lastName"),
-                                    document.getString("contact"),
-                                    (ArrayList<String>) document.get("attendingEvents"),
-                                    (ArrayList<String>) document.get("hostingEvents"),
-                                    document.getBoolean("admin")
+                        User pulledUser = new User(
+                                id,
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("contact"),
+                                (ArrayList<String>) document.get("attendingEvents"),
+                                (ArrayList<String>) document.get("hostingEvents"),
+                                document.getBoolean("admin")
 
-                            );
-                            callback.onCallback(pulledUser);
-
+                        );
+                        callback.onCallback(pulledUser);
 
 
                     } else {
@@ -157,6 +158,7 @@ public class DatabaseController {
 
     /**
      * This method deletes the given picture uri from the storage for the given event
+     *
      * @param event the event picture is being deleted
      */
     public void deleteEventPicture(Event event) {
@@ -175,9 +177,9 @@ public class DatabaseController {
     }
 
 
-
     /**
      * This method deletes the given picture uri from the storage for the given user
+     *
      * @param user the user whose profile is being updated
      */
     public void deleteProfilePicture(User user) {
@@ -216,8 +218,9 @@ public class DatabaseController {
 
     /**
      * This method uploads the given picture uri to the storage for the given user
+     *
      * @param picture the picture to upload
-     * @param user the user whose profile is being updated
+     * @param user    the user whose profile is being updated
      */
     public void uploadProfilePicture(Uri picture, User user) {
         StorageReference storageRef = storage.getReference();
@@ -243,6 +246,7 @@ public class DatabaseController {
 
     /**
      * this updates the profile of a given user with the result acquired from the database
+     *
      * @param user the user to be updated
      */
     public void updateWithProfPictureFromWeb(User user) {
@@ -260,14 +264,15 @@ public class DatabaseController {
 
     /**
      * fetches the profile picture of other users on the platform using a callback
-     * @param userID the id of the user's picture to fetch
+     *
+     * @param userID   the id of the user's picture to fetch
      * @param callback due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
-     *      *                  to access a user fetched from the database, use the following code:
-     *      *                  userIDController.getOtherUserProfilePicture(userID, new UserIDController.userCallback() {
-     *      *                  public void onCallback(Uri picture) {
-     *      *
-     *      *                  }
-     *      *                  });
+     *                 *                  to access a user fetched from the database, use the following code:
+     *                 *                  userIDController.getOtherUserProfilePicture(userID, new UserIDController.userCallback() {
+     *                 *                  public void onCallback(Uri picture) {
+     *                 *
+     *                 *                  }
+     *                 *                  });
      */
     public void getUserProfilePicture(String userID, ImageUriCallback callback) {
         StorageReference storageRef = storage.getReference();
@@ -293,12 +298,14 @@ public class DatabaseController {
             callback.onError(e);
         });
     }
+
     /**
-    Deletes the information of the given user
-     @param user the user to be deleted
+     * Deletes the information of the given user
+     *
+     * @param user the user to be deleted
      */
 
-    public void deleteUserInfo(User user){
+    public void deleteUserInfo(User user) {
         db.collection("users").document(user.getId()).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -315,11 +322,12 @@ public class DatabaseController {
 
 
     /**
-     Deletes the information of the given event
-     @param event the event to be deleted
+     * Deletes the information of the given event
+     *
+     * @param event the event to be deleted
      */
 
-    public void deleteEventInfo(Event event){
+    public void deleteEventInfo(Event event) {
         db.collection("users").document(event.getUuid()).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -337,10 +345,11 @@ public class DatabaseController {
 
     /**
      * Deletes both the users information and their user profile picture
+     *
      * @param user the user to be deleted
      */
 
-    public void deleteUser(User user){
+    public void deleteUser(User user) {
         deleteUserInfo(user);
         deleteProfilePicture(user);
     }
@@ -348,15 +357,18 @@ public class DatabaseController {
 
     /**
      * Deletes both the event information and the event poster
+     *
      * @param event the user to be deleted
      */
-    public void deleteEvent(Event event){
+    public void deleteEvent(Event event) {
         deleteEventInfo(event);
         deleteEventPicture(event);
     }
+
     /**
      * This function retrieves users that signed up to an event from the database.
-     * @param event the event we are retrieving signed up users for
+     *
+     * @param event    the event we are retrieving signed up users for
      * @param callback callback function to get retrieval results
      */
     public void getSignedUpUsersFromFirestore(Event event, GetSignedUpUsersCallback callback) {
@@ -399,12 +411,13 @@ public class DatabaseController {
 
     /**
      * This function retrieves users that checked into an event from the database.
-     * @param event the event we are retrieving checked in users for
+     *
+     * @param event    the event we are retrieving checked in users for
      * @param callback callback function to get retrieval results
      */
     public void getCheckedInUsersFromFirestore(Event event, GetCheckedInUsersCallback callback) {
         final ArrayList<?>[] usersCheckedIn = new ArrayList<?>[1]; // effectively final
-        CollectionReference eventsRef= db.collection("events");
+        CollectionReference eventsRef = db.collection("events");
         eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -419,23 +432,6 @@ public class DatabaseController {
                 }
             }
         });
-//        eventsRef.addSnapshotListener((value, error) -> {
-//            if (error != null) {
-//                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
-//                return;
-//            }
-//            if (value == null) {
-//                return;
-//            }
-//
-//            DocumentSnapshot doc = value.getDocuments().get(0);
-//            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
-//            if (usersCheckedIn[0] != null) {
-//                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
-//            } else {
-//                Log.e("Database", "Error retrieving checked in users");
-//            }
-//        });
     }
 
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
@@ -611,6 +607,7 @@ public class DatabaseController {
 
     /**
      * This function gets all the events from the database.
+     *
      * @param callback callback to add the events to the list of events
      */
     public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
@@ -713,16 +710,16 @@ public class DatabaseController {
         // List all items (folders and files) within the specified folder
         folderRef.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference item : listResult.getItems()) {
-                    // Get the download URL of the image and pass it to the callback
-                    item.getDownloadUrl().addOnSuccessListener(uri -> {
-                        callback.onImageUriCallback(uri);
-                        Log.d("succes found", "getAllImagesInFolder: foundImage" + uri
-                        );
-                    }).addOnFailureListener(e -> {
-                        // Handle any errors
-                        callback.onError(e);
-                    });
-                }
+                // Get the download URL of the image and pass it to the callback
+                item.getDownloadUrl().addOnSuccessListener(uri -> {
+                    callback.onImageUriCallback(uri);
+                    Log.d("succes found", "getAllImagesInFolder: foundImage" + uri
+                    );
+                }).addOnFailureListener(e -> {
+                    // Handle any errors
+                    callback.onError(e);
+                });
+            }
 
         }).addOnFailureListener(e -> {
             // Handle any errors
@@ -731,40 +728,176 @@ public class DatabaseController {
     }
 
 
-
     public interface GetAllImagesCallback {
         void onGetAllImagesCallback(ArrayList<Uri> allImages);
     }
 
 
-
-    public interface GetAllUserCallback{
+    public interface GetAllUserCallback {
         void onGetAllUserCallback(User user);
     }
-
 
 
     public interface GetEventCallback {
         void onGetEventCallback(Event event);
     }
-    public interface GetEventCreatorUUIDCallback{
+
+    public interface GetEventCreatorUUIDCallback {
         void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
     }
+
     public interface GetCheckInLocationCallback {
         void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
     }
 
-    public interface EventImageUriCallbacks {
-        void onEventPosterCallback(Uri imageUri);
-        void onEventPosterCallback(Uri imageUri, ImageView imageView);
-        void onEventCheckInQRCodeCallback(Uri imageUri);
-        void onEventDescriptionQRCodeCallback(Uri imageUri);
-        void onError(Exception e);
+
+
+
+
+    /**
+     * This method puts a check-in location to the database
+     *
+     * @param event    the event to put the check-in location to
+     * @param location user location when they checked in
+     */
+    public void addCheckInLocationToFirestore(Event event, Location location) {
+        GeoPoint loc = new GeoPoint(location.getLatitude(), location.getLongitude());
+        DocumentReference eventsRef = db.collection("events").document(event.getUuid());
+        eventsRef.update("checkInLocations", FieldValue.arrayUnion(loc))
+                .addOnSuccessListener(avoid -> {
+                    Log.e("DEBUG", "Successfully added check in location");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DEBUG", "Failed to check in location");
+                });
+    }
+
+    /**
+     * This method gets all the check in locations for an event from the database.
+     *
+     * @param event    the event to get check-in locations from
+     * @param callback callback function to get check-in locations
+     */
+    public void getCheckInLocationsFromFirestore(Event event, GetCheckInLocationCallback callback) {
+        final ArrayList<?>[] checkInLocations = new ArrayList<?>[1]; // effectively final
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot doc = task.getResult();
+                checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
+                if (checkInLocations[0] != null) {
+                    callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
+                    Log.e("DEBUG", "Success retrieving check-in locations");
+                } else {
+                    Log.e("DEBUG", "Error retrieving check-in locations");
+                }
+            }
+        });
+
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+                return;
+            }
+
+            if (value == null) {
+                return;
+            }
+
+            DocumentSnapshot doc = value.getDocuments().get(0);
+            checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
+            if (checkInLocations[0] != null) {
+                callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
+            } else {
+                Log.e("DEBUG", "Error retrieving checked in users");
+            }
+        });
+    }
+
+    /**
+     * This method takes an event of type Event and a String newUserId. It then adds this user to
+     * the event on firestore under the singedUpUsers array. It will not add duplicates
+     */
+    public void addSignedUpUser(Event event, User user) {
+
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        eventRef.update("signedUpUsers", FieldValue.arrayUnion(user.getId()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("SignUpUser", "User Signed-up to Event.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("SignUpUser", "Error Signing-up to Event: " + e.getMessage());
+                    }
+                });
+    }
+
+    public void addEventToUser(User user, Event event) {
+        DocumentReference eventRef = db.collection("users").document(user.getId());
+        eventRef.update("attendingEvents", FieldValue.arrayUnion(user.getId()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("AddAttendingEvents", "Attending Events updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("AddAttendingEvents", "Error Adding to Attending Events: " + e.getMessage());
+                    }
+                });
 
 
     }
 
+    ;
 
+    public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback) {
+        DocumentReference eventRef = db.collection("events").document(event.getUuid());
+        // Fetch the event document
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                // DocumentSnapshot contains data read from a document in Firestore
+                DocumentSnapshot document = task.getResult();
+
+                // Check if the document exists and contains the creator UUID field
+                if (document.exists()) {
+                    String creatorUUID = document.getString("creatorUUID");
+
+                    // Invoke the callback with the creator UUID
+                    callback.onGetEventCreatorUUIDCallback(event, creatorUUID);
+                } else {
+                    // Document doesn't exist or creator UUID field is not found
+                    callback.onGetEventCreatorUUIDCallback(event, null);
+                }
+            } else {
+                // Error handling
+                Log.e("getEventCreatorUUID", "Error getting event document", task.getException());
+                callback.onGetEventCreatorUUIDCallback(event, null);
+            }
+        });
+    }
+
+
+
+
+    public interface EventImageUriCallbacks {
+        void onEventPosterCallback(Uri imageUri);
+
+        void onEventPosterCallback(Uri imageUri, ImageView imageView);
+
+
+        void onEventCheckInQRCodeCallback(Uri imageUri);
+
+        void onEventDescriptionQRCodeCallback(Uri imageUri);
+
+        void onError(Exception e);
+    }
 
     /**
      * This interface allows the users that signed up for an event to be retrieved from the database.
@@ -793,7 +926,6 @@ public class DatabaseController {
      */
     public interface ImageUriCallback {
         void onImageUriCallback(Uri imageUri);
-
         void onImageUriCallback(Uri imageUri, ImageView imageView);
         void onError(Exception e);
     }
@@ -806,4 +938,6 @@ public class DatabaseController {
 
         void onError(Exception e);
     }
+
+
 }
