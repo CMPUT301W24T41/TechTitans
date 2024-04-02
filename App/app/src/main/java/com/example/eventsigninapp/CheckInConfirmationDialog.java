@@ -18,7 +18,7 @@ public class CheckInConfirmationDialog extends AlertDialog {
 
         rootView = getLayoutInflater().inflate(R.layout.check_in_confirmation, parent, false);
 
-        imageView = rootView.findViewById(R.id.imageView);
+        imageView = rootView.findViewById(R.id.checkInConfirmImage);
     }
 
     public void showEvent(Event event) {
@@ -27,7 +27,14 @@ public class CheckInConfirmationDialog extends AlertDialog {
         setMessage("You have successfully checked in to this event!");
         setCancelable(true);
         setButton(BUTTON_POSITIVE, "OK", (dialog, which) -> dialog.dismiss());
-        Picasso.get().load(event.getPosterUri()).into(imageView);
+        if (event.getPosterUri() != null) {
+            Picasso.get().load(event.getPosterUri()).into(imageView);
+        }
+        else{
+            // Load the default event image
+            Picasso.get().load(R.drawable.event_image).into(imageView);
+        }
+
         show();
     }
 }

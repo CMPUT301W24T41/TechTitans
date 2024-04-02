@@ -157,7 +157,8 @@ public class UserController {
 
         try {
             eventController.signUpUser(this.getUser().getId());
-            this.getUser().getAttendingEvents().add(event.getUuid());          // add event to user's list of events
+            this.getUser().getAttendingEvents().add(event.getUuid());// add event to user's list of events
+            Log.d("UserController", "Attending Events: " + user.getAttendingEvents());
         } catch (EventController.EventFullException |
                  EventController.AlreadySignedUpException e) { // catch exception
             System.out.println(e.getMessage()); // print error message
@@ -207,25 +208,6 @@ public class UserController {
     }
 
 
-
-    /**
-     * Retrieves the default picture URI.
-     * This method provides the default picture URI.
-     *
-     * @return The default picture URI.
-     * For example: "android.resource://com.example.eventsigninapp/drawable/user"
-     */
-    private Uri getDefaultPictureUri() {
-        // Provide the default picture URI here
-        // For example:
-        return Uri.parse("android.resource://com.example.eventsigninapp/drawable/user");
-    }
-    public void setFcmToken(String token) {
-        user.setFcmToken(token);
-    }
-    public String getFcmToken() {
-        return user.getFcmToken();
-    }
 
 
 }

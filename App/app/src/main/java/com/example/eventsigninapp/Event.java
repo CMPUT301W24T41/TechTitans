@@ -2,12 +2,14 @@ package com.example.eventsigninapp;
 
 
 import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Event implements Serializable {
@@ -25,6 +27,7 @@ public class Event implements Serializable {
     private final Date date;
     private String creatorUUID;
     private String description;
+    private String eventDetailsQrCodeString;
 
     public Event() {
         //TODO: generate a unique id on creation
@@ -34,9 +37,10 @@ public class Event implements Serializable {
         signedUpUsersUUIDs = new ArrayList<String>();
         posterUri = null;
         checkInQRCodeUri = null;
+        eventDetailsQrCodeString = UUID.randomUUID().toString();
         location = null;
         date = null;
-        capacity = 10000000;
+        capacity = 0;
     }
 
     public Event(String creatorUUID) {
@@ -182,6 +186,7 @@ public class Event implements Serializable {
         eventMap.put("capacity", capacity);
         eventMap.put("date", date);
         eventMap.put("location", location);
+        eventMap.put("eventDetailsQrCodeString", eventDetailsQrCodeString);
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
         eventMap.put("description", description);
@@ -194,6 +199,14 @@ public class Event implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getEventDetailsQrCodeString() {
+        return eventDetailsQrCodeString;
+    }
+
+    public void setEventDetailsQrCodeString(String eventDetailsQrCodeString) {
+        this.eventDetailsQrCodeString = eventDetailsQrCodeString;
     }
 
     public void setPosterUri(Uri posterUri) {
@@ -212,11 +225,29 @@ public class Event implements Serializable {
         return checkInQRCodeUri;
     }
 
-    public void setDescriptionQRCodeUri(Uri descriptionQRCodeUri) {
+    public void setDetailsQRCodeUri(Uri descriptionQRCodeUri) {
         this.descriptionQRCodeUri = descriptionQRCodeUri;
     }
 
     public Uri getDescriptionQRCodeUri() {
         return descriptionQRCodeUri;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // check if object is an event
+        if (!(o instanceof Event)) {
+            return false;
+        }
+
+        if (!Objects.equals(((Event) o).getUuid(), this.getUuid())) {
+            return false;
+        }
+
+        return this.toMap().equals(((Event) o).toMap());
+    }
+
+    public boolean isSameEvent(Event event) {
+        return this.getUuid().equals(event.getUuid());
     }
 }

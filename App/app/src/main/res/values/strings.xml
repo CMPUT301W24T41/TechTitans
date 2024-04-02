@@ -7,10 +7,10 @@
     <string name="check_in">Check In With Qr Code</string>
     <string name="host_event">Host Event</string>
     <string name="confirm">Confirm</string>
-    <string name="attendee_limit">Attendee limit - Optional:</string>
+    <string name="attendee_limit">Attendee Limit - Optional:</string>
     <string name="upload_poster_text">Click on image to upload a Poster</string>
-    <string name="description_of_event">Description of Event:</string>
-    <string name="titile_of_even">Titile of Event:</string>
+    <string name="description_of_event">Event Description:</string>
+    <string name="title_of_even">Title of Event:</string>
     <string name="main_page"><![CDATA[<—Main Page]]></string>
     <string name="create_your_own_event">Create Your Own Event</string>
     <string name="event_poster">Event Poster</string>
@@ -30,10 +30,10 @@
     <string name="event_details">Any event details will be displayed here! \n \n
     (It appears that there are currently no details to be displayed for this event.)</string>
     <string name="event_announcements_header">Announcements</string>
-    <string name="event_announcements">Any event announcements will be displayed here! \n \n
-        (It appears that there are currently no announcements to display for this event.)</string>
+    <string name="event_announcements">(It appears that there are currently no announcements to display for this event.)</string>
     <string name="Back">Back</string>
-    <string name="browse_events_text">Browse events</string>
+    <string name="browse_all_events_text">Browse All Events</string>
+    <string name="browse_my_events_text">My Created Events</string>
     <string name="see_announcements_text">Click here to see announcements</string>
     <string name="sign_up_for_event">Sign up for this event</string>
     <string name="see_details_text">See Event Details</string>
@@ -41,7 +41,7 @@
     <string name="signed_up_title_text">SIGNED UP (0)</string>
     <string name="go_to_map_text">View check-in location</string>
     <string name="msg_token_fmt">FCM Registration Token: %1$s</string>
-
+    <string name="my_events">My Signed Up Events</string>
 
     <string name="Qr_Code_Message">Scan the QR code to check in and enjoy the event !</string>
     <string name="scan_qr_code">Scan QR Code</string>
@@ -51,4 +51,11 @@
     <string name="division">%1$d/%2$d</string>
     <string name="eventListTitle">Events:</string>
     <string name="userListTitle">Users:\n</string>
+    <string name="notification_preferences_message">You are all set! Would you like to receive
+        notifications from this event organizer? Notifications can include important updates like
+        changes in venue.</string>
+    <string name="image_of_an_event">Image of an event</string>
+    <string name="default_notification_channel_id">com.example.eventsigninapp</string>
+    <string name="check_in_qr_code">Check-In QR Code</string>
+    <string name="event_description_qr_code">Event Description QR Code</string>
 </resources>

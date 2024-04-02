@@ -1,45 +1,30 @@
 package com.example.eventsigninapp;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Document;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 
 public class DatabaseController {
@@ -422,32 +407,34 @@ public class DatabaseController {
         eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Log.e("db", "Called on complete");
                 DocumentSnapshot document = task.getResult();
                 usersCheckedIn[0] = (ArrayList<?>) document.get("checkedInUsers");
                 if (usersCheckedIn[0] != null) {
+                    Log.e("db", "The retrieval was successful");
                     callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
                 } else {
                     Log.e("Database", "Error retrieving checked in users");
                 }
             }
         });
-        eventsRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
-                return;
-            }
-            if (value == null) {
-                return;
-            }
-
-            DocumentSnapshot doc = value.getDocuments().get(0);
-            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
-            if (usersCheckedIn[0] != null) {
-                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
-            } else {
-                Log.e("Database", "Error retrieving checked in users");
-            }
-        });
+//        eventsRef.addSnapshotListener((value, error) -> {
+//            if (error != null) {
+//                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
+//                return;
+//            }
+//            if (value == null) {
+//                return;
+//            }
+//
+//            DocumentSnapshot doc = value.getDocuments().get(0);
+//            usersCheckedIn[0] = (ArrayList<?>) doc.get("checkedInUsers");
+//            if (usersCheckedIn[0] != null) {
+//                callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
+//            } else {
+//                Log.e("Database", "Error retrieving checked in users");
+//            }
+//        });
     }
 
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
@@ -594,23 +581,50 @@ public class DatabaseController {
         });
     }
 
+    public void findEventByQrResult(String qrResult, GetEventCallback callback) {
+        db.collection("events")
+                .whereEqualTo("uuid", qrResult)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        Event event = document.toObject(Event.class);
+                        callback.onGetEventCallback(event);
+                    } else {
+                        callback.onGetEventCallback(null);
+                    }
+                });
+        db.collection("events")
+                .whereEqualTo("eventDetailsQrCodeString", qrResult)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        Event event = document.toObject(Event.class);
+                        callback.onGetEventCallback(event);
+                    } else {
+                        callback.onGetEventCallback(null);
+                    }
+                });
+    }
+
     /**
      * This function gets all the events from the database.
      * @param callback callback to add the events to the list of events
      */
     public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
         CollectionReference events = db.collection("events");
+
         events.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc : task.getResult()) {
-                                callback.onGetAllEventsCallback(doc.toObject(Event.class));
-                            }
-                        } else {
-                            Log.e("DEBUG", "Error retrieving events");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<Event> eventList = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            eventList.add(doc.toObject(Event.class));
                         }
+                        callback.onGetAllEventsCallback(eventList);
+                    } else {
+                        Log.e("DEBUG", "Error retrieving events");
                     }
                 });
     }
@@ -732,6 +746,12 @@ public class DatabaseController {
     public interface GetEventCallback {
         void onGetEventCallback(Event event);
     }
+    public interface GetEventCreatorUUIDCallback{
+        void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
+    }
+    public interface GetCheckInLocationCallback {
+        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
+    }
 
     public interface EventImageUriCallbacks {
         void onEventPosterCallback(Uri imageUri);
@@ -763,7 +783,7 @@ public class DatabaseController {
      * This interface allows an event to be retrieved from the database and added to the list of events.
      */
     public interface GetAllEventsCallback {
-        void onGetAllEventsCallback(Event event);
+        void onGetAllEventsCallback(ArrayList<Event> events);
     }
 
 

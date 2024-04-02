@@ -93,6 +93,7 @@ public class AttendeeListActivity extends AppCompatActivity implements
                         signedUpUsers.add(user);
                         signedUpCountText.setText(String.format(Locale.CANADA, "SIGNED UP (%d)", signedUpUsers.size()));
                         signedUpUserAdapter.notifyDataSetChanged();
+
                     }
 
                     @Override

@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,6 +41,8 @@ public class EditProfileFragment extends DialogFragment {
     Uri profilePictureUri = userController.getUser().getPicture();
     String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
+    String userInitials = userController.getUser().getInitials();
+    Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
     public EditProfileFragment(){}
 
     @Override
@@ -95,6 +98,7 @@ public class EditProfileFragment extends DialogFragment {
                 Uri newProf = userController.getUser().getPicture();
 
 
+                // user gets updated here
                 userController.editProfile(newFirstName, newLastName, newContact, newProf);
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
@@ -114,10 +118,18 @@ public class EditProfileFragment extends DialogFragment {
         if (resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
 
+            // for speed purposes
+            userController.getUser().setPicture(imageUri);
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
             databaseController.putUserToFirestore(userController.getUser());
-            Picasso.get().load(imageUri).into(profPic);
 
+
+            if (imageUri != null) {
+                Picasso.get().load(imageUri).into(profPic);
+            } else {
+                // Load a default image instead
+                profPic.setImageDrawable(initialsDrawable);
+            }
             // Update profilePictureUrl with the new image URI
             profilePictureUrl = imageUri.toString();
 
