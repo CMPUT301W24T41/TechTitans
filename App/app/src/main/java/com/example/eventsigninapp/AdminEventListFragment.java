@@ -24,7 +24,7 @@ public class AdminEventListFragment extends Fragment implements DatabaseControll
     ArrayList<Event> events;
 
     ListView eventList;
-    EventArrayAdapter eventsArrayAdapter;
+    AdminEventArrayAdapter eventsArrayAdapter;
 
     TextView title;
     EventDetailsFragment frag;
@@ -49,7 +49,7 @@ public class AdminEventListFragment extends Fragment implements DatabaseControll
 
         events = new ArrayList<Event>();
 
-        eventsArrayAdapter = new EventArrayAdapter(getContext(), R.layout.admin_event_list_item, events);
+        eventsArrayAdapter = new AdminEventArrayAdapter(getContext(), R.layout.admin_event_list_item, events);
         eventList.setAdapter(eventsArrayAdapter);
 
 
