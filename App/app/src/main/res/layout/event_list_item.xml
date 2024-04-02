@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="325dp"
-    android:layout_margin="4dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="14dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true"
@@ -26,7 +26,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"> <!-- Adjust the corner radius as needed -->
+                app:cardCornerRadius="18dp"> <!-- Adjust the corner radius as needed -->
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -64,7 +64,7 @@
             android:paddingStart="8dp"
             android:paddingBottom="5dp"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="1"
             />
 
     </LinearLayout>

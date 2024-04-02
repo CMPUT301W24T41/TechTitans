@@ -2,7 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="IntentTest">
+        <State />
+      </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="testEventDetailsFragment()">
+        <State />
+      </entry>
+      <entry key="testMyEventsFragment()">
         <State />
       </entry>
     </value>
