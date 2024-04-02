@@ -508,6 +508,21 @@ public class DatabaseController {
         eventPosterRef.getDownloadUrl().addOnSuccessListener(uri -> {
             Log.d("Database", "Image download URL: " + uri.toString());
             callback.onEventPosterCallback(uri);
+
+        }).addOnFailureListener(e -> {
+            Log.e("Database", "getEventPoster: Failed to retrieve image", e);
+            callback.onError(e);
+        });
+    }
+
+    public void getEventPoster(String eventID, ImageView imageView, EventImageUriCallbacks callback) {
+        StorageReference storageRef = storage.getReference();
+        StorageReference eventPosterRef = storageRef.child("event_posters/" + eventID);
+
+        eventPosterRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            Log.d("Database", "Image download URL: " + uri.toString());
+            callback.onEventPosterCallback(uri, imageView);
+
         }).addOnFailureListener(e -> {
             Log.e("Database", "getEventPoster: Failed to retrieve image", e);
             callback.onError(e);
@@ -698,6 +713,7 @@ public class DatabaseController {
 
     public interface EventImageUriCallbacks {
         void onEventPosterCallback(Uri imageUri);
+        void onEventPosterCallback(Uri imageUri, ImageView imageView);
         void onEventCheckInQRCodeCallback(Uri imageUri);
         void onEventDescriptionQRCodeCallback(Uri imageUri);
         void onError(Exception e);

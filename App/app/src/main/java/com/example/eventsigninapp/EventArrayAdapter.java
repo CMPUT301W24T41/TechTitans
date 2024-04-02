@@ -78,7 +78,9 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
 
             ImageView deleteImage = view.findViewById(R.id.adminViewEventXButton);
 
-            databaseController.getEventPoster(event.getUuid(), this);
+//            eventPoster.setTag(position);
+
+            databaseController.getEventPoster(event.getUuid(), eventPoster, this);
 
             eventTitle.setText(event.getName());
             organizerID.setText(String.format(context.getString(R.string.organizerid), event.getCreatorUUID()));
@@ -96,6 +98,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
             });
 
             deleteImage.setOnClickListener(new View.OnClickListener(){
+
                 @Override
                 public void onClick(View v) {
                     events.get(position).setPosterUri(null);
@@ -113,10 +116,27 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
         return view;
     }
 
-    public void onEventPosterCallback(Uri uri) {
-        // Handle the retrieved URI here
-        String imageUrl = uri.toString();
-        Picasso.get().load(imageUrl).into(eventPoster);
+
+
+    @Override
+    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
+        Log.d("testest", "onEventPosterCallback: " + imageUri + imageView);
+
+
+        if (imageUri != null) {
+            Picasso.get().load(imageUri).into(imageView);
+        } else {
+            // Load a placeholder image if URI is null
+            imageView.setImageResource(R.drawable.event_image);
+        }
+
+    }
+
+
+    @Override
+    public void onEventPosterCallback(Uri imageUri) {
+        Log.d("testest", "onEventPosterCallback2: " + imageUri);
+        return;
     }
 
     @Override

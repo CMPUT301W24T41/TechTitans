@@ -17,17 +17,17 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ImageGridAdapter extends ArrayAdapter<Uri> {
-    private Context Context;
-    private List<Uri> ImageUrls; // List of image URLs
+    private Context context;
+    private List<Uri> imageUri; // List of image URLs
 
     private DatabaseController databaseController = new DatabaseController();
     private int layoutID;
 
-    public ImageGridAdapter(Context context, int layoutID, List<Uri> imageUrls) {
-        super(context, 0, imageUrls);
-        Context = context;
-        layoutID = layoutID;
-        ImageUrls = imageUrls;
+    public ImageGridAdapter(Context context, int layoutID, List<Uri> imageUri) {
+        super(context, 0, imageUri);
+        this.context = context;
+        this.layoutID = layoutID;
+        this.imageUri = imageUri;
     }
 
 
@@ -45,17 +45,17 @@ public class ImageGridAdapter extends ArrayAdapter<Uri> {
         // Load image into ImageView using Picasso
         ImageView imageView = gridItemView.findViewById(R.id.gridImage);
         ImageView xButton = gridItemView.findViewById(R.id.gridImageXButtons);
-        Log.d("success found", "getView: loading:" + ImageUrls.get(position));
-        Picasso.get().load(ImageUrls.get(position)).into(imageView);
+        Log.d("success found", "getView: loading:" + imageUri.get(position));
+        Picasso.get().load(imageUri.get(position)).into(imageView);
 
 
         xButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                ImageUrls.remove(position);
+                imageUri.remove(position);
                 notifyDataSetChanged();
 
-                databaseController.deleteImageFromUri(ImageUrls.get(position));
+                databaseController.deleteImageFromUri(imageUri.get(position));
 
             }
         });

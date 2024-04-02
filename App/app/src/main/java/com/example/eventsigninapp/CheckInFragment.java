@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -108,6 +109,11 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     public void onEventPosterCallback(Uri imageUri) {
         event.setPosterUri(imageUri);
         showCheckInConfirmation();
+    }
+
+    @Override
+    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
+        return;
     }
 
     @Override
