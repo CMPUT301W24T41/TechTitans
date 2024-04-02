@@ -1,8 +1,6 @@
 package com.example.eventsigninapp;
 
-//import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
-
-import static java.security.AccessController.getContext;
+// Import statements
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,40 +11,31 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.FirebaseApp;
-//import com.google.firebase.messaging.FirebaseMessaging;
 
+public class AdminActivity extends AppCompatActivity {
 
-
-
-public class AdminActivity extends AppCompatActivity{
-
+    // Member variables
     FrameLayout frameLayout;
-
     TabLayout tabLayout;
-
-    //    FirebaseFirestore db = FirebaseFirestore.getInstance();
     DatabaseController databaseController = new DatabaseController();
     UserController userController = new UserController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        FirebaseApp.initializeApp(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        // Initialize views
         frameLayout = findViewById(R.id.adminMain);
         tabLayout = findViewById(R.id.adminTabs);
 
-
-
-
+        // Select the first tab by default
         TabLayout.Tab tab = tabLayout.getTabAt(0);
         if (tab != null) {
             tab.select();
         }
 
-
+        // Replace default fragment with AdminEventListFragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.adminMain, new AdminEventListFragment())
                 .addToBackStack(null)
@@ -58,8 +47,6 @@ public class AdminActivity extends AppCompatActivity{
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
-
-                    //TODO
                     case 0:
                         fragment = new AdminEventListFragment();
                         break;
@@ -67,27 +54,22 @@ public class AdminActivity extends AppCompatActivity{
                         fragment = new AdminUserListFragment();
                         break;
                     case 2:
-                       fragment = new AdminImageListFragment();
+                        fragment = new AdminImageListFragment();
                         break;
                     case 3:
+                        // Redirect to MainActivity if the fourth tab is selected
+                        Intent intent = new Intent(AdminActivity.this, MainActivity.class);
+                        startActivity(intent);
                         break;
-
                 }
-                if(tab.getPosition() == 3) {
-                    Intent intent = new Intent(AdminActivity.this, MainActivity.class);
-                    startActivity(intent);
-
-                }else{
+                if (tab.getPosition() != 3) {
+                    // Replace fragment only if the fourth tab is not selected
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.adminMain, fragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .commit();
                 }
-
-
-
             }
-
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -98,34 +80,5 @@ public class AdminActivity extends AppCompatActivity{
             }
         });
 
-
-
-
-        /* Testing Database
-        userController = new UserIdController();
-        // testing on creating an event and saving it to firebase
-
-        String eventName = "Event Name"; // Example: Retrieve the event name from EditText
-        String eventLocation = "Chicago"; // Example: Retrieve the event location from EditText
-        String userId = userController.getUserID(this);
-        Event event = new Event();
-
-        // Set other event properties as needed
-        event.setName(eventName);
-        event.setLocation(eventLocation);
-
-        //testing with a test user
-        //User user = new User("usr", "fname", "lname", "123456789");
-        //userController.setUser(user);
-        userController.getUserFromFirestore("usr");
-        //userController.putUserToFirestore();
-
-
-        event.createEvent(userId, eventName);
-        System.out.println("DONE");
-
-         */
-
     }
-
 }

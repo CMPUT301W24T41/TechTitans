@@ -727,33 +727,6 @@ public class DatabaseController {
         });
     }
 
-
-    public interface GetAllImagesCallback {
-        void onGetAllImagesCallback(ArrayList<Uri> allImages);
-    }
-
-
-    public interface GetAllUserCallback {
-        void onGetAllUserCallback(User user);
-    }
-
-
-    public interface GetEventCallback {
-        void onGetEventCallback(Event event);
-    }
-
-    public interface GetEventCreatorUUIDCallback {
-        void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
-    }
-
-    public interface GetCheckInLocationCallback {
-        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
-    }
-
-
-
-
-
     /**
      * This method puts a check-in location to the database
      *
@@ -854,6 +827,35 @@ public class DatabaseController {
 
 
     }
+
+
+    public interface GetAllImagesCallback {
+        void onGetAllImagesCallback(ArrayList<Uri> allImages);
+    }
+
+
+    public interface GetAllUserCallback {
+        void onGetAllUserCallback(User user);
+    }
+
+
+    public interface GetEventCallback {
+        void onGetEventCallback(Event event);
+    }
+
+    public interface GetEventCreatorUUIDCallback {
+        void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
+    }
+
+    public interface GetCheckInLocationCallback {
+        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
+    }
+
+
+
+
+
+
 
     ;
 
