@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
@@ -33,6 +34,8 @@ public class DatabaseController {
 
     // cannot be final for testing purposes
     private FirebaseStorage storage;
+
+    private Context context;
 
 
 

@@ -22,8 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
@@ -43,7 +41,6 @@ public class MainActivity extends AppCompatActivity{
 
     TabLayout tabLayout;
     Map<String, Object> user = new HashMap<>();
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView idText;
     UserController userController = new UserController();
     DatabaseController databaseController = new DatabaseController();
@@ -84,9 +81,6 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-       FirebaseApp.initializeApp(this);
-//        db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
