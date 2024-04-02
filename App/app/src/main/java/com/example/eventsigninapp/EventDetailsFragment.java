@@ -2,6 +2,7 @@ package com.example.eventsigninapp;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,9 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListPopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,12 +40,13 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
     UserController userController = new UserController();
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
-    private Button backButton, editEventButton, notifyUsersButton;
+    private Button backButton, editEventButton, notifyUsersButton, menuButton;
     private AppCompatButton detailsQrCodeButton, checkInQrCodeButton;
     private ToggleButton signUpButton;
     private Event event;
     private ArrayList<String> signedUpUsersUUIDs = new ArrayList<>();
     private String eventCreator;
+    private ListPopupWindow actionSelectionPopup;
 
     /**
      * Used for passing in data through Bundle from
@@ -97,7 +101,21 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         signUpButton = view.findViewById(R.id.signUpButton);
         detailsQrCodeButton = view.findViewById(R.id.detailsQrCodeButton);
         checkInQrCodeButton = view.findViewById(R.id.checkInQrCodeButton);
+        menuButton = view.findViewById(R.id.action_selection);
 
+        menuButton.setVisibility(View.GONE);
+        signUpButton.setVisibility(View.GONE);
+
+        String[] actions = {"Notify users", "See signed up users", "See checked in users"};
+
+        // Initialize popup window for action selection
+        actionSelectionPopup = new ListPopupWindow(requireContext());
+        actionSelectionPopup.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.action_list_item, actions));
+        actionSelectionPopup.setAnchorView(menuButton);
+        actionSelectionPopup.setWidth(600);
+        actionSelectionPopup.setHeight(300);
+
+        actionSelectionPopup.setModal(true);
 
         // Retrieve the event from the bundle passed from the EventListFragment
         if (event != null) {
@@ -119,9 +137,11 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             Log.e("EventDetails", "Event is null. Cannot populate UI.");
         }
 
-        notifyUsersButton.setOnClickListener(v -> {
-            NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
-            bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionSelectionPopup.show();
+            }
         });
 
         backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
@@ -140,8 +160,45 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             qrCodeFragment.show();
         });
 
+        actionSelectionPopup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);
+                switch (position) {
+                    case 0: // organizer chooses "notify users"
+                        NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
+                        bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
+                        actionSelectionPopup.dismiss();
+                        break;
+                    case 1: // organizer chooses "see signed up users"
+                        SignedUpUsersFragment signedUpFrag = new SignedUpUsersFragment();
+                        signedUpFrag.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, signedUpFrag)
+                                .addToBackStack(null)
+                                .commit();
+                        actionSelectionPopup.dismiss();
+                        break;
+                    case 2: // organizer chooses "see checked in users"
+                        CheckedInUsersFragment checkedInFrag = new CheckedInUsersFragment();
+                        checkedInFrag.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, checkedInFrag)
+                                .addToBackStack(null)
+                                .commit();
+                        actionSelectionPopup.dismiss();
+                        break;
+                    default:
+                        actionSelectionPopup.dismiss();
+                        break;
+                }
+            }
+        });
+
         return view;
     }
+
 
     private void showSignUpPopup(Event event) {
 
@@ -266,15 +323,18 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         public void onGetEventCreatorUUIDCallback(Event event, String creatorUUID) {
             if (creatorUUID != null){
                 eventCreator = creatorUUID;
-                if(isUserOwner()){
-                    editEventButton.setVisibility(View.VISIBLE);
-                    notifyUsersButton.setVisibility(View.VISIBLE);
+                if (isUserOwner()) {
+                    // editEventButton.setVisibility(View.VISIBLE);
+                    // notifyUsersButton.setVisibility(View.VISIBLE);
+                    // signUpButton.setVisibility(View.GONE);
+                    menuButton.setVisibility(View.VISIBLE);
                     signUpButton.setVisibility(View.GONE);
-
                 }
-                else{
-                    editEventButton.setVisibility(View.GONE);
-                    notifyUsersButton.setVisibility(View.GONE);
+                else {
+                    // editEventButton.setVisibility(View.GONE);
+                    // notifyUsersButton.setVisibility(View.GONE);
+                    // signUpButton.setVisibility(View.VISIBLE);
+                    menuButton.setVisibility(View.GONE);
                     signUpButton.setVisibility(View.VISIBLE);
                 }
 

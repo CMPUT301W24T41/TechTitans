@@ -37,9 +37,11 @@
     <string name="see_announcements_text">Click here to see announcements</string>
     <string name="sign_up_for_event">Sign up for this event</string>
     <string name="see_details_text">See Event Details</string>
-    <string name="checked_in_title_text">CHECKED IN (0)</string>
-    <string name="signed_up_title_text">SIGNED UP (0)</string>
-    <string name="go_to_map_text">View check-in location</string>
+    <string name="checked_in_title_text">Checked in</string>
+    <string name="signed_up_title_text">Signed up</string>
+    <string name="signed_up_count">There are %1$d attendees signed up to your event.</string>
+    <string name="checked_in_count">There are %1$d attendees checked in to your event.</string>
+    <string name="go_to_map_text">View check-in locations</string>
     <string name="msg_token_fmt">FCM Registration Token: %1$s</string>
     <string name="my_events">My Signed Up Events</string>
 

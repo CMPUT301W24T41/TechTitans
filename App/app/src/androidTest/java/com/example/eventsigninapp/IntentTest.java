@@ -15,7 +15,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
+import androidx.core.widget.TextViewCompat;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.matcher.RootMatchers;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -195,7 +199,6 @@ public class IntentTest {
         onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.allMyEventsList)).atPosition(0).perform(click());
         onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
     }
-
 
 }
 
