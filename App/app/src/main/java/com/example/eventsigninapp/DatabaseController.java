@@ -295,6 +295,18 @@ public class DatabaseController {
         });
     }
 
+
+    public void getUserProfilePicture(String userID, ImageView imageView, ImageUriCallback callback) {
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
+
+        profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            callback.onImageUriCallback(uri, imageView);
+        }).addOnFailureListener(e -> {
+            Log.e("Database", "getOtherUserProfilePicture: Failed to retrieve image", e);
+            callback.onError(e);
+        });
+    }
     /**
     Deletes the information of the given user
      @param user the user to be deleted
@@ -646,6 +658,11 @@ public class DatabaseController {
             }
 
             @Override
+            public void onImageUriCallback(Uri imageUri, ImageView imageView) {
+                return;
+            }
+
+            @Override
             public void onError(Exception e) {
                 // Handle error
                 Log.d("Database", "no profile pictures", e);
@@ -659,6 +676,11 @@ public class DatabaseController {
                 allImages.add(imageUri);
                 callback.onGetAllImagesCallback(allImages);
 
+            }
+
+            @Override
+            public void onImageUriCallback(Uri imageUri, ImageView imageView) {
+                return;
             }
 
             @Override
@@ -750,6 +772,8 @@ public class DatabaseController {
      */
     public interface ImageUriCallback {
         void onImageUriCallback(Uri imageUri);
+
+        void onImageUriCallback(Uri imageUri, ImageView imageView);
         void onError(Exception e);
     }
 

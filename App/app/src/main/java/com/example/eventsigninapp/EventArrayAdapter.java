@@ -151,7 +151,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements DatabaseCo
 
     @Override
     public void onError(Exception e) {
-        //load dummy picture
-//        Picasso.get().load(R.drawable.user).into(profilePic);
+        return;
     }
 }

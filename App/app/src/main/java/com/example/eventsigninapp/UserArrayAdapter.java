@@ -89,10 +89,6 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
 
 
             ImageView profilePic = view.findViewById(R.id.adminViewProfilePictureImage);
-            // Set tag with user ID
-            profilePic.setTag(user.getId());
-            // Add to map for association
-            imageViewMap.put(user.getId(), profilePic);
 
             firstName.setText(user.getFirstName());
             lastName.setText(user.getLastName());
@@ -100,7 +96,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             userID.setText(user.getId());
 
 
-            databaseController.getUserProfilePicture(user.getId(), this);
+            databaseController.getUserProfilePicture(user.getId(), profilePic, this);
 
             if(Objects.equals(user.getId(), userController.getUser().getId())) {
                 deleteButton.setVisibility(View.INVISIBLE);
@@ -134,26 +130,26 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
         return view;
     }
 
-    public void onImageUriCallback(Uri uri) {
-        for (Map.Entry<String, ImageView> entry : imageViewMap.entrySet()) {
-            String userId = entry.getKey();
-            ImageView imageView = entry.getValue();
-            if (imageView != null && userId != null && uri != null) {
-                // If the tag of the ImageView matches the user ID, load the image
-                if (userId.equals(imageView.getTag())) {
-                    // Load the image into the correct ImageView
-                    Picasso.get().load(uri.toString()).into(imageView);
-                    // Break the loop after finding the correct ImageView
-                    break;
-                }
-            }
+    @Override
+    public void onImageUriCallback(Uri imageUri, ImageView profilePic) {
+
+        if (imageUri != null) {
+            Picasso.get().load(imageUri).into(profilePic);
+        } else {
+            profilePic.setImageResource(R.drawable.user);
         }
+
     }
 
     @Override
+    public void onImageUriCallback(Uri imageUri) {
+        return;
+    }
+
+
+    @Override
     public void onError(Exception e) {
-        // load dummy picture
-//        Picasso.get().load(R.drawable.user).into(profilePic);
+        return;
     }
 
 }
