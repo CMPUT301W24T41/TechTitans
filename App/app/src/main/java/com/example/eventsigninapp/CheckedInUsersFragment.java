@@ -23,6 +23,7 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
     private TextView checkedInCount;
     private ListView checkedInList;
     private Button backButton;
+    private Button mapButton;
     private ArrayList<User> checkedInUsers;
     private Event event;
 
@@ -46,6 +47,7 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
         checkedInCount = view.findViewById(R.id.checked_in_users_count);
         checkedInList = view.findViewById(R.id.checked_in_list);
         backButton = view.findViewById(R.id.back_button);
+        mapButton = view.findViewById(R.id.button_to_map);
 
         checkedInUsers = new ArrayList<>();
         userAdapter = new UserArrayAdapter(requireContext(), checkedInUsers);
@@ -63,6 +65,18 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
 
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer, oldFrag)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        mapButton.setOnClickListener(l -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            MapFragment newFrag = new MapFragment();
+            newFrag.setArguments(bundle);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, newFrag)
                     .addToBackStack(null)
                     .commit();
         });

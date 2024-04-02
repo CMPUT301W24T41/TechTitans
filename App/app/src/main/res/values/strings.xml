@@ -41,7 +41,7 @@
     <string name="signed_up_title_text">Signed up</string>
     <string name="signed_up_count">There are %1$d attendees signed up to your event.</string>
     <string name="checked_in_count">There are %1$d attendees checked in to your event.</string>
-    <string name="go_to_map_text">View check-in location</string>
+    <string name="go_to_map_text">View check-in locations</string>
     <string name="msg_token_fmt">FCM Registration Token: %1$s</string>
     <string name="my_events">My Signed Up Events</string>
 

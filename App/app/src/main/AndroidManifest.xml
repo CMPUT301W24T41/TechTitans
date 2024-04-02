@@ -53,21 +53,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MapActivity"
-            android:exported="true">
-            <!-- Remove intent-filter to avoid multiple launchers -->
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-
-        <activity
-            android:name=".SignedUpUsersActivity"
-            android:exported="true">
-        </activity>
 
         <activity
             android:name=".CaptureAct"
@@ -75,15 +61,6 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"/>
 
-        <activity
-            android:name=".AttendeeListActivity"
-            android:exported="true">
-            <!-- Remove intent-filter to avoid multiple launchers -->
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
         <service
             android:name=".MessagingService"
             android:exported="false">
