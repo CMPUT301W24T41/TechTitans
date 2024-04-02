@@ -69,6 +69,7 @@ public class User implements Serializable {
         location = "";
         imgUrl = "";
         initials = "";
+        admin = false;
     }
 
     protected User(String id) {

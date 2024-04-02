@@ -104,9 +104,11 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         });
 
         Button adminControlsButton = rootView.findViewById(R.id.adminButton);
+        adminControlsButton.setVisibility(rootView.INVISIBLE);
+
         if(userController.userIsAdmin() != null) {
-            if (!userController.userIsAdmin()) {
-                adminControlsButton.setVisibility(rootView.INVISIBLE);
+            if (userController.userIsAdmin()) {
+                adminControlsButton.setVisibility(rootView.VISIBLE);
             }
         }
         adminControlsButton.setOnClickListener(new View.OnClickListener(){
