@@ -8,6 +8,10 @@ android {
     namespace = "com.example.eventsigninapp"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.eventsigninapp"
         minSdk = 27
