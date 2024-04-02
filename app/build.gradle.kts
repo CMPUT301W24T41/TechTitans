@@ -9,7 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.eventsigninapp"
+        applicationId = "com.example.eventsignInapp"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
