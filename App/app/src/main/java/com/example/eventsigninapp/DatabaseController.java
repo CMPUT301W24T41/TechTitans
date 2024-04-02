@@ -328,7 +328,7 @@ public class DatabaseController {
      */
 
     public void deleteEventInfo(Event event) {
-        db.collection("users").document(event.getUuid()).delete()
+        db.collection("events").document(event.getUuid()).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
