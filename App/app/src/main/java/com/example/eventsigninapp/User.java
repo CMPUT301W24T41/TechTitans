@@ -95,6 +95,7 @@ public class User implements Serializable {
         this.contact = contact;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
+        this.admin = admin;
     }
 
 
