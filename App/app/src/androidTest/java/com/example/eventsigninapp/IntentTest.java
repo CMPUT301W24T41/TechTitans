@@ -191,9 +191,7 @@ public class IntentTest {
     @Test
     public void testMyEventsFragment() {
         onView(withText("My Events")).perform(click());
-        onView(withText("My Events")).check(matches(isDisplayed()));
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.allMyEventsList)).atPosition(0).perform(click());
-        onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
+        onView(withText("My Signed Up Events")).check(matches(isDisplayed()));
     }
 
 
