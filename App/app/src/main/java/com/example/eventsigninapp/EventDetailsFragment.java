@@ -271,6 +271,11 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
     }
 
     @Override
+    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
+
+    }
+
+    @Override
     public void onEventCheckInQRCodeCallback(Uri imageUri) {
         // to be implement
     }

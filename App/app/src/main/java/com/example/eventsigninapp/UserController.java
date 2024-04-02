@@ -25,6 +25,7 @@ public class UserController {
     private static User user = new User();
 
 
+
     //this represents the key to the default id of the user
     private static final String deafaultUUID = "UUID_Default";
 
@@ -48,6 +49,12 @@ public class UserController {
      */
     public void setUser(User user) {
         UserController.user = user;
+    }
+
+
+
+    public Boolean userIsAdmin() {
+        return user.isAdmin();
     }
 
 
@@ -199,6 +206,7 @@ public class UserController {
     public void deleteProfilePicture(Context context) {
         user.deletePicture(); // Set the picture to null in User object
     }
+
 
 
 

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class EventArrayAdapter extends RecyclerView.Adapter {
+public class EventArrayAdapter extends RecyclerView.Adapter{
     private ArrayList<Event> events;
     private Context context;
     private UserController userController;
@@ -31,6 +31,8 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
     private OnItemClickListener onItemClickListener;
     private Event checkEvent;
     private ArrayList<String> checkedInUsers;
+
+
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
@@ -91,30 +93,35 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
 
         // Call the getEventPoster method with the event UUID and implement the callback interface
         databaseController.getEventPoster(events.get(position).getUuid(), new DatabaseController.EventImageUriCallbacks() {
-            @Override
-            public void onEventPosterCallback(Uri imageUri) {
-                // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
-                Picasso.get().load(imageUri).into(viewHolder.getEventPoster());
+                    @Override
+                    public void onEventPosterCallback(Uri imageUri) {
+                        // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
+                        Picasso.get().load(imageUri).into(viewHolder.getEventPoster());
 
-            }
+                    }
 
-            @Override
-            public void onEventCheckInQRCodeCallback(Uri imageUri) {
-                // to be implemented if required
-            }
+                    @Override
+                    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
 
-            @Override
-            public void onEventDescriptionQRCodeCallback(Uri imageUri) {
-                // to be implemented if required
-            }
+                    }
 
             @Override
-            public void onError(Exception e) {
-                // Handle failure to retrieve the image URI
-                Log.e("EventPoster", "Error getting image URI", e);
-            }
+                    public void onEventCheckInQRCodeCallback(Uri imageUri) {
+                        // to be implemented if required
+                    }
 
-        }
+                    @Override
+                    public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+                        // to be implemented if required
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Handle failure to retrieve the image URI
+                        Log.e("EventPoster", "Error getting image URI", e);
+                    }
+
+                }
         );
 
         // Checks to see if the event is one that the user checked into

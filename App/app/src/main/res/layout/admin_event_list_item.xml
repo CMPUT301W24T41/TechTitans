@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true"
+    android:layout_margin="5dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@color/color2"
+
+        >
+
+        <RelativeLayout
+            android:layout_width="55dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+
+            android:id="@+id/adminViewEventPoster">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/adminViewEventPosterImage"
+            android:src="@drawable/event_image"
+
+
+            >
+        </ImageView>
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:id="@+id/adminViewEventXButton"
+                android:src="@drawable/x_button"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
+                >
+
+            </ImageView>
+
+        </RelativeLayout>
+
+
+
+        <TextView
+            android:layout_toEndOf="@id/adminViewEventPoster"
+            android:layout_width="200dp"
+            android:layout_height="25dp"
+            android:id="@+id/adminViewEventName"
+            android:text="Event Name"
+            android:layout_marginTop="8dp">
+        </TextView>
+
+
+
+
+        <TextView
+            android:layout_toEndOf="@id/adminViewEventPoster"
+            android:layout_below="@id/adminViewEventName"
+            android:layout_width="200dp"
+            android:layout_height="25dp"
+            android:id="@+id/adminViewOrganizerID"
+            android:text="OraganzierID"
+            android:textSize="10sp"
+            android:layout_marginTop="10dp"
+            >
+        </TextView>
+        <TextView
+            android:layout_toEndOf="@id/adminViewEventPoster"
+            android:layout_below="@id/adminViewOrganizerID"
+            android:layout_width="200dp"
+            android:layout_height="25dp"
+            android:id="@+id/adminViewEventID"
+            android:text="EventID"
+            android:textSize="10sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+        </TextView>
+
+        <TextView
+            android:layout_alignParentEnd="true"
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/adminViewEventCapacity"
+            android:text="capacity"
+            >
+        </TextView>
+
+
+        <Button
+            android:layout_toEndOf="@id/adminViewOrganizerID"
+            android:layout_below="@id/adminViewEventCapacity"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_button_background"
+            android:backgroundTint="@color/Red"
+            android:id="@+id/adminViewDeleteEvent"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="Delete">
+
+        </Button>
+
+
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
