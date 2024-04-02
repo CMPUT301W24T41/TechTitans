@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true"
+    android:layout_margin="5dp"
+    >
+
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@color/color2"
+        >
+
+        <RelativeLayout
+            android:layout_width="52dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:id="@+id/adminViewProfilePicture">
+
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/adminViewProfilePictureImage"
+                    android:src="@drawable/ic_default_profile"
+
+                    >
+
+                </ImageView>
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:id="@+id/adminViewUserXButton"
+                    android:src="@drawable/x_button"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="5dp"
+                    >
+
+                </ImageView>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_toEndOf="@id/adminViewProfilePicture"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:id="@+id/adminViewFirstName"
+            android:text="First Name"
+            android:layout_marginTop="8dp">
+        </TextView>
+
+        <TextView
+            android:layout_toEndOf="@id/adminViewFirstName"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:id="@+id/adminViewLastName"
+            android:text="Last Name"
+            android:layout_marginTop="8dp">
+        </TextView>
+
+
+        <TextView
+            android:layout_toEndOf="@id/adminViewProfilePicture"
+            android:layout_below="@id/adminViewFirstName"
+            android:layout_width="150dp"
+            android:layout_height="15dp"
+            android:id="@+id/adminViewContact"
+            android:text="Contact"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp">
+        </TextView>
+
+        <TextView
+            android:layout_toEndOf="@id/adminViewProfilePicture"
+            android:layout_below="@id/adminViewContact"
+            android:layout_width="200dp"
+            android:layout_height="15dp"
+            android:id="@+id/adminViewID"
+            android:text="User ID"
+            android:textSize="10sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            >
+        </TextView>
+        <Button
+            android:layout_toEndOf="@id/adminViewContact"
+            android:layout_below="@id/adminViewLastName"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_button_background"
+            android:backgroundTint="@color/Red"
+            android:id="@+id/adminViewDeleteUser"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="40dp"
+            android:text="Delete">
+
+        </Button>
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

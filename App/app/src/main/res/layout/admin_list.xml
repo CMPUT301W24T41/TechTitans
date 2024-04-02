@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/color1">
+
+
+
+    <TextView
+        android:backgroundTint="@color/color2"
+        android:id="@+id/adminListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Events:/Users:"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:layout_marginHorizontal="8dp"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:background="@drawable/rounded_corner_bg"
+        />
+
+
+    <ListView
+        android:background="@drawable/rounded_corner_bg"
+        android:backgroundTint="@color/blue"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="8dp"
+        android:id="@+id/adminList"
+        android:layout_below="@id/adminListTitle">
+    </ListView>
+
+
+</RelativeLayout>
+

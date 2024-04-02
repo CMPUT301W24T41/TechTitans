@@ -112,7 +112,7 @@ public class DatabaseControllerTest {
     @Test
     public void testPutUserToFirestore() {
         // Arrange
-        User testUser = new User("testId", "John", "Doe", "testContact", new ArrayList<>(), new ArrayList<>());
+        User testUser = new User("testId", "John", "Doe", "testContact", new ArrayList<>(), new ArrayList<>(), false);
 
         Map<String, Object> expectedUserData = new HashMap<>();
         expectedUserData.put("id", "testId");
