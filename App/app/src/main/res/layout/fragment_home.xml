@@ -27,11 +27,10 @@
         android:layout_weight="1"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbars="horizontal"
-        android:scrollbarSize="15dp"
+        android:scrollbarSize="10dp"
         android:scrollIndicators="right"
         android:scrollbarDefaultDelayBeforeFade="@integer/google_play_services_version"
         android:scrollbarThumbHorizontal="@color/black"
-        android:scrollbarFadeDuration="@integer/material_motion_duration_short_2"
         />
 
     <View
