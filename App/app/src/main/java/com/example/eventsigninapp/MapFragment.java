@@ -1,63 +1,77 @@
 package com.example.eventsigninapp;
 
-import android.content.Intent;
-import android.graphics.Camera;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
-DatabaseController.GetCheckInLocationCallback,
-DatabaseController.GetEventCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, DatabaseController.GetCheckInLocationCallback {
     Button backButton;
     TextView eventTitle;
     DatabaseController dbController;
     ArrayList<Location> locations;
     Event event;
     GoogleMap map;
-    String testUuid = "0f3389e5-1b6c-4c3a-b2be-88d5d5ef0260";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
 
+        Bundle bundle = getArguments();
 
-        eventTitle = findViewById(R.id.event_title);
-        backButton = findViewById(R.id.back_button);
+        if (bundle != null) {
+            event = (Event) bundle.getSerializable("event");
+        } else {
+            Log.e("DEBUG", "Bundle is null");
+        }
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+
+        backButton = view.findViewById(R.id.back_button);
+        eventTitle = view.findViewById(R.id.event_title);
+
         dbController = new DatabaseController();
-        locations = new ArrayList<Location>();
-        event = new Event();
-        event.setUuid(testUuid);
+        locations = new ArrayList<>();
 
-        // dbController.getEventFromFirestore(testUuid, this);
-        dbController.getCheckInLocationsFromFirestore(event, this);
+        eventTitle.setText(event.getName());
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_fragment);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
-        backButton.setOnClickListener(listener -> {
-            Intent goBack = new Intent(MapActivity.this, AttendeeListActivity.class);
-            startActivity(goBack);
+        backButton.setOnClickListener(l -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            CheckedInUsersFragment oldFrag = new CheckedInUsersFragment();
+            oldFrag.setArguments(bundle);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, oldFrag)
+                    .addToBackStack(null)
+                    .commit();
         });
+
+        return view;
     }
 
     private void addMarkersToMap() {
@@ -75,12 +89,8 @@ DatabaseController.GetEventCallback {
             totalLat += loc.getLatitude();
             totalLng += loc.getLongitude();
         }
-        return new LatLng(totalLat / locations.size(), totalLng / locations.size());
-    }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
+        return new LatLng(totalLat / locations.size(), totalLng / locations.size());
     }
 
     @Override
@@ -92,13 +102,10 @@ DatabaseController.GetEventCallback {
             loc.setLongitude(gPoint.getLongitude());
             locations.add(loc);
         }
-
-        addMarkersToMap();
     }
 
     @Override
-    public void onGetEventCallback(Event event) {
-        this.event = event;
-        eventTitle.setText(event.getName());
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
     }
 }
