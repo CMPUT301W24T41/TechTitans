@@ -72,6 +72,18 @@ public class MessagingService extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         generateNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
     }
+    @Override
+    public void onMessageSent(String messageId) {
+        super.onMessageSent(messageId);
+        Log.d(TAG, "Message sent: " + messageId);
+    }
+
+    @Override
+    public void onSendError(String messageId, Exception exception) {
+        super.onSendError(messageId, exception);
+        Log.d(TAG, "Message send error: " + messageId + " " + exception);
+    }
+
 
 
 

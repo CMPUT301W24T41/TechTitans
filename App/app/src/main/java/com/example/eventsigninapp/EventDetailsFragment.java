@@ -113,7 +113,10 @@ public class EventDetailsFragment extends Fragment {
         }
 
         notifyUsersButton.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
             NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
+            bottomSheetFragment.setArguments(bundle);
             bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
 

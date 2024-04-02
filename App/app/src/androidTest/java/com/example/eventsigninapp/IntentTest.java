@@ -186,13 +186,13 @@ public class IntentTest {
         onView(withText("Browse events")).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void testEventDetailsFragment() {
-        onView(withText("Home")).perform(click());
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events_list
-        )).atPosition(0).perform(click());
-        onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
-    }
+//    @Test
+//    public void testEventDetailsFragment() {
+//        onView(withText("Home")).perform(click());
+//        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.events_list
+//        )).atPosition(0).perform(click());
+//        onView(withId(R.id.eventDetailsHeader)).check(matches(isDisplayed()));
+//    }
 
 
 

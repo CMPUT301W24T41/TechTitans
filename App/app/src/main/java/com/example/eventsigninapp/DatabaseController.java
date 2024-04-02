@@ -68,6 +68,16 @@ public class DatabaseController {
 //                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
     }
 
+    public void putNotificationToFirestore(String title, String message, String topic, String id){
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("id", id);
+        notificationData.put("title", title);
+        notificationData.put("message", message);
+        notificationData.put("topic", topic);
+        DocumentReference notificationDocument = db.collection("notifications").document(id);
+        notificationDocument.set(notificationData, SetOptions.merge());
+    }
+
 
 
     /**
