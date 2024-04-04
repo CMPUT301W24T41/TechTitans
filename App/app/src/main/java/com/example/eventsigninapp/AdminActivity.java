@@ -57,13 +57,16 @@ public class AdminActivity extends AppCompatActivity {
                         fragment = new AdminImageListFragment();
                         break;
                     case 3:
+                        fragment = new AdminCodeGeneratorFragment();
+                        break;
+                    case 4:
                         // Redirect to MainActivity if the fourth tab is selected
                         Intent intent = new Intent(AdminActivity.this, MainActivity.class);
                         startActivity(intent);
                         break;
                 }
-                if (tab.getPosition() != 3) {
-                    // Replace fragment only if the fourth tab is not selected
+                if (tab.getPosition() != 4) {
+                    // Replace fragment only if the fifth tab is not selected
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.adminMain, fragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

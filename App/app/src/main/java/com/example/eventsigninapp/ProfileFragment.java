@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,7 @@ import com.squareup.picasso.Picasso;
 public class ProfileFragment extends Fragment implements EditProfileFragment.OnProfileUpdateListener{
 
 
+    static int COUNTER = 0;
     UserController userController = new UserController();
     DatabaseController databaseController = new DatabaseController();
 
@@ -72,6 +74,43 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         //profPic.setImageDrawable(initialsDrawable);
         updateProfilePicture(profilePictureUri);
 
+        // for admin promotion
+        firstName.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(getActivity(), ""+COUNTER, Toast.LENGTH_SHORT).show();
+                if (COUNTER < 3) {
+                    COUNTER += 1;
+                }else{
+                    COUNTER = 0;
+                }
+            }
+        });
+
+        lastName.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(getActivity(), ""+COUNTER, Toast.LENGTH_SHORT).show();
+                if (COUNTER >= 3) {
+                    COUNTER *= 37;
+                }else{
+                    COUNTER = 0;
+                }
+            }
+        });
+
+        contact.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(getActivity(), ""+COUNTER, Toast.LENGTH_SHORT).show();
+                if (COUNTER >= 22) {
+                    COUNTER /= 5;
+                }else{
+                    COUNTER = 0;
+                }
+            }
+        });
+
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,9 +122,11 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 EditProfileFragment editProfileFragment = new EditProfileFragment();
                 editProfileFragment.setOnProfileUpdateListener(ProfileFragment.this);
                 editProfileFragment.show(getChildFragmentManager(), "profileEditDialog");
+
 
             }
         });
@@ -95,11 +136,16 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         deletePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call the deleteProfilePicture() method of your UserController
-                userController.deleteProfilePicture(getContext());
-                databaseController.deleteProfilePicture(userController.getUser());
-                // update your UI to reflect the deletion of the picture
-                updateProfilePicture(null);
+
+                if (COUNTER == 4){
+                    Toast.makeText(getActivity(), "Secret Mode", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Call the deleteProfilePicture() method of your UserController
+                    userController.deleteProfilePicture(getContext());
+                    databaseController.deleteProfilePicture(userController.getUser());
+                    // update your UI to reflect the deletion of the picture
+                    updateProfilePicture(null);
+                }
             }
         });
 

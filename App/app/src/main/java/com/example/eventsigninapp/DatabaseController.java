@@ -921,13 +921,6 @@ public class DatabaseController {
     }
 
 
-
-
-
-
-
-    ;
-
     public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback) {
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         // Fetch the event document
@@ -952,6 +945,29 @@ public class DatabaseController {
                 callback.onGetEventCreatorUUIDCallback(event, null);
             }
         });
+    }
+
+    /**
+     *  Adds an admin promotion code to remote
+     * @param adminCode code to be added
+     */
+
+    public void pushAdminCode(String adminCode){
+        DocumentReference adminDoc = db.collection("admin").document(adminCode);
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", adminCode);
+        adminDoc.set(data, SetOptions.merge());
+
+    }
+
+    /**
+     *  Deletes the adminCode on remote
+     * @param adminCode code to be deleted
+     */
+    public void removeAdminCode(String adminCode){
+        DocumentReference adminDoc = db.collection("admin").document(adminCode);
+        adminDoc.delete();
+
     }
 
 

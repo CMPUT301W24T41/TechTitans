@@ -106,10 +106,18 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ArrayList<String> userEvents =  user.getHostingEvents();
-                    for (int i = 0; i < userEvents.size() ;i++){
-                        databaseController.deleteEvent(userEvents.get(i));
+
+                    // delete all hosting events of the user
+                    ArrayList<String> hostingEvents =  user.getHostingEvents();
+                    for (int i = 0; i < hostingEvents.size() ;i++){
+                        databaseController.deleteEvent(hostingEvents.get(i));
                     }
+                    // delete all instances of a user attending an event
+                    ArrayList<String> attendingEvents = user.getAttendingEvents();
+                    for (int i = 0; i < attendingEvents.size(); i++){
+                        databaseController.removeUserFromEvent(user.getId(), attendingEvents.get(i));
+                    }
+
                     users.remove(user);
                     notifyDataSetChanged();
                     databaseController.deleteUser(user);
