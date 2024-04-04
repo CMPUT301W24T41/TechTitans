@@ -94,6 +94,7 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
                     }
                 }
 
+                // If Event is checked in, add to start of list, top of display
                 if (users.get(i).equals(userController.getUser().getId())) {
                     myEventsArrayList.add(0, event);
                     myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(event));
