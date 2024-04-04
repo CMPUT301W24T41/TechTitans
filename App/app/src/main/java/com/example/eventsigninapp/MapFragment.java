@@ -71,6 +71,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
                     .commit();
         });
 
+        addMarkersToMap();
+
         return view;
     }
 

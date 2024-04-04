@@ -144,7 +144,14 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             }
         });
 
-        backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
+        backButton.setOnClickListener(l -> {
+            HomeFragment homeFrag = new HomeFragment();
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, homeFrag)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         detailsQrCodeButton.setOnClickListener(v -> {
             Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getUuid());
