@@ -29,6 +29,10 @@ import androidx.fragment.app.Fragment;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * A fragment that displays the user profile information and allows for editing.
  * Implements {@link EditProfileFragment.OnProfileUpdateListener} to handle profile updates.
@@ -198,8 +202,6 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         contact.setText(newContact);
 
         updateProfilePicture(newPicture);
-        // user has been updated now we going to put it in the DB
-        databaseController.putUserToFirestore(userController.getUser());
 
     }
 
@@ -219,7 +221,24 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             pictureUri = newPicture;
         } else {
             pictureUri = Uri.EMPTY;
+            Bitmap bitmap = ((BitmapDrawable) initialsDrawable).getBitmap();
+
+            // Save Bitmap to a file
+            File file = new File(getContext().getCacheDir(), "initials_image.jpg");
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
+                pictureUri = Uri.fromFile(file);
+                // upload the image, so it persits through multiple runs and on all menus
+                databaseController.uploadProfilePicture(pictureUri, userController.getUser());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
 
         // Load the pictureUri using Picasso
         picasso.load(pictureUri)

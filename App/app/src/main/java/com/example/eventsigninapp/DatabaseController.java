@@ -30,9 +30,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class DatabaseController {
@@ -680,11 +682,6 @@ public class DatabaseController {
                 });
     }
 
-    /**
-     * This function gets all the events from the database.
-     *
-     * @param callback callback to add the events to the list of events
-     */
     public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
         CollectionReference events = db.collection("events");
 
@@ -693,14 +690,37 @@ public class DatabaseController {
                     if (task.isSuccessful()) {
                         ArrayList<Event> eventList = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                            eventList.add(doc.toObject(Event.class));
+                            String uuid = doc.getString("uuid");
+                            String name = doc.getString("name");
+                            String creatorUUID = doc.getString("creatorUUID");
+                            int capacity = doc.getLong("capacity").intValue();
+                            String description = doc.getString("description");
+                            String eventDetailsQrCodeString = doc.getString("eventDetailsQrCodeString");
+
+                            // Retrieve the two lists
+                            ArrayList<String> checkedInUsers = (ArrayList<String>) doc.get("checkedInUsers");
+                            ArrayList<String> signedUpUsers = (ArrayList<String>) doc.get("signedUpUsers");
+
+
+                            // Create Event object using constructor
+                            Event event = new Event(uuid, name, creatorUUID, capacity);
+                            event.setDescription(description);
+                            event.setEventDetailsQrCodeString(eventDetailsQrCodeString);
+                            // Set other fields as needed
+                            event.setCheckedInUsersUUIDs(checkedInUsers);
+                            event.setSignedUpUsersUUIDs(signedUpUsers);
+                            Log.d("displayd", "getAllEventsFromFirestore: " + event.getCheckedInUsersUUIDs());
+
+                            // Add Event object to the list
+                            eventList.add(event);
                         }
                         callback.onGetAllEventsCallback(eventList);
                     } else {
-                        Log.e("DEBUG", "Error retrieving events");
+                        Log.e("DEBUG", "Error retrieving events", task.getException());
                     }
                 });
     }
+
 
 
     public void getAllUsersFromFirestore(GetAllUserCallback callback) {
@@ -918,6 +938,22 @@ public class DatabaseController {
                 });
 
 
+    }
+
+    public void deleteAttendingEvent(String user, String eventID) {
+        DocumentReference userRef = db.collection("users").document(user);
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                ArrayList<String> currentEvents = (ArrayList<String>) documentSnapshot.get("attendingEvents");
+
+                if (currentEvents != null){
+                    currentEvents.remove(eventID);
+                    userRef.update("attendingEvents", SetOptions.merge());
+
+                }
+            }
+        });
     }
 
 

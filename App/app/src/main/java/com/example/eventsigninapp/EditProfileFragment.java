@@ -100,6 +100,7 @@ public class EditProfileFragment extends DialogFragment {
 
                 // user gets updated here
                 userController.editProfile(newFirstName, newLastName, newContact, newProf);
+                databaseController.putUserToFirestore(userController.getUser());
                 profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
 
 
@@ -121,7 +122,6 @@ public class EditProfileFragment extends DialogFragment {
             // for speed purposes
             userController.getUser().setPicture(imageUri);
             databaseController.uploadProfilePicture(imageUri, userController.getUser());
-            databaseController.putUserToFirestore(userController.getUser());
 
 
             if (imageUri != null) {

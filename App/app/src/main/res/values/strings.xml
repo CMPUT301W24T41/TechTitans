@@ -50,7 +50,7 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="organizerid">OrganizerID: %s\n</string>
     <string name="eventid">EventID: %s\n</string>
-    <string name="division">%1$d/%2$d</string>
+    <string name="division">%d/%d</string>
     <string name="eventListTitle">Events:</string>
     <string name="userListTitle">Users:\n</string>
     <string name="notification_preferences_message">You are all set! Would you like to receive

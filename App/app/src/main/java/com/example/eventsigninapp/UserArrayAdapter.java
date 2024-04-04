@@ -108,14 +108,21 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
                 public void onClick(View v) {
 
                     // delete all hosting events of the user
+
                     ArrayList<String> hostingEvents =  user.getHostingEvents();
-                    for (int i = 0; i < hostingEvents.size() ;i++){
-                        databaseController.deleteEvent(hostingEvents.get(i));
+                    if(hostingEvents != null) {
+                        for (int i = 0; i < hostingEvents.size(); i++) {
+                            databaseController.deleteEvent(hostingEvents.get(i));
+                        }
                     }
                     // delete all instances of a user attending an event
+
                     ArrayList<String> attendingEvents = user.getAttendingEvents();
-                    for (int i = 0; i < attendingEvents.size(); i++){
-                        databaseController.removeUserFromEvent(user.getId(), attendingEvents.get(i));
+
+                    if(attendingEvents != null) {
+                        for (int i = 0; i < attendingEvents.size(); i++) {
+                            databaseController.removeUserFromEvent(user.getId(), attendingEvents.get(i));
+                        }
                     }
 
                     users.remove(user);
