@@ -18,7 +18,7 @@
             android:layout_height="75dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="Generate a code to promote another User to Admin...">
+            android:text="Generate a single use Code to promote another user to admin, must be done on the user to be promoted's device through performing a hidden sequence of actions">
 
         </TextView>
 
