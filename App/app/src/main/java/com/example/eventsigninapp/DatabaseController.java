@@ -1,10 +1,12 @@
 package com.example.eventsigninapp;
 
+import android.content.Context;
 import android.location.Location;
 import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class DatabaseController {
@@ -961,14 +964,33 @@ public class DatabaseController {
     }
 
     /**
-     *  Deletes the adminCode on remote
-     * @param adminCode code to be deleted
+     * checks if the admincode given exists on remote, if it does delete the admin code and make the user an admin
+     * , otherwise does nothing
+     * @param adminCode the adminCode to be checked
+     * @param user the user to be upgraded if successful
      */
-    public void removeAdminCode(String adminCode){
+    public void updateAdmin(String adminCode, User user, Context context){
         DocumentReference adminDoc = db.collection("admin").document(adminCode);
-        adminDoc.delete();
+        adminDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.get("code") != null) {
+                    adminDoc.delete();
+                    user.setAdmin(true);
+                    putUserToFirestore(user);
+                    Toast.makeText(context, "promoted to admin!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // do nothing
+            }
+        });
 
-    }
+
+        }
+
 
 
 

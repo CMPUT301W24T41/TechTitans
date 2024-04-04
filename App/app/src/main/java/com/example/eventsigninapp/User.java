@@ -56,6 +56,7 @@ public class User implements Serializable {
     private String fcmtoken;
     private String initials;
 
+
     private Boolean admin;
 
     protected User() {
@@ -223,6 +224,10 @@ public class User implements Serializable {
         return admin;
     }
 
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
 
 
     /**

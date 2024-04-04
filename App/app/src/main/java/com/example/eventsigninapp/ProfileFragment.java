@@ -1,5 +1,9 @@
 package com.example.eventsigninapp;
 
+import static android.content.Intent.getIntent;
+
+import static androidx.core.app.ActivityCompat.recreate;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -74,12 +78,17 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         //profPic.setImageDrawable(initialsDrawable);
         updateProfilePicture(profilePictureUri);
 
-        // for admin promotion
+        // for admin promotion 3 1 2 1
         firstName.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                String partOne = firstName.getText().toString();
+                String partTwo = lastName.getText().toString();
+                if (COUNTER == 4) {
+                    databaseController.updateAdmin(partOne + partTwo, userController.getUser(), getContext());
+                    recreate((Activity) getContext());
 //                Toast.makeText(getActivity(), ""+COUNTER, Toast.LENGTH_SHORT).show();
-                if (COUNTER < 3) {
+                } else if (COUNTER < 3) {
                     COUNTER += 1;
                 }else{
                     COUNTER = 0;
@@ -91,7 +100,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             @Override
             public void onClick(View v) {
 //                Toast.makeText(getActivity(), ""+COUNTER, Toast.LENGTH_SHORT).show();
-                if (COUNTER >= 3) {
+                if (COUNTER >= 3 && COUNTER < 10000) {
                     COUNTER *= 37;
                 }else{
                     COUNTER = 0;
@@ -137,15 +146,12 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             @Override
             public void onClick(View v) {
 
-                if (COUNTER == 4){
-                    Toast.makeText(getActivity(), "Secret Mode", Toast.LENGTH_SHORT).show();
-                } else {
                     // Call the deleteProfilePicture() method of your UserController
                     userController.deleteProfilePicture(getContext());
                     databaseController.deleteProfilePicture(userController.getUser());
                     // update your UI to reflect the deletion of the picture
                     updateProfilePicture(null);
-                }
+
             }
         });
 
