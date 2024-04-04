@@ -20,10 +20,10 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     - name: Build with Gradle
-      working-directory: ./app
+      working-directory: app
       run:
         chmod +x gradlew
         ./gradlew build
     - name: Run Unit Tests
-      working-directory: ./app
+      working-directory: app
       run: ./gradlew test
