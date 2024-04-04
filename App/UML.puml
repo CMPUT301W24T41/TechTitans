@@ -132,6 +132,30 @@ class HomeFragment {
     -EventArrayAdapter eventsArrayAdapter
 }
 
+class MyEventsFragment {
+    -UserController userController
+    -DatabaseController dbController
+    -EventArrayAdapter myEventsArrayAdapter
+    -ArrayList<Event> myEventsArrayList
+    -MyEventsView myEventsView
+    EventDetailsFragment frag
+    -Collection<String> checkedInUsers
+    -ArrayList<String> signedUpEvents
+    +void onGetAllEventsCallback(newEventsArrayList: ArrayList<Event>)
+    +void addNewEventsToArrayLists(newEventsArrayList: ArrayList<Event>)
+    +void onGetCheckedInUsersCallback(event: Event, users: ArrayList<?>)
+    +void purgeOldEventsFromArrayLists(newEventsArrayList: ArrayList<Event>)
+    +void onItemClick(event: Event, position: int)
+}
+
+class MyEventsView {
+    -View rootView
+    -RecyclerView myEventsListView
+    +void setMyEventsListArrayAdapter(adapter: EventArrayAdapter)
+    +View getRootView()
+
+}
+
 class MapActivity {
     -Button backButton
     -TextView eventTitle
