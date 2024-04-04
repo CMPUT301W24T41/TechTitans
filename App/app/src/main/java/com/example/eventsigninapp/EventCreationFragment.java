@@ -98,14 +98,26 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             String path = MediaStore.Images.Media.insertImage(requireContext().getContentResolver(), bitmap, "QR Code", null);
             event.setCheckInQRCodeUri(Uri.parse(path));
 
+            Bitmap eventDetailsBitmap = Organizer.generateQRCode(event.getEventDetailsQrCodeString());
+            eventDetailsBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String eventDetailsPath = MediaStore.Images.Media.insertImage(requireContext().getContentResolver(), eventDetailsBitmap, "Event Details QR Code", null);
+            event.setDetailsQRCodeUri(Uri.parse(eventDetailsPath));
+
             UserController userController = new UserController();
             event.setCreatorUUID(userController.getUserID(requireContext()));
 
             DatabaseController DatabaseController = new DatabaseController();
             DatabaseController.pushEventToFirestore(event);
 
-            QRCodeFragment qrCodeFragment = QRCodeFragment.newInstance(bitmap);
-            qrCodeFragment.show(getParentFragmentManager(), "qr_code_fragment");
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
+            eventDetailsFragment.setArguments(bundle);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, eventDetailsFragment)
+                .addToBackStack(null)
+                .commit();
         } else {
             Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
         }

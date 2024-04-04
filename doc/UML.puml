@@ -5,9 +5,6 @@ note as N1
     Getter and setter methods as well as inherited methods are not shown for brevity.
 end note
 
-class Admin
-Admin -u-|> User : extends
-
 class AttendeeListActivity {
     -eventTitle: TextView
     -checkedInCountText: TextView
@@ -23,17 +20,12 @@ class AttendeeListActivity {
     -checkedInUsers: ArrayList<User>
 }
 AttendeeListActivity "0...1" o-- "0..*" User
-AttendeeListActivity -u-|> AppCompatActivity : extends
-AttendeeListActivity .u.|> GetCheckedInUsersCallback : implements
-AttendeeListActivity .u.|> GetSignedUpUsersCallback : implements
-AttendeeListActivity -- UserArrayAdapter : uses
-AttendeeListActivity -- UserCallback : uses
+AttendeeListActivity -- UserArrayAdapter
 
 'Done
 class CaptureAct {
     -String SCAN_RESULT
 }
-CaptureAct -u-|> CaptureActivity : extends
 
 'Done
 class CheckInConfirmationDialog {
@@ -41,7 +33,6 @@ class CheckInConfirmationDialog {
     -ImageView imageView
     +showEvent(event: Event)
 }
-CheckInConfirmationDialog -u-|> AlertDialog : extends
 
 'Done
 class CheckInFragment {
@@ -52,15 +43,11 @@ class CheckInFragment {
     -processResult(ScanIntentResult: result)
     -showCheckInConfirmation()
 }
-CheckInFragment "1" *-- "0...1" CheckInConfirmationDialog : has
-CheckInFragment "1" o-- "1" DatabaseController : has
-CheckInFragment "1" o-- "1" Event : has
-CheckInFragment -u-|> Fragment : extends
-CheckInFragment "1" *-- "0...1" CaptureAct : has
-CheckInFragment -- CheckInView : uses
-CheckInFragment .u.|> ScanButtonListener : implements
-CheckInFragment .u.|> GetEventCallback : implements
-CheckInFragment .u.|> EventImageUriCallbacks : implements
+CheckInFragment "1" *-- "0...1" CheckInConfirmationDialog
+CheckInFragment "1" o-- "1" DatabaseController
+CheckInFragment "1" o-- "1" Event
+CheckInFragment "1" *-- "0...1" CaptureAct
+CheckInFragment -- CheckInView
 
 'Done
 class CheckInView {
@@ -69,7 +56,6 @@ class CheckInView {
     +getRootView(): View
     +onButtonClick()
 }
-CheckInView "0...*" o-- "1" ScanButtonListener : has
 
 'Done
 class DatabaseController {
@@ -92,8 +78,6 @@ class DatabaseController {
     +getAllEventsFromFirestore(callback: GetAllEventsCallback)
 }
 
-class DialogFragment
-
 'Done
 class EditProfileFragment {
     -DatabaseController databaseController
@@ -105,10 +89,9 @@ class EditProfileFragment {
     -UserController userController
     +setOnProfileUpdateListener(listener: OnProfileUpdateListener)
 }
-EditProfileFragment -u-|> DialogFragment : extends
-EditProfileFragment "0...1" o-- "1" DatabaseController : has
-EditProfileFragment "0...1" o-[norank]- "1" UserController : has
-EditProfileFragment "0...1" o-- "1" User : has
+EditProfileFragment "0...1" o-- "1" DatabaseController
+EditProfileFragment "0...1" o-- "1" UserController
+EditProfileFragment "0...1" o-- "1" User
 
 'Done
 class Event {
@@ -137,8 +120,7 @@ class EventArrayAdapter {
     -ArrayList<Event> events
     -Context context
 }
-EventArrayAdapter -u-|> ArrayAdapter : extends
-EventArrayAdapter "0...1" o-- "0...*" Event : has
+EventArrayAdapter "0...1" o-- "0...*" Event
 
 'Done
 class EventController {
@@ -146,7 +128,7 @@ class EventController {
   +checkInUser(uuid: String)
   +signUpUser(uuid: String)
 }
-EventController "0...*" o-- "1" Event : has
+EventController "0...*" o-- "1" Event
 
 'Done
 class EventCreationFragment {
@@ -154,12 +136,9 @@ class EventCreationFragment {
     -ActivityResultLauncher<Intent> imagePickerLauncher
     -createImagePickerLauncher()
 }
-EventCreationFragment -u-|> Fragment : extends
-EventCreationFragment .u.|> ConfirmButtonListener : implements
-EventCreationFragment .u.|> ImageButtonListener : implements
-EventCreationFragment -- DatabaseController : uses
-EventCreationFragment -- UserController : uses
-EventCreationFragment "1" *-- "1" EventCreationView : has
+EventCreationFragment -- DatabaseController
+EventCreationFragment -- UserController
+EventCreationFragment "1" *-- "1" EventCreationView
 
 class EventCreationView {
     -EditText eventEditText
@@ -182,9 +161,7 @@ class EventDetailsFragment {
     -Button backButton
     +newInstance(Event event)
 }
-EventDetailsFragment -u-|> Fragment : extends
-
-class Fragment
+EventDetailsFragment -- QRCodeFragment
 
 'Done
 class HomeFragment {
@@ -195,11 +172,9 @@ class HomeFragment {
     -EventDetailsFragment frag
     +newInstance(param1: String, param2: String)
 }
-HomeFragment -u-|> Fragment : extends
-HomeFragment .u.|> GetAllEventsCallback : implements
-HomeFragment "0...1" *-- "1" EventArrayAdapter : has
-HomeFragment "0...1" o-- "1" DatabaseController : has
-HomeFragment "0...1" o-- "1" EventDetailsFragment : has
+HomeFragment "0...1" *-- "1" EventArrayAdapter
+HomeFragment "0...1" o-- "1" DatabaseController
+HomeFragment "0...1" o-- "1" EventDetailsFragment
 
 'Done
 class MainActivity {
@@ -209,15 +184,8 @@ class MainActivity {
     -DatabaseController databaseController
     #onCreate(savedInstanceState: Bundle)
 }
-MainActivity -u-|> AppCompatActivity : extends
-MainActivity "0...1" o-- "1" DatabaseController : has
-MainActivity "0...1" o-- "1" UserController : has
-
-class MapActivity {
-    -Button backButton
-}
-MapActivity -u-|> AppCompatActivity : extends
-MapActivity .u.|> OnMapReadyCallback : implements
+MainActivity "0...1" o-- "1" DatabaseController
+MainActivity "0...1" o-- "1" UserController
 
 class Organizer {
     -String id
@@ -232,7 +200,7 @@ class Organizer {
     +enableGeolocationVerification()
     +disableGeolocationVerification()
 }
-Organizer "0...1" o-- "0...*" Event : has
+Organizer "0...1" o-- "0...*" Event
 
 'Done
 class ProfileFragment {
@@ -246,19 +214,13 @@ class ProfileFragment {
     -FrameLayout frameLayout
     +newInstance(param1: String, param2: String)
 }
-ProfileFragment -u-|> Fragment : extends
-ProfileFragment .u.|> OnProfileUpdateListener : implements
-ProfileFragment "0...1" o-- "1" DatabaseController : has
-ProfileFragment "0...1" o-- "1" UserController : has
+ProfileFragment "0...1" o-- "1" DatabaseController
+ProfileFragment "0...1" o-- "1" UserController
 
 class QRCodeFragment {
     -String ARG_QR_CODE_BITMAP
     -ImageView qrCodeImageView
-    -Button btnOk
-    -Button btnCancel
-    +newInstance(qrCodeBitmap: Bitmap)
 }
-QRCodeFragment -u-|> DialogFragment : extends
 
 'Done
 class User {
@@ -277,7 +239,6 @@ class UserArrayAdapter {
     -List<User> users
     -Context context
 }
-UserArrayAdapter -u-|> ArrayAdapter : extends
 
 'Done
 class UserController {
@@ -293,42 +254,15 @@ class UserController {
     +checkIn(event: Event)
     +signUp(event: Event)
 }
-UserController "0...1" o-- "1" User : has
-EventController -- UserController : uses
-
-interface OnProfileUpdateListener {
-    +onProfileUpdate(newFirstName: String, newLastName: String, newContact: String, newPicture: Uri)
-}
-
-interface GetAllEventsCallback {
-    +onGetAllEventsCallback(event: Event)
-}
-
-interface ImageUriCallback{
-  +OnImageUriCallback(imageUri: Uri)
-  +OnError(e: Exception)
-}
-
-interface UserCallback{
-  +OnCallback(imageUri: Uri)
-  +OnError(e: Exception)
-}
-
-interface GetSignedUpUsersCallback{
-  +onGetSignedUpUsersCallback(event: Event, users: ArrayList<User>)
-}
-
-interface GetCheckedInUsersCallback{
-  +onGetCheckedInUsersCallback(event: Event, users: ArrayList<User>)
-}
-
-interface OnMapReadyCallback
-
-interface ScanButtonListener {
-    +onButtonClick()
-}
+UserController "0...1" o-- "1" User
+EventController -- UserController
 
 skinparam nodesep 25
 skinparam ranksep 100
+skinparam dpi 300
+skinparam monochrome true
 skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+hide circle
 @enduml

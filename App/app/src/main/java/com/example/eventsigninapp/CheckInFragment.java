@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -17,11 +18,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.GeoPoint;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -33,6 +32,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     private DatabaseController databaseController;
     private CheckInConfirmationDialog checkInConfirmationDialog;
     private Event event;
+    private String resultString;
 
     private ActivityResultLauncher<ScanOptions> scanLauncher;
 
@@ -56,14 +56,15 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
      * Processes the result of the barcode scanner activity.
      * Shows the scanned result in an alert dialog.
      */
-    private void processResult(ScanIntentResult result) {
-        if (result.getContents() != null) {
+    private void processResult(ScanIntentResult newResult) {
+        if (newResult.getContents() != null) {
+            this.resultString = newResult.getContents();
             scanCount++;
             System.out.println(scanCount);
 
             databaseController = new DatabaseController();
-            databaseController.getEventFromFirestore(result.getContents(), this);
-            getUserLocation(result);
+            databaseController.findEventByQrResult(resultString, this);
+            getUserLocation(newResult);
         }
     }
 
@@ -102,20 +103,38 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     @Override
     public void onGetEventCallback(Event event) {
         this.event = event;
-        EventController eventController = new EventController(event);
         if (event != null) {
-            UserController userController = new UserController();
-            User user = userController.getUser();
+            if (!Objects.equals(event.getUuid(), this.resultString)) {
+                openEventDetails();
+            } else {
+                UserController userController = new UserController();
+                User user = userController.getUser();
+                EventController eventController = new EventController(event);
 
-            try {
-                eventController.checkInUser(user.getId());
-                databaseController.pushEventToFirestore(event);
-            } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    eventController.checkInUser(user.getId());
+                    databaseController.pushEventToFirestore(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
-            databaseController.getEventPoster(event.getUuid(), this);
         }
+    }
+
+    /**
+     * Opens the event details fragment.
+     */
+    private void openEventDetails() {
+        EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+        eventDetailsFragment.setArguments(bundle);
+
+        getActivity().getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.fragmentContainer, eventDetailsFragment)
+            .addToBackStack(null)
+            .commit();
     }
 
     /**
@@ -154,13 +173,18 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     }
 
     @Override
+    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
+        return;
+    }
+
+    @Override
     public void onEventCheckInQRCodeCallback(Uri imageUri) {
         event.setCheckInQRCodeUri(imageUri);
     }
 
     @Override
     public void onEventDescriptionQRCodeCallback(Uri imageUri) {
-        event.setDescriptionQRCodeUri(imageUri);
+        event.setDetailsQRCodeUri(imageUri);
     }
 
     @Override

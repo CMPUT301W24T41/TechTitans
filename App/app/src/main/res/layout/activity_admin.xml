@@ -5,60 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <FrameLayout
-        android:id="@+id/fragmentContainer"
+
+        android:id="@+id/adminMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/mainTabLayout" />
+        android:layout_above="@id/adminTabs" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/mainTabLayout"
+        android:id="@+id/adminTabs"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:background="@color/blue"
         android:paddingBottom="8dp"
-
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/eventButton"
+            android:id="@+id/adminEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Create  Event"
-            />
+            android:text="Events" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/homeButton"
+            android:id="@+id/adminUsersButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Home" />
+            android:text="Users" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/myEventsButton"
+            android:id="@+id/adminImagesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="My Events" />
-
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/checkInTab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Check In" />
+            android:text="All Images" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/profileButton"
+            android:id="@+id/ReturnButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Profile" />
+            android:text="Return" />
+
+
+
 
     </com.google.android.material.tabs.TabLayout>
+
 
 </RelativeLayout>

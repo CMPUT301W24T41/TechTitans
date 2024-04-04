@@ -27,6 +27,7 @@ public class Event implements Serializable {
     private final Date date;
     private String creatorUUID;
     private String description;
+    private String eventDetailsQrCodeString;
 
     public Event() {
         //TODO: generate a unique id on creation
@@ -36,6 +37,7 @@ public class Event implements Serializable {
         signedUpUsersUUIDs = new ArrayList<String>();
         posterUri = null;
         checkInQRCodeUri = null;
+        eventDetailsQrCodeString = UUID.randomUUID().toString();
         location = null;
         date = null;
         capacity = 0;
@@ -184,6 +186,7 @@ public class Event implements Serializable {
         eventMap.put("capacity", capacity);
         eventMap.put("date", date);
         eventMap.put("location", location);
+        eventMap.put("eventDetailsQrCodeString", eventDetailsQrCodeString);
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
         eventMap.put("description", description);
@@ -196,6 +199,14 @@ public class Event implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getEventDetailsQrCodeString() {
+        return eventDetailsQrCodeString;
+    }
+
+    public void setEventDetailsQrCodeString(String eventDetailsQrCodeString) {
+        this.eventDetailsQrCodeString = eventDetailsQrCodeString;
     }
 
     public void setPosterUri(Uri posterUri) {
@@ -214,7 +225,7 @@ public class Event implements Serializable {
         return checkInQRCodeUri;
     }
 
-    public void setDescriptionQRCodeUri(Uri descriptionQRCodeUri) {
+    public void setDetailsQRCodeUri(Uri descriptionQRCodeUri) {
         this.descriptionQRCodeUri = descriptionQRCodeUri;
     }
 

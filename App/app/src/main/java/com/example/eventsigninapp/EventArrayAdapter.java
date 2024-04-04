@@ -1,12 +1,17 @@
 package com.example.eventsigninapp;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,24 +20,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
-public class EventArrayAdapter extends RecyclerView.Adapter {
+public class EventArrayAdapter extends RecyclerView.Adapter{
     private ArrayList<Event> events;
     private Context context;
+    private UserController userController;
 
     private OnItemClickListener onItemClickListener;
+    private Event checkEvent;
+    private ArrayList<String> checkedInUsers;
+
+
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView eventPoster;
         private TextView eventTitle;
         private TextView eventDescription;
+        private LinearLayout layoutBackground;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventTitle = itemView.findViewById(R.id.event_title);
             eventDescription = itemView.findViewById(R.id.event_description);
             eventPoster = itemView.findViewById(R.id.imageView);
+            layoutBackground = itemView.findViewById(R.id.event_background);
         }
 
         public TextView getEventTitleTextView() {
@@ -46,6 +60,9 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
         public ImageView getEventPoster() {
             return eventPoster;
         }
+        public LinearLayout getLayoutBackground() {
+            return layoutBackground;
+        }
 
 
     }
@@ -55,6 +72,7 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
         this.events = events;
         this.context = context;
         this.onItemClickListener = onItemClickListener;
+        userController = new UserController();
     }
 
     @NonNull
@@ -75,31 +93,52 @@ public class EventArrayAdapter extends RecyclerView.Adapter {
 
         // Call the getEventPoster method with the event UUID and implement the callback interface
         databaseController.getEventPoster(events.get(position).getUuid(), new DatabaseController.EventImageUriCallbacks() {
-            @Override
-            public void onEventPosterCallback(Uri imageUri) {
-                // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
-                Picasso.get().load(imageUri).into(viewHolder.getEventPoster());
+                    @Override
+                    public void onEventPosterCallback(Uri imageUri) {
+                        // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
+                        Picasso.get().load(imageUri).into(viewHolder.getEventPoster());
 
-            }
+                    }
 
-            @Override
-            public void onEventCheckInQRCodeCallback(Uri imageUri) {
-                // to be implemented if required
-            }
+                    @Override
+                    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
 
-            @Override
-            public void onEventDescriptionQRCodeCallback(Uri imageUri) {
-                // to be implemented if required
-            }
+                    }
 
             @Override
-            public void onError(Exception e) {
-                // Handle failure to retrieve the image URI
-                Log.e("EventPoster", "Error getting image URI", e);
-            }
+                    public void onEventCheckInQRCodeCallback(Uri imageUri) {
+                        // to be implemented if required
+                    }
 
-        }
+                    @Override
+                    public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+                        // to be implemented if required
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Handle failure to retrieve the image URI
+                        Log.e("EventPoster", "Error getting image URI", e);
+                    }
+
+                }
         );
+
+        // Checks to see if the event is one that the user checked into
+        checkEvent = events.get(position);
+        checkedInUsers = (ArrayList<String>) checkEvent.getCheckedInUsersUUIDs();
+
+        for (int i=0; i<checkedInUsers.size(); i++) {
+            if (checkedInUsers.get(i).equals(userController.getUser().getId())) {
+                viewHolder.getEventTitleTextView().setTextColor(Color.WHITE);
+                viewHolder.getLayoutBackground().setBackgroundColor(Color.parseColor("#007c41"));
+                viewHolder.getEventDescriptionTextView().setTextColor(Color.parseColor("#ffdb05"));
+                viewHolder.getEventDescriptionTextView().setText("Event Checked In!");
+                viewHolder.getEventDescriptionTextView().setTypeface(null, Typeface.BOLD);
+                viewHolder.getEventDescriptionTextView().setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            }
+        }
+
         viewHolder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(events.get(position), position));
     }
 

@@ -1,6 +1,6 @@
 package com.example.eventsigninapp;
 
-import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
+//import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
 
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+//import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            Log.w("test", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 
@@ -112,7 +113,8 @@ public class MainActivity extends AppCompatActivity{
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
+                        Log.d("test", msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -151,9 +153,12 @@ public class MainActivity extends AppCompatActivity{
                         fragment = new HomeFragment();
                         break;
                     case 2:
-                        fragment = new CheckInFragment();
+                        fragment = new MyEventsFragment();
                         break;
                     case 3:
+                        fragment = new CheckInFragment();
+                        break;
+                    case 4:
                         fragment = new ProfileFragment();
                         break;
                 }

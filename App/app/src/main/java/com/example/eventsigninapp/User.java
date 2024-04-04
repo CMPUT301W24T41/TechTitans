@@ -4,11 +4,12 @@ import android.net.Uri;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class User {
+public class User implements Serializable {
 
     private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures/";
 
@@ -55,6 +56,8 @@ public class User {
     private String fcmToken;
     private String initials;
 
+    private Boolean admin;
+
     protected User() {
         attendingEvents = new ArrayList<>();
         hostingEvents = new ArrayList<>();
@@ -67,6 +70,7 @@ public class User {
         imgUrl = "";
         initials = "";
         fcmToken = "";
+        admin = false;
     }
 
     protected User(String id) {
@@ -87,12 +91,12 @@ public class User {
         this.contact = contact;
     }
 
-    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents) {
+    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin) {
         this(id, first, last);
         this.contact = contact;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
-
+        this.admin = admin;
     }
 
 
@@ -215,6 +219,11 @@ public class User {
     public String getFcmToken() {
         return fcmToken;
     }
+
+    public Boolean isAdmin() {
+        return admin;
+    }
+
 
 
     /**
