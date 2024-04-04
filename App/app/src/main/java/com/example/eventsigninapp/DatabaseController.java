@@ -168,13 +168,35 @@ public class DatabaseController {
         // Delete the profile picture from Firebase Storage
         profilePicRef.delete()
                 .addOnSuccessListener(aVoid -> {
-                    // Upon successful deletion, update the user's picture URI
+                    // Upon successful deletion, update the event's picture URI
                     event.setPosterUri(null);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Database", "deleteEventPicture: Error, failure to delete image", e);
                 });
     }
+
+
+
+    /**
+     * This method deletes the given picture uri from the storage for the given eventID
+     *
+     * @param eventID the eventID's picture is being deleted
+     */
+    public void deleteEventPicture(String eventID) {
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("event_posters/" + eventID);
+
+        // Delete the profile picture from Firebase Storage
+        profilePicRef.delete()
+                .addOnSuccessListener(aVoid -> {
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Database", "deleteEventPicture: Error, failure to delete image", e);
+                });
+    }
+
 
 
     /**
@@ -204,7 +226,7 @@ public class DatabaseController {
         path = path.substring(path.indexOf("/o/") + 3);
 
         StorageReference profilePicRef = storageRef.child(path);
-        Log.d("deldel'", "deleteImageFromUri: " + profilePicRef);
+//        Log.d("deldel'", "deleteImageFromUri: " + profilePicRef);
         // Delete the profile picture from Firebase Storage
         profilePicRef.delete()
                 .addOnSuccessListener(aVoid -> {
@@ -212,7 +234,7 @@ public class DatabaseController {
                     Log.d("deldel", "deleteImageFromUri: Successfully deleted");
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("deldel", "deleteEventPicture: Error, failure to delete image", e);
+                    Log.e("deldel", "deleteImageFromUri: Error, failure to delete image", e);
                 });
     }
 
@@ -287,6 +309,21 @@ public class DatabaseController {
     }
 
 
+    /**
+     * fetches the profile picture of other users on the platform using a callback,
+     * this version is used to help load into the correct ImageView for list items
+     *
+     * @param userID   the id of the user's picture to fetch
+     * @param imageView ImageView the image view upon successful acquiring image from storage
+     * @param callback due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
+     *                 *                  to access a user fetched from the database, use the following code:
+     *                 *                  userIDController.getOtherUserProfilePicture(userID, new UserIDController.userCallback() {
+     *                 *                  public void onCallback(Uri picture,ImageView imageView ) {
+     *                 *
+     *                 *                  }
+     *                 *                  });
+     */
+
     public void getUserProfilePicture(String userID, ImageView imageView, ImageUriCallback callback) {
         StorageReference storageRef = storage.getReference();
         StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
@@ -343,6 +380,29 @@ public class DatabaseController {
     }
 
 
+
+    /**
+     * Deletes the information of the given event
+     *
+     * @param eventID the eventID to be deleted
+     */
+
+    public void deleteEventInfo(String eventID) {
+        db.collection("events").document(eventID).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Handle successful deletion
+                        Log.d("Database", "event document deleted successfully");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors
+                    Log.e("Database", "Error deleting event document", e);
+                });
+    }
+
+
     /**
      * Deletes both the users information and their user profile picture
      *
@@ -358,13 +418,22 @@ public class DatabaseController {
     /**
      * Deletes both the event information and the event poster
      *
-     * @param event the user to be deleted
+     * @param event the event to be deleted
      */
     public void deleteEvent(Event event) {
         deleteEventInfo(event);
         deleteEventPicture(event);
     }
 
+    /**
+         * Deletes both the event information and the event poster
+     *
+             * @param eventID the event's ID for event to be deleted
+     */
+    public void deleteEvent(String eventID) {
+        deleteEventInfo(eventID);
+        deleteEventPicture(eventID);
+    }
     /**
      * This function retrieves users that signed up to an event from the database.
      *

@@ -49,6 +49,8 @@ public class Event implements Serializable {
         this.creatorUUID = creatorUUID;
     }
 
+
+
     public String getCreatorUUID() {
         return creatorUUID;
     }
