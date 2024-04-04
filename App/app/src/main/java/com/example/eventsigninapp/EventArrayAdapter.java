@@ -133,7 +133,7 @@ public class EventArrayAdapter extends RecyclerView.Adapter{
                 viewHolder.getEventTitleTextView().setTextColor(Color.WHITE);
                 viewHolder.getLayoutBackground().setBackgroundColor(Color.parseColor("#007c41"));
                 viewHolder.getEventDescriptionTextView().setTextColor(Color.parseColor("#ffdb05"));
-                viewHolder.getEventDescriptionTextView().setText("\nEvent Checked In!");
+                viewHolder.getEventDescriptionTextView().setText("Event Checked In!");
                 viewHolder.getEventDescriptionTextView().setTypeface(null, Typeface.BOLD);
                 viewHolder.getEventDescriptionTextView().setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }

@@ -5,13 +5,10 @@
       <entry key="IntentTest">
         <State />
       </entry>
-      <entry key="app">
+      <entry key="MainActivity">
         <State />
       </entry>
-      <entry key="testEventDetailsFragment()">
-        <State />
-      </entry>
-      <entry key="testMyEventsFragment()">
+      <entry key="UserProfileIntentTest">
         <State />
       </entry>
     </value>

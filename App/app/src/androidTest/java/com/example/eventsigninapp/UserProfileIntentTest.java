@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class IntentTest {
+public class UserProfileIntentTest {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
@@ -85,44 +85,13 @@ public class IntentTest {
         //verify edits went through
         onView(withId(R.id.buttonSave)).perform(click());
 
-       onView(withText("John")).check(matches(isDisplayed()));
-       onView(withText("Smith")).check(matches(isDisplayed()));
-       onView(withText("johnsmith@mail.com")).check(matches(isDisplayed()));
+        onView(withText("John")).check(matches(isDisplayed()));
+        onView(withText("Smith")).check(matches(isDisplayed()));
+        onView(withText("johnsmith@mail.com")).check(matches(isDisplayed()));
 
 
     }
 
-    @Test
-    public void testCreateAndViewEvent() throws InterruptedException {
-        onView(withText("Create  Event")).perform(click());
-
-        onView(withId(R.id.titleOfEvent)).check(matches(isDisplayed()));
-        onView(withId(R.id.descriptionOfEvent)).check(matches(isDisplayed()));
-        onView(withId(R.id.attendeeLimit)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.titleOfEvent)).perform(typeText("TestEvent"));
-        onView(withId(R.id.descriptionOfEvent)).perform(typeText("Testdescript"));
-        onView(withId(R.id.attendeeLimit)).perform(typeText("1000"));
-
-
-        closeSoftKeyboard();
-        Thread.sleep(2000);
-        onView(withId(R.id.confirmButton)).perform(click());
-
-
-        onView(withId(R.id.qrCodeImageView)).check((matches(isDisplayed())));
-
-        onView(withText("Cancel")).perform(click());
-
-        onView(withText("Home")).perform(click());
-
-        onView(withText("TestEvent"));
-
-
-
-
-
-    }
 
     @Test
     public void doubleProfEditTest() throws InterruptedException {
@@ -143,60 +112,6 @@ public class IntentTest {
 
     }
 
-    @Test
-    public void openQRcodeScannerTest(){
-        onView(withText("Check In")).perform(click());
-
-
-        onView(withId(R.id.scanButton)).perform(click());
-        intended(hasAction("com.google.zxing.client.android.SCAN"));
-
-
-    }
-
-    @Test
-    public void openQRShareIntentTest() throws InterruptedException {
-        onView(withText("Create  Event")).perform(click());
-
-        onView(withId(R.id.titleOfEvent)).perform(typeText("TestEvent"));
-        onView(withId(R.id.descriptionOfEvent)).perform(typeText("Testdescript"));
-        onView(withId(R.id.attendeeLimit)).perform(typeText("1000"));
-
-
-        closeSoftKeyboard();
-        Thread.sleep(2000);
-        onView(withId(R.id.confirmButton)).perform(click());
-
-
-        onView(withId(R.id.qrCodeImageView)).check((matches(isDisplayed())));
-
-        onView(withText("Share")).perform(click());
-
-        intended(hasAction(android.content.Intent.ACTION_CHOOSER));
-    }
-
-    @Test
-    public void testHomeFragment() {
-        onView(withText("Home")).perform(click());
-        onView(withText("Browse All Events")).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testEventDetailsFragment() {
-        onView(withText("Home")).perform(click());
-
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list
-        )).atPosition(0).perform(click());
-
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list)).atPosition(0).perform(click());
-
-    }
-
-    @Test
-    public void testMyEventsFragment() {
-        onView(withText("My Events")).perform(click());
-        onView(withText("My Signed Up Events")).check(matches(isDisplayed()));
-    }
 
 }
 

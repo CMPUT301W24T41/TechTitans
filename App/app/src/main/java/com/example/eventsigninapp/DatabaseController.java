@@ -789,10 +789,11 @@ public class DatabaseController {
 
     /**
      * This method takes an event of type Event and a String newUserId. It then adds this user to
-     * the event on firestore under the singedUpUsers array. It will not add duplicates
+     * the event on firestore under the signedUpUsers array. It will not add duplicates
      */
     public void addSignedUpUser(Event event, User user) {
 
+        // Adding User to signedUpUsers in Event
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         eventRef.update("signedUpUsers", FieldValue.arrayUnion(user.getId()))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -805,6 +806,22 @@ public class DatabaseController {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("SignUpUser", "Error Signing-up to Event: " + e.getMessage());
+                    }
+                });
+
+        // Adding Event to attendingEvent in User
+        DocumentReference userRef = db.collection("users").document(user.getId());
+        userRef.update("attendingEvents", FieldValue.arrayUnion(event.getUuid()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("AddedEventToUser", "Event Added to User");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("AddEventToUser", "Error Adding Event to User: " + e.getMessage());
                     }
                 });
     }
