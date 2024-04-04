@@ -156,7 +156,7 @@ class MyEventsView {
 
 }
 
-class MapActivity {
+class MapFragment {
     -Button backButton
     -TextView eventTitle
     -DatabaseController dbController
@@ -167,8 +167,37 @@ class MapActivity {
     -getAvgLatLng(): LatLng
 }
 
+class CheckedInUsersFragment {
+    -DatabaseController dbController
+    -UserArrayAdapter userAdapter
+    -TextView checkedInCount
+    -ListView checkedInList
+    -Button backButton
+    -Button mapButton
+    -ArrayList<User> checkedInUsers
+    -Event event
+}
+
+class SignedUpUsersFragment {
+    -DatabaseController dbController
+    -UserArrayAdapter userAdapter
+    -TextView signedUpCount
+    -ListView signedUpList
+    -Button backButton
+    -ArrayList<User> signedUpUsers
+    -Event event
+}
+
 interface GetCheckInLocationCallback {
     +onGetCheckInLocationCallback()
+}
+
+interface GetSignedUpUsersCallback {
+    +onGetSignedUpUsersCallback(event: Event, users: ArrayList<>)
+}
+
+interface GetCheckedInUsersCallback {
+    +onGetCheckedInUsersCallback(event: Event, users: ArrayList<>)
 }
 
 class MessagingService {
@@ -190,8 +219,10 @@ AppCompatActivity <|-- MapActivity : extends
 
 ProfileActivity <|.. OnProfileUpdateListener : implements
 GetAllEventsCallback <|.. HomeFragment : implements
-GetCheckInLocationCallback <|.. MapActivity : implements
-GetEventCallback <|.. MapActivity : implements
+GetCheckInLocationCallback <|.. MapFragment : implements
+GetEventCallback <|.. MapFragment : implements
+GetCheckedInUsersCallback <|.. CheckedInUsersFragment : implements
+GetSignedUpUsersCallback <|.. SignedUpUsersFragment : implements
 
 UserController "1" o-- "1" ProfileActivity : has
 UserController "1" o-- "1" User : has
