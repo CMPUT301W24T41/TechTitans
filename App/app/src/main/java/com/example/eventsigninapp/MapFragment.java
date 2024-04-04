@@ -33,6 +33,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
+        addMarkersToMap();
     }
 
     @Override
@@ -75,10 +76,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
                     .addToBackStack(null)
                     .commit();
         });
-
-        if (map != null) {
-            addMarkersToMap();
-        }
 
         return view;
     }

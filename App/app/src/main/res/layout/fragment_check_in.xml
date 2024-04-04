@@ -44,4 +44,12 @@
         android:textSize="16dp"
         android:background="@color/color2"/>
 
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/enable_geo_tracking"
+        android:paddingTop="200dp"
+        android:textColor="@color/black"/>
+
 </LinearLayout>
