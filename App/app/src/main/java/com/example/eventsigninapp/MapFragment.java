@@ -31,6 +31,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
     GoogleMap map;
 
     @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -71,7 +76,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
                     .commit();
         });
 
-        addMarkersToMap();
+        if (map != null) {
+            addMarkersToMap();
+        }
 
         return view;
     }
@@ -92,6 +99,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
             totalLng += loc.getLongitude();
         }
 
+        if (totalLat == 0 || totalLng == 0) {
+            return new LatLng(0, 0);
+        }
+
         return new LatLng(totalLat / locations.size(), totalLng / locations.size());
     }
 
@@ -106,8 +117,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
         }
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
-    }
 }
