@@ -84,9 +84,11 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             public void onClick(View v) {
                 String partOne = firstName.getText().toString();
                 String partTwo = lastName.getText().toString();
-                if (COUNTER == 4) {
-                    databaseController.updateAdmin(partOne + partTwo, userController.getUser(), getContext());
-                    recreate((Activity) getContext());
+
+                if (COUNTER == 4 && (partOne + partTwo).length() == 32) {
+                    // reconstructing adminCode based on specification
+                    String reconstructedString = partOne.substring(0, 8) + "-" + partTwo.substring(0, 4) + "-" + partOne.substring(8, 12) + "-" + partTwo.substring(4,8) + "-" + partOne.substring(12);
+                    databaseController.updateAdmin(reconstructedString, userController.getUser(), getContext());
 //                Toast.makeText(getActivity(), ""+COUNTER, Toast.LENGTH_SHORT).show();
                 } else if (COUNTER < 3) {
                     COUNTER += 1;

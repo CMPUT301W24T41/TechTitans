@@ -1,5 +1,8 @@
 package com.example.eventsigninapp;
 
+import static androidx.core.app.ActivityCompat.recreate;
+
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.media.Image;
@@ -979,6 +982,7 @@ public class DatabaseController {
                     user.setAdmin(true);
                     putUserToFirestore(user);
                     Toast.makeText(context, "promoted to admin!", Toast.LENGTH_SHORT).show();
+                    recreate((Activity) context);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
