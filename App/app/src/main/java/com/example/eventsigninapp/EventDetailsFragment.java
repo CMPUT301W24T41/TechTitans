@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -144,24 +145,52 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             }
         });
 
-        backButton.setOnClickListener(l -> {
-            HomeFragment homeFrag = new HomeFragment();
 
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainer, homeFrag)
-                    .addToBackStack(null)
-                    .commit();
+        backButton.setOnClickListener(l -> {
+            FragmentManager fragmentManager = getFragmentManager();
+            int count = fragmentManager.getBackStackEntryCount();
+
+            if (count < 2) {
+                HomeFragment Frag = new HomeFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, Frag)
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            else {
+                // Get the previous fragment from the back stack
+                FragmentManager.BackStackEntry previousFrag = fragmentManager.getBackStackEntryAt( count - 2);
+                String previousFragmentTag = previousFrag.getName();
+
+                if (previousFragmentTag == null || !previousFragmentTag.equals("myEvents")) {
+                    HomeFragment Frag = new HomeFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainer, Frag)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    MyEventsFragment Frag = new MyEventsFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainer, Frag)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            int test = fragmentManager.getBackStackEntryCount();
+
         });
 
         detailsQrCodeButton.setOnClickListener(v -> {
-            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getUuid());
+            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getEventDetailsQrCodeString());
             QRCodeFragment qrCodeFragment = new QRCodeFragment(getContext(), container, qrCodeBitmap);
             qrCodeFragment.setTitle("Event Details QR Code");
             qrCodeFragment.show();
         });
 
         checkInQrCodeButton.setOnClickListener(v -> {
-            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getEventDetailsQrCodeString());
+            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getUuid());
             QRCodeFragment qrCodeFragment = new QRCodeFragment(getContext(), container, qrCodeBitmap);
             qrCodeFragment.setTitle("Event Check In QR Code");
             qrCodeFragment.show();
