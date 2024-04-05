@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -146,11 +147,32 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
 
 
         backButton.setOnClickListener(l -> {
-            HomeFragment Frag = new HomeFragment();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainer, Frag)
-                    .addToBackStack(null)
-                    .commit();
+            FragmentManager fragmentManager = getFragmentManager();
+            int count = fragmentManager.getBackStackEntryCount();
+
+            // Get the previous fragment from the back stack
+            FragmentManager.BackStackEntry previousFrag = fragmentManager.getBackStackEntryAt(count - 2);
+            String previousFragmentTag = previousFrag.getName();
+
+
+            if (previousFragmentTag == null || !previousFragmentTag.equals("myEvents")) {
+                HomeFragment Frag = new HomeFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, Frag)
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            else {
+                MyEventsFragment Frag = new MyEventsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, Frag)
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         });
 
         detailsQrCodeButton.setOnClickListener(v -> {
