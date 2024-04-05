@@ -61,4 +61,12 @@
     <string name="check_in_qr_code">Check-In QR Code</string>
     <string name="event_description_qr_code">Event Description QR Code</string>
     <string name="enable_location_tracking_prompt">Enable location tracking for this event</string>
+    <string name="your_event_poster">Your event poster</string>
+    <string name="title_colon">Title:</string>
+    <string name="description_colon">Description:</string>
+    <string name="date_colon">Date:</string>
+    <string name="time_colon">Time:</string>
+    <string name="click_to_change">Click above to change image.</string>
+    <string name="set_check_in_qr">Set Check-in QR</string>
+    <string name="set_details_qr">Set Details QR</string>
 </resources>

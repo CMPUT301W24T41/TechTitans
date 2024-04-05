@@ -175,7 +175,6 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
     @Override
     public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
-        return;
     }
 
     @Override

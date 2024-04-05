@@ -19,6 +19,9 @@ import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.ByteArrayOutputStream;
 
@@ -28,9 +31,13 @@ import kotlin.Unit;
  * A simple {@link Fragment} subclass for managing event creation.
  * Allows users to input event details, select images, and generate QR codes for events.
  */
-public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener {
+public class EventCreationFragment extends Fragment implements EventCreationView.EventCreationListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private String eventDetailsQrCodeString;
+    private String eventCheckInQrCodeString;
+    private ActivityResultLauncher<ScanOptions> setDetailsLauncher;
+    private ActivityResultLauncher<ScanOptions> setCheckInLauncher;
 
     /**
      * Required empty public constructor for the fragment.
@@ -47,8 +54,10 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         eventCreationView = new EventCreationView(inflater, container);
-        eventCreationView.setImageButtonListener(this);
-        eventCreationView.setConfirmButtonListener(this);
+        eventCreationView.setListener(this);
+
+        setDetailsLauncher = registerForActivityResult(new ScanContract(), this::processDetailsResult);
+        setCheckInLauncher = registerForActivityResult(new ScanContract(), this::processCheckInResult);
 
         createImagePickerLauncher();
 
@@ -62,7 +71,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             if (resultCode == Activity.RESULT_OK) {
                 assert resultIntent != null;
                 Uri uri = resultIntent.getData();
-                eventCreationView.setCaptureImage(uri);
+                eventCreationView.setEventPoster(uri);
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
                 Toast.makeText(requireContext(), ImagePicker.getError(resultIntent), Toast.LENGTH_SHORT).show();
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -71,15 +80,16 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         });
     }
 
-    @Override
-    public void onImageButtonClick() {
-        ImagePicker.with(this)
-            .crop()
-            .maxResultSize(1080, 1080)
-            .createIntent(intent -> {
-                imagePickerLauncher.launch(intent);
-                return Unit.INSTANCE;
-            });
+    private void processDetailsResult(ScanIntentResult result) {
+        if (result != null) {
+            eventDetailsQrCodeString = result.getContents();
+        }
+    }
+
+    private void processCheckInResult(ScanIntentResult result) {
+        if (result != null) {
+            eventCheckInQrCodeString = result.getContents();
+        }
     }
 
     @Override
@@ -129,6 +139,28 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onImageClick() {
+        ImagePicker.with(this)
+                .crop()
+                .maxResultSize(1080, 1080)
+                .createIntent(intent -> {
+                    imagePickerLauncher.launch(intent);
+                    return Unit.INSTANCE;
+                });
+    }
+
+    @Override
+    public void onSetCheckInClick() {
+
+    }
+
+    @Override
+    public void onSetDetailsClick() {
+
+    }
+
     private void subscribeToTopic(String topic) {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
             .addOnCompleteListener(task -> {
