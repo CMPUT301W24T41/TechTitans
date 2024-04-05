@@ -440,6 +440,7 @@ public class DatabaseController {
 
         deleteUserInfo(user);
         deleteProfilePicture(user);
+
     }
 
 
@@ -459,6 +460,8 @@ public class DatabaseController {
         deleteEventInfo(event);
         deleteEventPicture(event);
 
+        deleteImageInFolder("event_check_in_qr_codes", event.getUuid());
+        deleteImageInFolder("event_description_qr_codes", event.getUuid());
     }
 
     /**
@@ -753,7 +756,7 @@ public class DatabaseController {
 
 
 
-    public void getAllUsersFromFirestore(GetAllUserCallback callback) {
+    public void getAllUsersFromFirestore(GetAllUsersCallback callback) {
         CollectionReference users = db.collection("users");
         users.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -987,7 +990,7 @@ public class DatabaseController {
     }
 
 
-    public interface GetAllUserCallback {
+    public interface GetAllUsersCallback {
         void onGetAllUserCallback(User user);
     }
 
@@ -1072,6 +1075,16 @@ public class DatabaseController {
 
 
         }
+
+
+    public void deleteImageInFolder(String folderName, String imageName) {
+        // Create a reference to the file to delete
+        StorageReference imageRef = storage.getReference().child(folderName).child(imageName);
+
+        // Delete the file
+        imageRef.delete();
+    }
+
 
 
 
