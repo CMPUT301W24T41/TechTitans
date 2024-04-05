@@ -30,11 +30,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
     Event event;
     GoogleMap map;
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
-        addMarkersToMap();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +59,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_fragment);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
+
+        // TODO: uncomment the following line
+        Log.e("LOCATION", String.format("event: %s", event.getUuid()));
+
+        dbController.getCheckInLocationsFromFirestore(event, this);
 
         backButton.setOnClickListener(l -> {
             Bundle bundle = new Bundle();
@@ -104,6 +104,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
     }
 
     @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
+    }
+
+    @Override
     public void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations) {
         for (int i = 0; i < checkInLocations.size(); i++) {
             GeoPoint gPoint = (GeoPoint) checkInLocations.get(i);
@@ -112,6 +117,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
             loc.setLongitude(gPoint.getLongitude());
             locations.add(loc);
         }
+        addMarkersToMap();
     }
 
 }

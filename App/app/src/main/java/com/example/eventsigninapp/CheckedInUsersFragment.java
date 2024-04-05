@@ -98,6 +98,7 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
                     @Override
                     public void onCallback(User user) {
                         checkedInUsers.add(user);
+                        Log.e("CHECKIN", String.format("User %s checked in", user.getFirstName())); // TODO: DELETE
                         checkedInCount.setText(String.format(Locale.CANADA, "There are %d attendees checked in to this event.", checkedInUsers.size()));
                         userAdapter.notifyDataSetChanged();
                     }

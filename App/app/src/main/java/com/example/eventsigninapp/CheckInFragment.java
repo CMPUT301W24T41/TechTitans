@@ -1,7 +1,9 @@
 package com.example.eventsigninapp;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +30,7 @@ import java.util.Objects;
  * This class acts as a controller for the check in process.
  * It is responsible for scanning QR codes and processing the result.
  */
-public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback, DatabaseController.EventImageUriCallbacks {
+public class CheckInFragment extends Fragment implements CheckInView.ScanButtonListener, DatabaseController.GetEventCallback, DatabaseController.EventImageUriCallbacks, CheckInConfirmationDialog.ConfirmationListener {
     private DatabaseController databaseController;
     private CheckInConfirmationDialog checkInConfirmationDialog;
     private Event event;
@@ -39,6 +41,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     // Variable to track the number of scans
     private int scanCount = 0;
     private FusedLocationProviderClient fusedLocationClient;
+    private boolean locationPermissionGranted;
 
     /**
      * Called when the fragment is created.
@@ -64,38 +67,37 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
             databaseController = new DatabaseController();
             databaseController.findEventByQrResult(resultString, this);
-            getUserLocation(newResult);
-        }
-    }
 
-    /**
-     * This method gets the user location
-     */
-    private void getUserLocation(ScanIntentResult result) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        && result != null) {
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                databaseController.addCheckInLocationToFirestore(event, location);
-                            } else {
-                                Log.e("DEBUG", "Failed to fetch location");
-                            }
-                        }
-                    });
         }
     }
 
     private void showCheckInConfirmation() {
         System.out.println(event);
         if (event != null) {
-            checkInConfirmationDialog.showEvent(event);
+            checkInConfirmationDialog.showEvent(event, this);
         } else {
             // Handle the case where the event is null
             // or it does not exist anymore
             System.out.println("Event is null!");
+        }
+    }
+
+    private void getUserLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        && locationPermissionGranted) {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(location -> {
+                        if (location != null) {
+                            Log.e("LOCATION", "Location retrieved" + location);
+                            databaseController.addCheckInLocationToFirestore(event, location);
+                        } else {
+                            Log.e("LOCATION", "Failed to fetch location");
+                        }
+                    });
+        } else {
+            Log.e("LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED));
+            Log.e("LOCATION", String.valueOf(locationPermissionGranted));
+            Log.e("LOCATION", "Tracking not permitted");
         }
     }
 
@@ -193,4 +195,11 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
         showCheckInConfirmation();
         //System.out.println("onError");
     }
+
+    @Override
+    public void isLocationPermissionGranted(boolean granted) {
+        locationPermissionGranted = granted;
+        getUserLocation();
+    }
+
 }
