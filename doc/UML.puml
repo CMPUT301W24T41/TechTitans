@@ -76,6 +76,11 @@ class DatabaseController {
     +pushEventToFirestore(event: Event)
     +getEventFromFirestore(eventID: String, callback: GetEventCallback)
     +getAllEventsFromFirestore(callback: GetAllEventsCallback)
+    +deleteUserInfo(user: User)
+    +deleteEventInfo(event: Event)
+    +deleteEventInfo(eventID: String)
+    +deleteUser(user: User)
+    +deleteEvent(event: Event)
 }
 
 'Done
