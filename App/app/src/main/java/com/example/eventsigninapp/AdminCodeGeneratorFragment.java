@@ -16,7 +16,7 @@ import java.util.UUID;
 public class AdminCodeGeneratorFragment extends Fragment {
 
 
-    DatabaseController databaseController = new DatabaseController();
+    private DatabaseController databaseController = new DatabaseController();
     // onCreate method
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

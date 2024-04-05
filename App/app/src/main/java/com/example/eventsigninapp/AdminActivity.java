@@ -15,10 +15,10 @@ import com.google.android.material.tabs.TabLayout;
 public class AdminActivity extends AppCompatActivity {
 
     // Member variables
-    FrameLayout frameLayout;
-    TabLayout tabLayout;
-    DatabaseController databaseController = new DatabaseController();
-    UserController userController = new UserController();
+    private FrameLayout frameLayout;
+    private TabLayout tabLayout;
+    private DatabaseController databaseController = new DatabaseController();
+    private UserController userController = new UserController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
