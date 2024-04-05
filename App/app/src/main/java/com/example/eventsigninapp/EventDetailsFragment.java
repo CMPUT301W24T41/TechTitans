@@ -175,6 +175,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
                 switch (position) {
                     case 0: // organizer chooses "notify users"
                         NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
+                        bottomSheetFragment.setArguments(bundle);
                         bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
                         actionSelectionPopup.dismiss();
                         break;
@@ -201,225 +202,241 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
                         break;
                 }
             }
-//        notifyUsersButton.setOnClickListener(v -> {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("event", event);
-//            NotifyUsersBottomSheetFragment bottomSheetFragment = new NotifyUsersBottomSheetFragment();
-//            bottomSheetFragment.setArguments(bundle);
-//            bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
-//        });
-//
-//        return view;
-//        }
+        });
+
+        return view;
+    }
 
 
-            private void showSignUpPopup(Event event) {
+    private void showSignUpPopup(Event event) {
 
-                String[] signupOptions = {"All including promotions", "Important updates only", "Reminders and Updates", "None"};
+        String[] signupOptions = {"All Including promotions", "Important updates only", "Reminders only", "None"};
 
-                // Inflate the custom layout
-                View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.notification_preferences_dialog, null);
-                Spinner spinner = dialogView.findViewById(R.id.notification_preferences_spinner);
+        // Inflate the custom layout
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.notification_preferences_dialog, null);
+        Spinner spinner = dialogView.findViewById(R.id.notification_preferences_spinner);
 
-                // Populate the spinner with data
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, signupOptions);
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(spinnerAdapter);
+        // Populate the spinner with data
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, signupOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
 
-                // Build the dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                builder.setView(dialogView);
-                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Handle signup confirmation
-                        confirmSignUp(spinner.getSelectedItem().toString(), event);
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        signUpButton.setChecked(false);
-                        signUpButton.setText("Sign Up");
-                        dialog.dismiss();
-                    }
-                });
-                builder.create().show();
-
-
-            }
-
-            private void confirmSignUp(String selectedItem, Event event) {
-
-                // Sign up the user for the event
-                userController.signUp(event);
-                signUpButton.setChecked(true);
-                signUpButton.setText("Signed Up");
-                signUpButton.setClickable(false);
-                databaseController.addSignedUpUser(event, userController.getUser());
-                databaseController.addEventToUser(userController.getUser(), event);
-                subscribeToNotifications(selectedItem);
-            }
-
-            private void subscribeToNotifications(String selectedItem) {
-                // Subscribe to the appropriate topic based on the user's selection
-                // The topic name will be in the format "eventUUID-option"
-                // Example: "0f3389e5-1b6c-4c3a-b2be-88d5d5ef0260-Important"
-                if (selectedItem.equals("None")) {
-                    return;
-                }
-                if (selectedItem.equals("Important updates only")) {
-                    subscribeToTopic("Important");
-                }
-                if (selectedItem.equals("Reminders and Updates")) {
-                    subscribeToTopic("Reminders");
-                    subscribeToTopic("Important");
-                }
-                if (selectedItem.equals("All including promotions")) {
-                    subscribeToTopic("Promotion");
-                    subscribeToTopic("Important");
-                    subscribeToTopic("Reminders");
-                }
-
-            }
-
+        // Build the dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(dialogView);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
-            public void onEventPosterCallback(Uri imageUri) {
-                // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
-                System.out.println("EventPoster Image URI retrieved: " + imageUri.toString());
-                Picasso.get().load(imageUri).into(eventPoster);
-
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle signup confirmation
+                confirmSignUp(spinner.getSelectedItem().toString(), event);
             }
-
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
-            public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
-
+            public void onClick(DialogInterface dialog, int which) {
+                signUpButton.setChecked(false);
+                signUpButton.setText("Sign Up");
+                dialog.dismiss();
             }
+        });
+        builder.create().show();
 
-            @Override
-            public void onEventCheckInQRCodeCallback(Uri imageUri) {
-                // to be implement
-            }
 
-            @Override
-            public void onEventDescriptionQRCodeCallback(Uri imageUri) {
-                // to be implemented
-            }
+    }
 
-            @Override
-            public void onError(Exception e) {
-                // Handle failure to retrieve the image URI
-                Log.e("EventPoster", "Error getting image URI", e);
-            }
+    private void confirmSignUp(String selectedItem, Event event) {
 
-            DatabaseController.GetEventCallback getEventCallback = new DatabaseController.GetEventCallback() {
-                @Override
-                public void onGetEventCallback(Event event) {
-                    // Handle the retrieved event here
-                    if (event != null) {
-                        // Event found, update UI with event details
-                        updateUIWithEventDetails(event);
-                    } else {
-                        // Event not found or error occurred
-                        // Handle this case
-                        Log.e("EventDetails", "Event not found or error occurred while fetching event details.");
-                    }
+        // Sign up the user for the event
+        userController.signUp(event);
+        signUpButton.setChecked(true);
+        signUpButton.setText("Signed Up");
+        signUpButton.setClickable(false);
+        databaseController.addSignedUpUser(event, userController.getUser());
+        databaseController.addEventToUser(userController.getUser(),event);
+        subscribeToNotifications(selectedItem, event);
+    }
 
-                }
-            };
-            DatabaseController.GetSignedUpUsersCallback getSignedUpUsersCallback = new DatabaseController.GetSignedUpUsersCallback() {
-                @Override
-                public void onGetSignedUpUsersCallback(Event event, ArrayList<?> users) {
-                    // Handle the retrieved signed up users here
-                    if (users != null) {
-                        // Users found, update UI with signed up users
-                        signedUpUsersUUIDs = (ArrayList<String>) users;
-                        updateSignUpButton(event);
-                        Log.d("EventDetails", "Signed up users found: " + signedUpUsersUUIDs.toString());
-                    } else {
-                        // Users not found or error occurred
-                        // Handle this case
-                        Log.e("EventDetails", "Signed up users not found or error occurred while fetching signed up users.");
-                    }
-                }
-            };
+    private void subscribeToNotifications(String selectedItem, Event event) {
 
-            DatabaseController.GetEventCreatorUUIDCallback getEventCreatorUUIDCallback = new DatabaseController.GetEventCreatorUUIDCallback() {
-                @Override
-                public void onGetEventCreatorUUIDCallback(Event event, String creatorUUID) {
-                    if (creatorUUID != null) {
-                        eventCreator = creatorUUID;
-                        if (isUserOwner()) {
-                            // editEventButton.setVisibility(View.VISIBLE);
-                            // notifyUsersButton.setVisibility(View.VISIBLE);
-                            // signUpButton.setVisibility(View.GONE);
-                            menuButton.setVisibility(View.VISIBLE);
-                            signUpButton.setVisibility(View.GONE);
-                        } else {
-                            // editEventButton.setVisibility(View.GONE);
-                            // notifyUsersButton.setVisibility(View.GONE);
-                            // signUpButton.setVisibility(View.VISIBLE);
-                            menuButton.setVisibility(View.GONE);
-                            signUpButton.setVisibility(View.VISIBLE);
-                        }
-
-                        Log.d("EventDetails", "Event creator: " + eventCreator);
-
-                    } else {
-                        Log.e("EventDetails", "Event creatorUUID not found or error occurred while fetching");
-                    }
-                }
-            };
-
-            private boolean isUserOwner() {
-                return eventCreator.equals(userController.getUser().getId());
-            }
-
-            private boolean isUserSignedUp() {
-                Log.d("EventDetails", "isUserSignedUp: " + signedUpUsersUUIDs.toString());
-                return signedUpUsersUUIDs.contains(userController.getUser().getId());
-
-            }
-
-            private void updateUIWithEventDetails(Event event) {
-                // Update UI elements with event details
-                eventDescription.setText(event.getDescription());
-                //announcement.setText(event.getAnnouncement(); Not implemented yet
-                // You can handle other UI elements here as well
-            }
-
-            private void updateSignUpButton(Event event) {
-                if (isUserSignedUp()) {
-                    signUpButton.setChecked(true);
-                    signUpButton.setText("Signed Up");
-                    signUpButton.setClickable(false);
-                } else {
-                    signUpButton.setChecked(false);
-                    signUpButton.setText("Sign Up");
-                    signUpButton.setOnClickListener(v -> {
-                        showSignUpPopup(event);
-                    });
-                }
-            }
-
-            private void subscribeToTopic(String option) {
-                String topic = event.getUuid() + "-" + option;
-                Log.d("EventDetails", "Topic name: " + topic);
-
-                FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                String msg = "Subscribed: " + topic;
-                                if (!task.isSuccessful()) {
-                                    msg = "Subscribe failed: " + topic;
-                                }
-                                Log.d("EventDetails", msg);
-                                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        if(selectedItem.equals("None")){
+            return;
+        } else if (selectedItem.equals("Important updates only")) {
+            selectedItem = "Important";
+        } else if (selectedItem.equals("Reminders only")) {
+            selectedItem = "Reminder";
+        } else if (selectedItem.equals("All")) {
+            FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + "-Important")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe failed";
                             }
-                        });
+                            Log.d("EventDetails", msg + " to " + event.getUuid() + "-Important");
+                            //Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + "-Reminder")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe failed";
+                            }
+                            Log.d("EventDetails", msg + " to " + event.getUuid() + "-Reminder");
+                            //Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + "-Promotions")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe failed";
+                            }
+                            Log.d("EventDetails", msg + " to " + event.getUuid() + "-Promotions");
+                            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            return;
+
+        }
+
+        String finalSelectedItem = selectedItem;
+        FirebaseMessaging.getInstance().subscribeToTopic(selectedItem + event.getUuid())
+
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d("EventDetails", msg + " to " + finalSelectedItem + event.getUuid());
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+    @Override
+    public void onEventPosterCallback(Uri imageUri) {
+        // Handle successful retrieval of the image URI (e.g., load the image into an ImageView)
+        System.out.println("EventPoster Image URI retrieved: " + imageUri.toString());
+        Picasso.get().load(imageUri).into(eventPoster);
+
+    }
+
+    @Override
+    public void onEventPosterCallback(Uri imageUri, ImageView imageView) {
+
+    }
+
+    @Override
+    public void onEventCheckInQRCodeCallback(Uri imageUri) {
+        // to be implement
+    }
+
+    @Override
+    public void onEventDescriptionQRCodeCallback(Uri imageUri) {
+        // to be implemented
+    }
+
+    @Override
+    public void onError(Exception e) {
+        // Handle failure to retrieve the image URI
+        Log.e("EventPoster", "Error getting image URI", e);
+    }
+
+    DatabaseController.GetEventCallback getEventCallback = new DatabaseController.GetEventCallback() {
+        @Override
+        public void onGetEventCallback(Event event) {
+            // Handle the retrieved event here
+            if (event != null) {
+                // Event found, update UI with event details
+                updateUIWithEventDetails(event);
+            } else {
+                // Event not found or error occurred
+                // Handle this case
+                Log.e("EventDetails", "Event not found or error occurred while fetching event details.");
             }
 
+        }
+    };
+    DatabaseController.GetSignedUpUsersCallback getSignedUpUsersCallback = new DatabaseController.GetSignedUpUsersCallback() {
+        @Override
+        public void onGetSignedUpUsersCallback(Event event, ArrayList<?> users) {
+            // Handle the retrieved signed up users here
+            if (users != null) {
+                // Users found, update UI with signed up users
+                signedUpUsersUUIDs = (ArrayList<String>) users;
+                updateSignUpButton(event);
+                Log.d("EventDetails", "Signed up users found: " + signedUpUsersUUIDs.toString());
+            } else {
+                // Users not found or error occurred
+                // Handle this case
+                Log.e("EventDetails", "Signed up users not found or error occurred while fetching signed up users.");
+            }
+        }
+    };
+
+    DatabaseController.GetEventCreatorUUIDCallback getEventCreatorUUIDCallback = new DatabaseController.GetEventCreatorUUIDCallback() {
+        @Override
+        public void onGetEventCreatorUUIDCallback(Event event, String creatorUUID) {
+            if (creatorUUID != null){
+                eventCreator = creatorUUID;
+                if (isUserOwner()) {
+                    // editEventButton.setVisibility(View.VISIBLE);
+                    // notifyUsersButton.setVisibility(View.VISIBLE);
+                    // signUpButton.setVisibility(View.GONE);
+                    menuButton.setVisibility(View.VISIBLE);
+                    signUpButton.setVisibility(View.GONE);
+                }
+                else {
+                    // editEventButton.setVisibility(View.GONE);
+                    // notifyUsersButton.setVisibility(View.GONE);
+                    // signUpButton.setVisibility(View.VISIBLE);
+                    menuButton.setVisibility(View.GONE);
+                    signUpButton.setVisibility(View.VISIBLE);
+                }
+
+                Log.d("EventDetails","Event creator: " + eventCreator);
+
+            }else{
+                Log.e("EventDetails", "Event creatorUUID not found or error occurred while fetching");
+            }
+        }
+    };
+
+    private boolean isUserOwner(){
+        return eventCreator.equals(userController.getUser().getId());
+    }
+    private boolean isUserSignedUp(){
+        Log.d("EventDetails", "isUserSignedUp: " + signedUpUsersUUIDs.toString());
+        return signedUpUsersUUIDs.contains(userController.getUser().getId());
+
+    }
+
+    private void updateUIWithEventDetails(Event event) {
+        // Update UI elements with event details
+        eventDescription.setText(event.getDescription());
+        //announcement.setText(event.getAnnouncement(); Not implemented yet
+        // You can handle other UI elements here as well
+    }
+    private void updateSignUpButton(Event event){
+        if(isUserSignedUp()){
+            signUpButton.setChecked(true);
+            signUpButton.setText("Signed Up");
+            signUpButton.setClickable(false);
+        }
+        else{
+            signUpButton.setChecked(false);
+            signUpButton.setText("Sign Up");
+            signUpButton.setOnClickListener(v -> {
+                showSignUpPopup(event);
+            });
         }
     }
 }

@@ -2,6 +2,8 @@ package com.example.eventsigninapp;
 
 
 
+import static com.google.firebase.messaging.Constants.MessagePayloadKeys.SENDER_ID;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,6 +20,7 @@ import android.widget.RemoteViews;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -143,6 +146,17 @@ public class MessagingService extends FirebaseMessagingService {
         remoteViews.setImageViewResource(R.id.app_logo, R.drawable.logo_placeholder);
 
         return remoteViews;
+    }
+
+    private void sendNotificationToUsers(String title, String message, String topic) {
+        // Create a notification message
+        FirebaseMessaging fm = FirebaseMessaging.getInstance();
+        fm.send(new RemoteMessage.Builder(SENDER_ID + "@fcm.googleapis.com")
+                .setMessageId("1")
+                .addData("my_message", "Hello World")
+                .addData("my_action","SAY_HELLO")
+                .build());
+
     }
 
 

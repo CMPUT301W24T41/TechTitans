@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity{
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
                         Log.d("test", msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
