@@ -100,6 +100,8 @@ class DatabaseController {
     +getEventCreatorUUID(event: Event, callback: GetEventCreatorUUIDCallback)
     +pushAdminCode(adminCode: String)
     +updateAdmin(adminCode: String, user: User, context: Context)
+    +putNotificationToFirestore(title: String, message: String, topic: String, id: String)
+    +addFCMTokenToUser(userID: String, token: String)
 }
 
 'Done
@@ -280,6 +282,19 @@ class UserController {
 }
 UserController "0...1" o-- "1" User
 EventController -- UserController
+
+'Done
+class MessagingService{
+    +onNewToken(token: String)
+    -sendRegistrationToServer(token: String)
+    +onMessageRecieved(remoteMessage: RemoteMessage)
+    +onMessageSent(messageId: String)
+    +onSendError(messageId: String, exception: Exception)
+    +generateNotification(title: String, message: String)
+}
+MessagingService -- UserController
+MessagingService -- DatabaseController
+
 
 skinparam nodesep 25
 skinparam ranksep 100
