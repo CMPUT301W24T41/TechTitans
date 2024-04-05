@@ -7,11 +7,13 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.squareup.picasso.Picasso;
 
 public class CheckInConfirmationDialog extends AlertDialog {
     private final View rootView;
     private final ImageView imageView;
+    private final SwitchMaterial toggleTracking;
 
     public CheckInConfirmationDialog(Context context, ViewGroup parent) {
         super(context);
@@ -19,6 +21,7 @@ public class CheckInConfirmationDialog extends AlertDialog {
         rootView = getLayoutInflater().inflate(R.layout.check_in_confirmation, parent, false);
 
         imageView = rootView.findViewById(R.id.checkInConfirmImage);
+        toggleTracking = rootView.findViewById(R.id.tracking_permission);
     }
 
     public void showEvent(Event event) {
