@@ -150,12 +150,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             FragmentManager fragmentManager = getFragmentManager();
             int count = fragmentManager.getBackStackEntryCount();
 
-            // Get the previous fragment from the back stack
-            FragmentManager.BackStackEntry previousFrag = fragmentManager.getBackStackEntryAt(count - 2);
-            String previousFragmentTag = previousFrag.getName();
-
-
-            if (previousFragmentTag == null || !previousFragmentTag.equals("myEvents")) {
+            if (count < 2) {
                 HomeFragment Frag = new HomeFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, Frag)
@@ -164,14 +159,26 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             }
 
             else {
-                MyEventsFragment Frag = new MyEventsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, Frag)
-                        .addToBackStack(null)
-                        .commit();
-            }
+                // Get the previous fragment from the back stack
+                FragmentManager.BackStackEntry previousFrag = fragmentManager.getBackStackEntryAt( count - 2);
+                String previousFragmentTag = previousFrag.getName();
 
+                if (previousFragmentTag == null || !previousFragmentTag.equals("myEvents")) {
+                    HomeFragment Frag = new HomeFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainer, Frag)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    MyEventsFragment Frag = new MyEventsFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainer, Frag)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            int test = fragmentManager.getBackStackEntryCount();
 
         });
 
