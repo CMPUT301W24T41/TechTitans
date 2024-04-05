@@ -73,12 +73,7 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // delete each case where a user is signed up for this event
-                    ArrayList<String> signedUpUser = new ArrayList<>(event.getSignedUpUsersUUIDs());
-                    for(int i = 0; i < signedUpUser.size(); i++){
-                        databaseController.deleteAttendingEvent(signedUpUser.get(i), event.getUuid());
-                    }
-                    // Remove event from list and notify adapter
+
                     events.remove(event);
                     notifyDataSetChanged();
                     // Delete event from database

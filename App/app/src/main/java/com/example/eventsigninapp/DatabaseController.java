@@ -29,6 +29,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -418,6 +419,25 @@ public class DatabaseController {
      */
 
     public void deleteUser(User user) {
+
+        // delete all hosting events of the user
+
+        ArrayList<String> hostingEvents =  user.getHostingEvents();
+        if(hostingEvents != null) {
+            for (int i = 0; i < hostingEvents.size(); i++) {
+                deleteEvent(hostingEvents.get(i));
+            }
+        }
+        // delete all instances of a user attending an event
+
+        ArrayList<String> attendingEvents = user.getAttendingEvents();
+
+        if(attendingEvents != null) {
+            for (int i = 0; i < attendingEvents.size(); i++) {
+                removeUserFromEvent(user.getId(), attendingEvents.get(i));
+            }
+        }
+
         deleteUserInfo(user);
         deleteProfilePicture(user);
     }
@@ -429,8 +449,16 @@ public class DatabaseController {
      * @param event the event to be deleted
      */
     public void deleteEvent(Event event) {
+        // delete each case where a user is signed up for this event
+        ArrayList<String> signedUpUser = new ArrayList<>(event.getSignedUpUsersUUIDs());
+        for(int i = 0; i < signedUpUser.size(); i++){
+            deleteAttendingEvent(signedUpUser.get(i), event.getUuid());
+        }
+        deleteHostingEvent(event.getUuid(), event.getCreatorUUID());
+        // Remove event from list and notify adapter
         deleteEventInfo(event);
         deleteEventPicture(event);
+
     }
 
     /**
@@ -484,6 +512,8 @@ public class DatabaseController {
     public void removeUserFromEvent(String userID, String eventID) {
         DocumentReference eventRef = db.collection("events").document(eventID);
         eventRef.update("signedUpUsers", FieldValue.arrayRemove(userID));
+        eventRef.update("checkedInUsers", FieldValue.arrayRemove(userID));
+
     }
 
     /**
@@ -942,18 +972,13 @@ public class DatabaseController {
 
     public void deleteAttendingEvent(String user, String eventID) {
         DocumentReference userRef = db.collection("users").document(user);
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ArrayList<String> currentEvents = (ArrayList<String>) documentSnapshot.get("attendingEvents");
+        userRef.update("attendingEvents", FieldValue.arrayRemove(eventID));
+    }
 
-                if (currentEvents != null){
-                    currentEvents.remove(eventID);
-                    userRef.update("attendingEvents", SetOptions.merge());
+    public void deleteHostingEvent(String uuid, String creatorUUID) {
+        DocumentReference userRef = db.collection("users").document(creatorUUID);
+        userRef.update("hostingEvents", FieldValue.arrayRemove(uuid));
 
-                }
-            }
-        });
     }
 
 
