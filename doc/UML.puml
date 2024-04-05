@@ -95,6 +95,11 @@ class DatabaseController {
     +getCheckInLocationsFromFirestore(event: Event, callback: GetCheckInLocationCallback)
     +addSignedUpUser(event: Event, user: User)
     +addEventToUser(user: User, event: Event)
+    +deleteAttendingEvent(user: String, eventID: String)
+    +deleteHostingEvent(uuid: String, creatorUUID: String)
+    +getEventCreatorUUID(event: Event, callback: GetEventCreatorUUIDCallback)
+    +pushAdminCode(adminCode: String)
+    +updateAdmin(adminCode: String, user: User, context: Context)
 }
 
 'Done
