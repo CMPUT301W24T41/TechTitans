@@ -53,12 +53,12 @@
     <string name="division">%1$d/%2$d</string>
     <string name="eventListTitle">Events:</string>
     <string name="userListTitle">Users:\n</string>
-    <string name="notification_preferences_message">You are all set! Would you like to receive
-        notifications from this event organizer? Notifications can include important updates like
-        changes in venue.</string>
+    <string name="notification_preferences_message">Would you like to receive
+        notifications from this event organizer? Notifications can include Important updates,
+        Reminders and/or Promotions for this event.</string>
     <string name="image_of_an_event">Image of an event</string>
     <string name="default_notification_channel_id">com.example.eventsigninapp</string>
     <string name="check_in_qr_code">Check-In QR Code</string>
     <string name="event_description_qr_code">Event Description QR Code</string>
-    <string name="enable_geo_tracking">Enable location tracking for this event</string>
+    <string name="enable_location_tracking_prompt">Enable location tracking for this event</string>
 </resources>

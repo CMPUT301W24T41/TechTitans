@@ -109,11 +109,12 @@ public class MainActivity extends AppCompatActivity{
 
                         // Get new FCM registration token
                         String token = task.getResult();
+                        databaseController.addFCMTokenToUser(defaultID, token);
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
                         Log.d("test", msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
