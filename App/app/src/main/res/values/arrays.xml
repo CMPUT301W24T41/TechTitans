@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="filter_options">
-        <item>All Attendees</item>
-        <item>Checked In</item>
-        <item>Not Checked In</item>
+        <item>Important Update</item>
+        <item>Reminders</item>
+        <item>Promotion</item>
     </string-array>
 </resources>
