@@ -72,6 +72,7 @@ public class DatabaseController {
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
         userData.put("fcmToken", user.getFcmToken());
+        userData.put("homepage", user.getHomePageUrl());
         // this checks if the user is an admin
         userData.put("admin", user.isAdmin());
 
@@ -107,6 +108,7 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("homepage"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents"),
                                 document.getBoolean("admin")
@@ -150,6 +152,7 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("homepage"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents"),
                                 document.getBoolean("admin")
@@ -769,6 +772,7 @@ public class DatabaseController {
                                         doc.getString("firstName"),
                                         doc.getString("lastName"),
                                         doc.getString("contact"),
+                                        doc.getString("homepage"),
                                         (ArrayList<String>) doc.get("attendingEvents"),
                                         (ArrayList<String>) doc.get("hostingEvents"),
                                         doc.getBoolean("admin")

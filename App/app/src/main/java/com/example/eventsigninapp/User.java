@@ -56,6 +56,9 @@ public class User implements Serializable {
     private String fcmtoken;
     private String initials;
 
+    private String homePageUrl;
+
+
 
     private Boolean admin;
 
@@ -70,6 +73,7 @@ public class User implements Serializable {
         location = "";
         imgUrl = "";
         initials = "";
+        homePageUrl = "";
         admin = false;
     }
 
@@ -86,14 +90,16 @@ public class User implements Serializable {
         this.lastName = last;
     }
 
-    protected User(String id, String first, String last, String contact) {
+    protected User(String id, String first, String last, String contact, String homepage) {
         this(id, first, last);
         this.contact = contact;
+        this.homePageUrl = homepage;
     }
 
-    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin) {
+    protected User(String id, String first, String last, String contact,String homepage, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin) {
         this(id, first, last);
         this.contact = contact;
+        this.homePageUrl = homepage;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
         this.admin = admin;
@@ -262,4 +268,6 @@ public class User implements Serializable {
         return generateInitials();
     }
 
+    public String getHomePageUrl() {return homePageUrl;}
+    public void  setHomePageUrl(String homePageUrl) {this.homePageUrl = homePageUrl;}
 }

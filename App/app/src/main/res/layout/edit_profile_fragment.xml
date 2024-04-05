@@ -47,11 +47,19 @@
         android:layout_marginTop="8dp"
         android:hint="Contact Information" />
 
+    <EditText
+        android:id="@+id/editURL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editContact"
+        android:layout_marginTop="8dp"
+        android:hint="Homepage URL" />
+
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editContact"
+        android:layout_below="@id/editURL"
         android:layout_marginTop="16dp"
         android:text="Save" />
 </RelativeLayout>
