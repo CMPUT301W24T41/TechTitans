@@ -2,6 +2,8 @@ package com.example.eventsigninapp;
 
 
 
+import static com.google.firebase.messaging.Constants.MessagePayloadKeys.SENDER_ID;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,12 +13,14 @@ import android.content.Intent;
 
 
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -24,8 +28,8 @@ public class MessagingService extends FirebaseMessagingService {
     DatabaseController databaseController = new DatabaseController();
     UserController userController = new UserController();
     private static final String TAG = "MessagingService";
-    private String channel_id = "channel_id";
-    private final String channel_name = "channel_com.example.eventsigninapp";
+    private static final String channel_id = "channel_id";
+    private final String channel_name = "channel_com.example.EventSignInApp";
 
     /**
      * There are two scenarios when onNewToken is called:
@@ -47,11 +51,12 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void sendRegistrationToServer(String token) {
+        databaseController.addFCMTokenToUser(userController.getUser().getId(), token);
 
     }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
@@ -70,10 +75,22 @@ public class MessagingService extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         generateNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
     }
+    @Override
+    public void onMessageSent(String messageId) {
+        super.onMessageSent(messageId);
+        Log.d(TAG, "Message sent: " + messageId);
+    }
+
+    @Override
+    public void onSendError(String messageId, Exception exception) {
+        super.onSendError(messageId, exception);
+        Log.d(TAG, "Message send error: " + messageId + " " + exception);
+    }
 
 
 
-    //generate notification
+
+
     public void generateNotification(String title, String message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -82,12 +99,14 @@ public class MessagingService extends FirebaseMessagingService {
         // Create a notification builder
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
                 .setSmallIcon(R.drawable.logo_placeholder)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent);
+
 
         // Set custom layout
         builder.setContent(getRemoteView(title, message));
@@ -96,7 +115,7 @@ public class MessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Check if the notification channel exists
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = notificationManager.getNotificationChannel(channel_id);
             if (channel == null) {
                 // Create the notification channel if it doesn't exist
@@ -106,6 +125,10 @@ public class MessagingService extends FirebaseMessagingService {
                 channel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000});
                 channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
                 channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    channel.setAllowBubbles(true);
+                }
                 notificationManager.createNotificationChannel(channel);
             }
         }
@@ -123,6 +146,17 @@ public class MessagingService extends FirebaseMessagingService {
         remoteViews.setImageViewResource(R.id.app_logo, R.drawable.logo_placeholder);
 
         return remoteViews;
+    }
+
+    private void sendNotificationToUsers(String title, String message, String topic) {
+        // Create a notification message
+        FirebaseMessaging fm = FirebaseMessaging.getInstance();
+        fm.send(new RemoteMessage.Builder(SENDER_ID + "@fcm.googleapis.com")
+                .setMessageId("1")
+                .addData("my_message", "Hello World")
+                .addData("my_action","SAY_HELLO")
+                .build());
+
     }
 
 

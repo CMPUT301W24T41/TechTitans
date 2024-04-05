@@ -74,6 +74,16 @@ public class DatabaseController {
 //                .addOnFailureListener(e -> Log.e("Database", "putUserToFirestore: Error updating user data", e));
     }
 
+    public void putNotificationToFirestore(String title, String message, String topic, String id){
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("id", id);
+        notificationData.put("title", title);
+        notificationData.put("message", message);
+        notificationData.put("topic", topic);
+        DocumentReference notificationDocument = db.collection("notifications").document(id);
+        notificationDocument.set(notificationData, SetOptions.merge());
+    }
+
 
     /**
      * This function gets a user from the database using the given id and updates the current
@@ -828,7 +838,7 @@ public class DatabaseController {
 
     public void addEventToUser(User user, Event event) {
         DocumentReference eventRef = db.collection("users").document(user.getId());
-        eventRef.update("attendingEvents", FieldValue.arrayUnion(user.getId()))
+        eventRef.update("attendingEvents", FieldValue.arrayUnion(event.getUuid()))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -868,15 +878,23 @@ public class DatabaseController {
         void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
     }
 
-
-
-
-
-
-
-    ;
-
-    public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback) {
+    public void addFCMTokenToUser(String userID, String token){
+        DocumentReference eventRef = db.collection("users").document(userID);
+        eventRef.update("fcmToken", token)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("AddFCMToken", "FCM Token updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("AddFCMToken", "Error Adding to FCM Token: " + e.getMessage());
+                    }
+                });
+    }
+    public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback){
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         // Fetch the event document
         eventRef.get().addOnCompleteListener(task -> {
