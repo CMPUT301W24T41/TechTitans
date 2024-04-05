@@ -296,6 +296,19 @@ MessagingService -- UserController
 MessagingService -- DatabaseController
 
 
+class AdminActivty{
+    -FrameLayout frameLayout
+    -TabLayout tabLayout
+    -DatabaseController databaseController
+    -UserController userController
+    #onCreate(savedInstanceState: Bundle)
+    }
+AdminActivty "1" *-- "0...1" AdminEventListFragment
+AdminActivty "1" *-- "0...1" AdminUserListFragment
+AdminActivty "1" *-- "0...1" AdminImageListFragment
+AdminActivty "1" *-- "0...1" AdminCodeGeneratorFragment
+AdminActivty --> MainActivity
+
 skinparam nodesep 25
 skinparam ranksep 100
 skinparam dpi 300
