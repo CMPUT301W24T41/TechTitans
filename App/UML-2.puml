@@ -1,0 +1,307 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+note as N1 
+    Getter and setter methods as well as inherited methods are not shown for brevity.
+end note
+
+class AttendeeListActivity {
+    -eventTitle: TextView
+    -checkedInCountText: TextView
+    -signedUpCountText: TextView
+    -checkedInListView: ListView
+    -signedUpListView: ListView
+    -switchToMapButton: Button
+    -signedUpUserAdapter: UserArrayAdapter
+    -checkedInUserAdapter: UserArrayAdapter
+    -dbController: DatabaseController
+    -event: Event
+    -signedUpUsers: ArrayList<User>
+    -checkedInUsers: ArrayList<User>
+}
+AttendeeListActivity "0...1" o-- "0..*" User
+AttendeeListActivity -- UserArrayAdapter
+
+'Done
+class CaptureAct {
+    -String SCAN_RESULT
+}
+
+'Done
+class CheckInConfirmationDialog {
+    -View rootView
+    -ImageView imageView
+    +showEvent(event: Event)
+}
+
+'Done
+class CheckInFragment {
+    -DatabaseController databaseController
+    -CheckInConfirmationDialog checkInConfirmationDialog
+    -Event event
+    -ActivityResultLauncher<ScanOptions> scanLauncher
+    -processResult(ScanIntentResult: result)
+    -showCheckInConfirmation()
+}
+CheckInFragment "1" *-- "0...1" CheckInConfirmationDialog
+CheckInFragment "1" o-- "1" DatabaseController
+CheckInFragment "1" o-- "1" Event
+CheckInFragment "1" *-- "0...1" CaptureAct
+CheckInFragment -- CheckInView
+
+'Done
+class CheckInView {
+    -ScanButtonListener listener
+    +setListener(listener: ScanButtonListener)
+    +getRootView(): View
+    +onButtonClick()
+}
+
+'Done
+class DatabaseController {
+    -FirebaseFirestore db
+    -FirebaseStorage storage
+    +putUserToFirestore(user: User)
+    +updateWithUserFromFirestore(id: String, userController: UserController)
+    +getUserFromFirestore(id: String, callback: UserCallback)
+    +uploadProfilePicture(picture: Uri, user: User)
+    +updateWithProfPictureFromWeb(user: User)
+    +getUserProfilePicture(userID: String, callback: ImageUriCallback)
+    +putEventPosterToFirestore(String: eventID, Uri imageUri)
+    +putEventCheckInQRCodeToFirestore(String: eventID, Uri imageUri)
+    +putEventDesscriptionQRCodeToFirestore(String: eventID, Uri imageUri)
+    +getEventPoster(String eventID, callback: EventImageUriCallbacks)
+    +getEventPoster(String eventID, imageView: ImageView, callback: EventImageUriCallbacks)
+    +getEventCheckInQRCode(String eventID, callback: EventImageUriCallbacks)
+    +getEventDescriptionQRCode(String eventID, callback: EventImageUriCallbacks)
+    +pushEventToFirestore(event: Event)
+    +getEventFromFirestore(eventID: String, callback: GetEventCallback)
+    +getAllEventsFromFirestore(callback: GetAllEventsCallback)
+    +deleteUserInfo(user: User)
+    +deleteEventInfo(event: Event)
+    +deleteEventInfo(eventID: String)
+    +deleteUser(user: User)
+    +deleteEvent(event: Event)
+    +getSignedUpUsersFromFirestore(event: Event, callback: GetSignedUpUsersCallback)
+    +removeUserFromEvent(userID: String, eventID String)
+    +getCheckedInUsersFromFirestore(event: Event, callback: GetCheckedInuUsersCallback)
+    +getEventImages(eventID: String, callbacks: EventImageUriCallback)
+    +findEventByQrResult(qrResult: String, callback: getEventCallback)
+    +getAllEventsFromFirestore(callback: GetAllEventsCallback)
+    +getAllUsersFromFirestore(callback: GetAllUsersCallback)
+    +getAllImagesFromFirestore(callback: GetAllImagesCallback)
+    +getAllImagesInFolder(folderName: String, callback: ImageUriCallback)
+    +addCheckInLocationToFirestore(event: Event, Location: location)
+    +getCheckInLocationsFromFirestore(event: Event, callback: GetCheckInLocationCallback)
+    +addSignedUpUser(event: Event, user: User)
+    +addEventToUser(user: User, event: Event)
+    +deleteAttendingEvent(user: String, eventID: String)
+    +deleteHostingEvent(uuid: String, creatorUUID: String)
+    +getEventCreatorUUID(event: Event, callback: GetEventCreatorUUIDCallback)
+    +pushAdminCode(adminCode: String)
+    +updateAdmin(adminCode: String, user: User, context: Context)
+    +putNotificationToFirestore(title: String, message: String, topic: String, id: String)
+    +addFCMTokenToUser(userID: String, token: String)
+}
+
+'Done
+class EditProfileFragment {
+    -DatabaseController databaseController
+    -OnProfileUpdateListener profileUpdateListener
+    -EditText firstName
+    -EditText lastName
+    -EditText contact
+    -ImageView profPic
+    -UserController userController
+    +setOnProfileUpdateListener(listener: OnProfileUpdateListener)
+}
+EditProfileFragment "0...1" o-- "1" DatabaseController
+EditProfileFragment "0...1" o-- "1" UserController
+EditProfileFragment "0...1" o-- "1" User
+
+'Done
+class Event {
+    -String uuid
+    -String name
+    -int capacity
+    -Collection<String> signedUpUsers
+    -Collection<String> checkedInUsers
+    -Uri posterUri
+    -Uri checkInQrCodeUri
+    -Uri descriptionQRCodeUri
+    -Object location
+    -Date date
+    -String creatorUUID
+    -String description
+    +isCapped(): boolean
+    +isFull(): boolean
+    +addCheckedInUser(uuid: String)
+    +addSignedUpUser(uuid: String)
+    +isUserCheckedIn(uuid: String): boolean
+    +isUserSignedUp(uuid: String): boolean
+}
+
+'Done
+class EventArrayAdapter {
+    -ArrayList<Event> events
+    -Context context
+}
+EventArrayAdapter "0...1" o-- "0...*" Event
+
+'Done
+class EventController {
+  -Event event
+  +checkInUser(uuid: String)
+  +signUpUser(uuid: String)
+}
+EventController "0...*" o-- "1" Event
+
+'Done
+class EventCreationFragment {
+    -EventCreationView view
+    -ActivityResultLauncher<Intent> imagePickerLauncher
+    -createImagePickerLauncher()
+}
+EventCreationFragment -- DatabaseController
+EventCreationFragment -- UserController
+EventCreationFragment "1" *-- "1" EventCreationView
+
+class EventCreationView {
+    -EditText eventEditText
+    -EditText eventDescription
+    -Button imageButton
+    -Button confirmButton
+    -ImageView captureImage
+    -View rootView
+    -Uri posterUri
+    +setImageButtonListener(listener: ImageButtonListener)
+    +setConfirmButtonListener(listener: ConfirmButtonListener)
+    +getEventName(): String
+    +getEventDescription(): String
+}
+
+class EventDetailsFragment {
+    -TextView eventDescription
+    -TextView announcement
+    -ImageView eventPoster
+    -Button backButton
+    +newInstance(Event event)
+}
+EventDetailsFragment -- QRCodeFragment
+
+'Done
+class HomeFragment {
+    -DatabaseController dbController
+    -ArrayList<Event> events
+    -ListView eventsList
+    -EventArrayAdapter eventsArrayAdapter
+    -EventDetailsFragment frag
+    +newInstance(param1: String, param2: String)
+}
+HomeFragment "0...1" *-- "1" EventArrayAdapter
+HomeFragment "0...1" o-- "1" DatabaseController
+HomeFragment "0...1" o-- "1" EventDetailsFragment
+
+'Done
+class MainActivity {
+    -FrameLayout frameLayout
+    -TabLayout tabLayout
+    -UserController userController
+    -DatabaseController databaseController
+    #onCreate(savedInstanceState: Bundle)
+}
+MainActivity "0...1" o-- "1" DatabaseController
+MainActivity "0...1" o-- "1" UserController
+
+class Organizer {
+    -String id
+    -String phoneNumber
+    -String name
+    -List<Event> eventsOrganized
+    -boolean geolocationEnabled
+    +createEvent(eventDetails: Event)
+    +uploadEventPoster(event: Event, poster: String)
+    +generateQRCode(eventName: String): Bitmap
+    +generateUniqueQRCode(eventName: String): Bitmap
+    +enableGeolocationVerification()
+    +disableGeolocationVerification()
+}
+Organizer "0...1" o-- "0...*" Event
+
+'Done
+class ProfileFragment {
+    -TextView firstName
+    -TextView lastName
+    -TextView contact
+    -ImageView profPic
+    -UserController userController
+    -DatabaseController databaseController
+    -TabLayout tabLayout
+    -FrameLayout frameLayout
+    +newInstance(param1: String, param2: String)
+}
+ProfileFragment "0...1" o-- "1" DatabaseController
+ProfileFragment "0...1" o-- "1" UserController
+
+class QRCodeFragment {
+    -String ARG_QR_CODE_BITMAP
+    -ImageView qrCodeImageView
+}
+
+'Done
+class User {
+    -String profilePicPath
+    -String id
+    -String firstName
+    -String lastName
+    -String contact
+    -ArrayList<String> attendingEvents
+    -ArrayList<String> hostingEvents
+    -Uri picture
+    -String imgUrl
+}
+
+class UserArrayAdapter {
+    -List<User> users
+    -Context context
+}
+
+'Done
+class UserController {
+    -User user
+    -String defaultUUID
+    -String prefName
+    +String getUserID(context: Context)
+    +saveUUID(context: Context, id: String)
+    +selectImage(activity: Activity)
+    +selectImage(fragment: Fragment)
+    +editProfile(firstName: String, lastName: String,
+    contact: String, pictureUri: Uri)
+    +checkIn(event: Event)
+    +signUp(event: Event)
+}
+UserController "0...1" o-- "1" User
+EventController -- UserController
+
+'Done
+class MessagingService{
+    +onNewToken(token: String)
+    -sendRegistrationToServer(token: String)
+    +onMessageRecieved(remoteMessage: RemoteMessage)
+    +onMessageSent(messageId: String)
+    +onSendError(messageId: String, exception: Exception)
+    +generateNotification(title: String, message: String)
+}
+MessagingService -- UserController
+MessagingService -- DatabaseController
+
+
+skinparam nodesep 25
+skinparam ranksep 100
+skinparam dpi 300
+skinparam monochrome true
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+hide circle
+@enduml

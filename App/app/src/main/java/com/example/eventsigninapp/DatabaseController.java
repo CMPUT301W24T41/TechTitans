@@ -838,7 +838,7 @@ public class DatabaseController {
 
     public void addEventToUser(User user, Event event) {
         DocumentReference eventRef = db.collection("users").document(user.getId());
-        eventRef.update("attendingEvents", FieldValue.arrayUnion(user.getId()))
+        eventRef.update("attendingEvents", FieldValue.arrayUnion(event.getUuid()))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
