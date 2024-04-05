@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     TextView firstName;
     TextView lastName;
     TextView contact;
+    TextView homepage;
     ImageView profPic;
 
     Uri profilePictureUri = userController.getUser().getPicture();
@@ -72,12 +74,13 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName = rootView.findViewById(R.id.user_first_name);
         lastName = rootView.findViewById(R.id.user_last_name);
         contact = rootView.findViewById(R.id.user_number);
+        homepage = rootView.findViewById(R.id.user_home_page);
         profPic = rootView.findViewById(R.id.profilePicture);
 
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-
+        homepage.setText(userController.getUser().getHomePageUrl());
 
         //profPic.setImageDrawable(initialsDrawable);
         updateProfilePicture(profilePictureUri);
@@ -126,6 +129,8 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             }
         });
 
+
+
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +150,10 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
             }
         });
+
+        // opens the url when the homepage is clicked
+        homepage.setMovementMethod(LinkMovementMethod.getInstance());
+
 
         // this supposed to delete your profile image
         Button deletePictureButton = rootView.findViewById(R.id.deleteButton);
@@ -196,10 +205,11 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
 
     @Override
-    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri newPicture) {
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, String newHomepage, Uri newPicture) {
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
+        homepage.setText(newHomepage);
 
         updateProfilePicture(newPicture);
 

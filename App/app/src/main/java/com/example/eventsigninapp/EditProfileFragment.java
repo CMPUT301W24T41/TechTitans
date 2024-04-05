@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,6 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.squareup.picasso.Picasso;
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  */
@@ -25,7 +30,7 @@ public class EditProfileFragment extends DialogFragment {
 
 
     public interface OnProfileUpdateListener {
-        void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri newPicture);
+        void onProfileUpdate(String newFirstName, String newLastName, String newContact, String newHomepage, Uri newPicture);
     }
 
 
@@ -34,7 +39,7 @@ public class EditProfileFragment extends DialogFragment {
     public void setOnProfileUpdateListener(OnProfileUpdateListener listener) {
         this.profileUpdateListener = listener;
     }
-    private EditText firstName, lastName, contact;
+    private EditText firstName, lastName, contact, homepage;
     private ImageView profPic;
     UserController userController = new UserController();
 
@@ -63,12 +68,14 @@ public class EditProfileFragment extends DialogFragment {
         lastName = view.findViewById(R.id.editLastName);
         contact = view.findViewById(R.id.editContact);
         profPic = view.findViewById(R.id.editProfileImage);
+        homepage = view.findViewById(R.id.editURL);
         Button saveButton = view.findViewById(R.id.buttonSave);
 
 
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
+        homepage.setText(userController.getUser().getHomePageUrl());
 
         // this gives you a default dummy profile pic
         // if there is no profile pic in the database
@@ -95,13 +102,26 @@ public class EditProfileFragment extends DialogFragment {
                 String newFirstName = firstName.getText().toString();
                 String newLastName = lastName.getText().toString();
                 String newContact = contact.getText().toString();
+                String newHomepage = homepage.getText().toString();
                 Uri newProf = userController.getUser().getPicture();
 
 
+
+                //setting an https before hand for validation
+                if (!newHomepage.startsWith("http://") && !newHomepage.startsWith("https://")) {
+                    newHomepage = "http://" + newHomepage;
+                }
+                try {
+                    new URL(newHomepage).toURI();
+                } catch (URISyntaxException | MalformedURLException e) {
+                    homepage.setError("Invalid URL");
+                    return;
+                }
+
                 // user gets updated here
-                userController.editProfile(newFirstName, newLastName, newContact, newProf);
+                userController.editProfile(newFirstName, newLastName, newContact, newHomepage, newProf);
                 databaseController.putUserToFirestore(userController.getUser());
-                profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newProf);
+                profileUpdateListener.onProfileUpdate(newFirstName, newLastName, newContact, newHomepage, newProf);
 
 
                 dismiss();
