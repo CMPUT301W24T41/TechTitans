@@ -71,6 +71,7 @@ class DatabaseController {
     +putEventCheckInQRCodeToFirestore(String: eventID, Uri imageUri)
     +putEventDesscriptionQRCodeToFirestore(String: eventID, Uri imageUri)
     +getEventPoster(String eventID, callback: EventImageUriCallbacks)
+    +getEventPoster(String eventID, imageView: ImageView, callback: EventImageUriCallbacks)
     +getEventCheckInQRCode(String eventID, callback: EventImageUriCallbacks)
     +getEventDescriptionQRCode(String eventID, callback: EventImageUriCallbacks)
     +pushEventToFirestore(event: Event)
@@ -81,6 +82,19 @@ class DatabaseController {
     +deleteEventInfo(eventID: String)
     +deleteUser(user: User)
     +deleteEvent(event: Event)
+    +getSignedUpUsersFromFirestore(event: Event, callback: GetSignedUpUsersCallback)
+    +removeUserFromEvent(userID: String, eventID String)
+    +getCheckedInUsersFromFirestore(event: Event, callback: GetCheckedInuUsersCallback)
+    +getEventImages(eventID: String, callbacks: EventImageUriCallback)
+    +findEventByQrResult(qrResult: String, callback: getEventCallback)
+    +getAllEventsFromFirestore(callback: GetAllEventsCallback)
+    +getAllUsersFromFirestore(callback: GetAllUsersCallback)
+    +getAllImagesFromFirestore(callback: GetAllImagesCallback)
+    +getAllImagesInFolder(folderName: String, callback: ImageUriCallback)
+    +addCheckInLocationToFirestore(event: Event, Location: location)
+    +getCheckInLocationsFromFirestore(event: Event, callback: GetCheckInLocationCallback)
+    +addSignedUpUser(event: Event, user: User)
+    +addEventToUser(user: User, event: Event)
 }
 
 'Done
