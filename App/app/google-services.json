@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "114624722231",
+    "project_id": "eventsigninapp-2ec69",
+    "storage_bucket": "eventsigninapp-2ec69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114624722231:android:7fa7dcdd77cf531a5896b2",
+        "android_client_info": {
+          "package_name": "com.example.eventsigninapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7QjQqJDOiJcVpHf3A3fbeo5WJgDIoHHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
