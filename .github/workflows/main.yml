@@ -23,7 +23,7 @@ jobs:
       working-directory: ./App
       run: |
         chmod +x gradlew
-        ./gradlew build
+        ./gradlew assemble
     - name: Run Unit Tests
       working-directory: ./App
       run: ./gradlew test
