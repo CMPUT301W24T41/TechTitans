@@ -73,6 +73,13 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
             for (int i=0; i<signedUpEvents.size(); i++) {
                 if (signedUpEvents.get(i).equals(newEvent.getUuid())) {
                     myEventsArrayList.add(newEvent);
+
+                    // To allow onGetCheckedInUsersCallback to finish before displaying all events
+//                    try {
+//                        Thread.sleep(250);
+//                    } catch (InterruptedException e) {
+//                        Thread.currentThread().interrupt();
+//                    }
                     myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(newEvent));
                 }
             }
@@ -87,18 +94,13 @@ public class MyEventsFragment extends Fragment implements DatabaseController.Get
             for (int i = 0; i < users.size(); i++) {
                 event.addCheckedInUser((String) users.get(i));
 
-                // If checked in event is already displayed by signed up event
-                for (int j=0; j<myEventsArrayList.size(); j++) {
-                    if (myEventsArrayList.get(j).equals(event)) {
-                        return;
-                    }
-                }
-
                 // If Event is checked in, add to start of list, top of display
                 if (users.get(i).equals(userController.getUser().getId())) {
+                    myEventsArrayList.remove(event);
                     myEventsArrayList.add(0, event);
-                    myEventsArrayAdapter.notifyItemInserted(myEventsArrayList.indexOf(event));
+                    myEventsArrayAdapter.notifyDataSetChanged();
                     }
+
                 dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
                     @Override
                     public void onCallback(User user) {
