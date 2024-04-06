@@ -115,6 +115,10 @@ public class EditProfileFragment extends DialogFragment {
                 PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
                 try {
                     Phonenumber.PhoneNumber num = phoneUtil.parse(newContact, "CA");
+                    if (newContact.length() < 10){
+                        contact.setError("Enter a Canadian Number");
+                        return;
+                    }
                 } catch (NumberParseException e) {
                     contact.setError("Enter a Canadian Number");
                     return;
