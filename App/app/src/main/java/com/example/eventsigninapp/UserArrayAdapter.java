@@ -69,11 +69,12 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             TextView firstName = view.findViewById(R.id.first_name);
             TextView lastName = view.findViewById(R.id.last_name);
 
-            try {
+            if (Objects.equals(user.getFirstName(), "") && Objects.equals(user.getLastName(), "")) {
+                firstName.setText(user.getId());
+                lastName.setText("");
+            } else {
                 firstName.setText(user.getFirstName());
                 lastName.setText(user.getLastName());
-            } catch (Exception e) {
-                Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
             }
         } else if (layoutID == R.layout.admin_user_list_item) {
             User user = users.get(position);

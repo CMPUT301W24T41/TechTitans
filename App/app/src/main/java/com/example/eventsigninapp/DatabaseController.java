@@ -385,6 +385,7 @@ public class DatabaseController {
         final ArrayList<?>[] usersSignedUp = new ArrayList<?>[1]; // effectively final
         CollectionReference eventsRef = db.collection("events");
         eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            Log.e("SIGNUP", String.format("DB method called: %s", event.getUuid()));
             if (task.isSuccessful() && task.getResult() != null) {
                 DocumentSnapshot document = task.getResult();
                 usersSignedUp[0] = (ArrayList<?>) document.get("signedUpUsers");
@@ -393,23 +394,6 @@ public class DatabaseController {
                 } else {
                     Log.e("Database", "Error retrieving signed up users");
                 }
-            }
-        });
-        eventsRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Log.e("DEBUG", String.format("Error: %s", error.getMessage()));
-                return;
-            }
-            if (value == null) {
-                return;
-            }
-
-            DocumentSnapshot doc = value.getDocuments().get(0);
-            usersSignedUp[0] = (ArrayList<?>) doc.get("checkedInUsers");
-            if (usersSignedUp[0] != null) {
-                callback.onGetSignedUpUsersCallback(event, usersSignedUp[0]);
-            } else {
-                Log.e("Database", "Error retrieving checked in users");
             }
         });
     }
@@ -428,17 +412,14 @@ public class DatabaseController {
     public void getCheckedInUsersFromFirestore(Event event, GetCheckedInUsersCallback callback) {
         final ArrayList<?>[] usersCheckedIn = new ArrayList<?>[1]; // effectively final
         CollectionReference eventsRef = db.collection("events");
-        eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Log.e("db", "Called on complete");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
                 DocumentSnapshot document = task.getResult();
                 usersCheckedIn[0] = (ArrayList<?>) document.get("checkedInUsers");
                 if (usersCheckedIn[0] != null) {
-                    Log.e("db", "The retrieval was successful");
                     callback.onGetCheckedInUsersCallback(event, usersCheckedIn[0]);
                 } else {
-                    Log.e("Database", "Error retrieving checked in users");
+                    Log.e("CHECKIN", "Error retrieving checked in users");
                 }
             }
         });
@@ -752,10 +733,10 @@ public class DatabaseController {
         DocumentReference eventsRef = db.collection("events").document(event.getUuid());
         eventsRef.update("checkInLocations", FieldValue.arrayUnion(loc))
                 .addOnSuccessListener(avoid -> {
-                    Log.e("DEBUG", "Successfully added check in location");
+                    Log.e("LOCATION", "Successfully added check in location");
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DEBUG", "Failed to check in location");
+                    Log.e("LOCATION", "Failed to check in location");
                 });
     }
 
@@ -774,9 +755,9 @@ public class DatabaseController {
                 checkInLocations[0] = (ArrayList<?>) doc.get("checkInLocations");
                 if (checkInLocations[0] != null) {
                     callback.onGetCheckInLocationCallback(event, checkInLocations[0]);
-                    Log.e("DEBUG", "Success retrieving check-in locations");
+                    Log.e("CHECKIN", "Success retrieving check-in locations");
                 } else {
-                    Log.e("DEBUG", "Error retrieving check-in locations");
+                    Log.e("CHECKIN", "Error retrieving check-in locations");
                 }
             }
         });

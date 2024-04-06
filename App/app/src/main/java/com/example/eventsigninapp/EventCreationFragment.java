@@ -3,6 +3,7 @@ package com.example.eventsigninapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,7 +29,7 @@ import kotlin.Unit;
  * A simple {@link Fragment} subclass for managing event creation.
  * Allows users to input event details, select images, and generate QR codes for events.
  */
-public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener {
+public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener, EventCreationView.PickLocationListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
@@ -49,6 +50,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         eventCreationView = new EventCreationView(inflater, container);
         eventCreationView.setImageButtonListener(this);
         eventCreationView.setConfirmButtonListener(this);
+        eventCreationView.setPickLocationListener(this);
 
         createImagePickerLauncher();
 
@@ -141,5 +143,11 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     }
 
 
-
+    @Override
+    public void onPickLocationClick() {
+        Bundle bundle = new Bundle();
+        String locationQuery = eventCreationView.getLocationQuery();
+        bundle.putString("query", locationQuery);
+        new LocationPickerDialog().show(getActivity().getSupportFragmentManager(), "Select location");
+    }
 }
