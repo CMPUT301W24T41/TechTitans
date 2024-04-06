@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editLastName"
         android:layout_marginTop="8dp"
-        android:hint="Contact Information" />
+        android:hint="Contact Information (Phone Number)" />
 
     <EditText
         android:id="@+id/editURL"
