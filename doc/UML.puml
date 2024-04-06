@@ -259,6 +259,8 @@ class User {
     -ArrayList<String> hostingEvents
     -Uri picture
     -String imgUrl
+    -Boolean admin
+    -Boolean profileSet
 }
 
 class UserArrayAdapter {
