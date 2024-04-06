@@ -65,7 +65,7 @@ public class EventCreationView {
     }
 
     public String getLocationQuery() {
-        return locationPickerButton.getText().toString().trim();
+        return locationPickerText.getText().toString().trim();
     }
 
     interface ImageButtonListener {

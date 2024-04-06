@@ -29,9 +29,10 @@ import kotlin.Unit;
  * A simple {@link Fragment} subclass for managing event creation.
  * Allows users to input event details, select images, and generate QR codes for events.
  */
-public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener, EventCreationView.PickLocationListener {
+public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener, EventCreationView.PickLocationListener, LocationPickerDialog.DialogCloseListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private Location eventLocation;
 
     /**
      * Required empty public constructor for the fragment.
@@ -96,10 +97,11 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         subscribeToTopic(event.getUuid()+"-Promotions");
 
 
-        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
+        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty() && eventLocation != null) {
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
             event.setPosterUri(eventCreationView.getPosterUri());
+            event.setLocation(eventLocation);
 
             Bitmap bitmap = Organizer.generateQRCode(event.getUuid());
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -148,6 +150,19 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         Bundle bundle = new Bundle();
         String locationQuery = eventCreationView.getLocationQuery();
         bundle.putString("query", locationQuery);
-        new LocationPickerDialog().show(getActivity().getSupportFragmentManager(), "Select location");
+        LocationPickerDialog pickLocation = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            pickLocation = new LocationPickerDialog(this);
+            pickLocation.setArguments(bundle);
+            pickLocation.show(getActivity().getSupportFragmentManager(), "Select location");
+        } else {
+            Toast.makeText(requireContext(), "Make sure that the API used is current", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDialogClose(Location location) {
+        eventLocation = location;
+        Log.e("LOCATION", String.valueOf(location));
     }
 }

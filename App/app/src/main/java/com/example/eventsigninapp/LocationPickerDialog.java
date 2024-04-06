@@ -2,44 +2,45 @@ package com.example.eventsigninapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class LocationPickerDialog extends DialogFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+public class LocationPickerDialog extends DialogFragment implements OnMapReadyCallback {
     GoogleMap map;
     Location selectedLocation;
     DialogCloseListener listener;
     String locationQuery;
+    List<Address> addresses;
+    UiSettings mapUI;
+    final int ZOOM_LEVEL = 15;
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof DialogCloseListener) {
-            listener = (DialogCloseListener) context;
-        } else {
-            throw new RuntimeException(context + " must implement DialogCloseListener");
-        }
+    public LocationPickerDialog(DialogCloseListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -47,29 +48,30 @@ public class LocationPickerDialog extends DialogFragment implements OnMapReadyCa
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View v = getLayoutInflater().inflate(R.layout.dialog_pick_location, null);
 
+        SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.location_selection_fragment);
+        assert mapFrag != null;
+        mapFrag.getMapAsync(this);
+
         Bundle bundle = getArguments();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         if (bundle == null) {
             Log.e("PICKER", "null bundle");
         } else { // search location
+            Geocoder geocoder = new Geocoder(requireContext());
             locationQuery = bundle.getString("query");
-            List<Address> addresses;
             assert locationQuery != null;
-            if (!locationQuery.equals("")) {
-                Geocoder geocoder = new Geocoder(requireContext());
-                try {
-                    addresses = geocoder.getFromLocationName(locationQuery, 5);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                addresses = geocoder.getFromLocationName(locationQuery, 1);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
         return builder
                 .setView(v)
                 .setTitle("Select a location")
-                .setMessage("Set a location for your event.")
+                .setMessage("Click on a marker to confirm the location for your event.")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
@@ -83,14 +85,43 @@ public class LocationPickerDialog extends DialogFragment implements OnMapReadyCa
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
+        mapUI = map.getUiSettings();
+        mapUI.setZoomControlsEnabled(true);
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                selectedLocation = new Location("prov");
+                LatLng markerPosition = marker.getPosition();
+                selectedLocation.setLatitude(markerPosition.latitude);
+                selectedLocation.setLongitude(markerPosition.longitude);
+                return true;
+            }
+        });
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                selectedLocation = new Location("prov");
+                selectedLocation.setLatitude(latLng.latitude);
+                selectedLocation.setLongitude(latLng.longitude);
+                map.addMarker(new MarkerOptions().position(latLng));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
+            }
+        });
+        showResultOnMap();
     }
 
-    @Override
-    public void onMapClick(@NonNull LatLng latLng) {
-        selectedLocation = new Location("prov");
-        selectedLocation.setLatitude(latLng.latitude);
-        selectedLocation.setLongitude(latLng.longitude);
+
+    private void showResultOnMap() {
+        if (addresses.size() == 0) {
+            return;
+        }
+
+        Address address = addresses.get(0);
+        LatLng point = new LatLng(address.getLatitude(), address.getLongitude());
+        map.addMarker(new MarkerOptions().position(point).title(locationQuery));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, ZOOM_LEVEL));
     }
+
 
     interface DialogCloseListener {
         void onDialogClose(Location location);
