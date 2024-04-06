@@ -29,6 +29,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
     ArrayList<Location> locations;
     Event event;
     GoogleMap map;
+    final int ZOOM_LEVEL = 15;
 
 
     @Override
@@ -60,9 +61,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
-        // TODO: uncomment the following line
-        Log.e("LOCATION", String.format("event: %s", event.getUuid()));
-
         dbController.getCheckInLocationsFromFirestore(event, this);
 
         backButton.setOnClickListener(l -> {
@@ -86,7 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
             LatLng point = new LatLng(loc.getLatitude(), loc.getLongitude());
             map.addMarker(new MarkerOptions().position(point));
         }
-        map.moveCamera(CameraUpdateFactory.newLatLng(center));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, ZOOM_LEVEL));
     }
 
     private LatLng getAvgLatLng() {

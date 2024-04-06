@@ -40,16 +40,17 @@ public class CheckInConfirmationDialog extends AlertDialog {
         toggleTracking = rootView.findViewById(R.id.tracking_permission);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
         dbController = new DatabaseController();
+
     }
 
     public void showEvent(Event event, ConfirmationListener listener) {
         setView(rootView);
+        toggleTracking.setChecked(false);
         setTitle(event.getName());
         setMessage("You have successfully checked in to this event!");
         setCancelable(true);
         setButton(BUTTON_POSITIVE, "OK", (dialog, which) -> {
             dialog.dismiss();
-            Log.e("LOCATION", String.valueOf(toggleTracking.isChecked()));
             listener.isLocationPermissionGranted(toggleTracking.isChecked());
         });
         if (event.getPosterUri() != null) {
