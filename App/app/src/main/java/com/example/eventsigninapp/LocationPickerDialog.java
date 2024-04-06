@@ -94,6 +94,7 @@ public class LocationPickerDialog extends DialogFragment implements OnMapReadyCa
                 LatLng markerPosition = marker.getPosition();
                 selectedLocation.setLatitude(markerPosition.latitude);
                 selectedLocation.setLongitude(markerPosition.longitude);
+                marker.showInfoWindow();
                 return true;
             }
         });

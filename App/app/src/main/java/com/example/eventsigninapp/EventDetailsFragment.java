@@ -42,7 +42,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
     private Button backButton, editEventButton, notifyUsersButton, menuButton;
-    private AppCompatButton detailsQrCodeButton, checkInQrCodeButton;
+    private AppCompatButton detailsQrCodeButton, checkInQrCodeButton, seeEventLocationButton;
     private ToggleButton signUpButton;
     private Event event;
     private ArrayList<String> signedUpUsersUUIDs = new ArrayList<>();
@@ -103,9 +103,14 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         detailsQrCodeButton = view.findViewById(R.id.detailsQrCodeButton);
         checkInQrCodeButton = view.findViewById(R.id.checkInQrCodeButton);
         menuButton = view.findViewById(R.id.action_selection);
+        seeEventLocationButton = view.findViewById(R.id.see_location_button);
 
         menuButton.setVisibility(View.GONE);
         signUpButton.setVisibility(View.GONE);
+
+        if (event.getLocation() == null) {
+            seeEventLocationButton.setVisibility(View.GONE);
+        }
 
         String[] actions = {"Notify users", "See signed up users", "See checked in users"};
 
@@ -146,6 +151,13 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             }
         });
 
+        seeEventLocationButton.setOnClickListener(l -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            EventLocationDialog eventLocationDialog = new EventLocationDialog();
+            eventLocationDialog.setArguments(bundle);
+            eventLocationDialog.show(getActivity().getSupportFragmentManager(), "Event location");
+        });
 
         backButton.setOnClickListener(l -> {
             FragmentManager fragmentManager = getFragmentManager();

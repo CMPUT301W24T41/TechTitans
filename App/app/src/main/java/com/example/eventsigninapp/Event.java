@@ -5,6 +5,8 @@ import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +27,7 @@ public class Event implements Serializable {
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
-    private Location location;
+    private GeoPoint location;
     private final Date date;
     private String creatorUUID;
     private String description;
@@ -87,7 +89,7 @@ public class Event implements Serializable {
         this.name = name;
     }
 
-    public Location getLocation() {
+    public GeoPoint getLocation() {
         return this.location;
     }
 
@@ -95,7 +97,7 @@ public class Event implements Serializable {
      * This method should be used to set the location of the event
      * @param location the name of the event
      */
-    public void setLocation(Location location) {
+    public void setLocation(GeoPoint location) {
         this.location = location;
     }
 

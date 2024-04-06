@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
@@ -32,7 +33,7 @@ import kotlin.Unit;
 public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener, EventCreationView.PickLocationListener, LocationPickerDialog.DialogCloseListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private Location eventLocation;
+    private GeoPoint eventLocation;
 
     /**
      * Required empty public constructor for the fragment.
@@ -97,7 +98,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         subscribeToTopic(event.getUuid()+"-Promotions");
 
 
-        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty() && eventLocation != null) {
+        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
             event.setPosterUri(eventCreationView.getPosterUri());
@@ -162,7 +163,13 @@ public class EventCreationFragment extends Fragment implements EventCreationView
 
     @Override
     public void onDialogClose(Location location) {
-        eventLocation = location;
+        if (location == null) {
+            Toast.makeText(requireContext(), "No event location added", Toast.LENGTH_LONG).show();
+            eventCreationView.clearLocation();
+            return;
+        }
+        eventLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+        Toast.makeText(requireContext(), "Event location confirmed!", Toast.LENGTH_LONG).show();
         Log.e("LOCATION", String.valueOf(location));
     }
 }

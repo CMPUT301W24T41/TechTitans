@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,10 @@ public class EventCreationView {
 
     public String getLocationQuery() {
         return locationPickerText.getText().toString().trim();
+    }
+
+    public void clearLocation() {
+        locationPickerText.setText("");
     }
 
     interface ImageButtonListener {
