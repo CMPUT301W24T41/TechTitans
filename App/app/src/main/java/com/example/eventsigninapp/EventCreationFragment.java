@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
 
@@ -86,6 +88,11 @@ public class EventCreationFragment extends Fragment implements EventCreationView
 
         String eventNameText = eventCreationView.getEventName();
         String eventDescriptionText = eventCreationView.getEventDescription();
+        // Subscribe to topics ie create the 3 types of topic for this event
+        subscribeToTopic(event.getUuid()+"-Important");
+        subscribeToTopic(event.getUuid()+"-Reminders");
+        subscribeToTopic(event.getUuid()+"-Promotions");
+
 
         if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
             event.setName(eventNameText);
@@ -122,4 +129,17 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
         }
     }
+    private void subscribeToTopic(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+            .addOnCompleteListener(task -> {
+                String msg = "Subscribed to " + topic;
+                if (!task.isSuccessful()) {
+                    msg = "Failed to subscribe to " + topic;
+                }
+                Log.d("FCM", msg);
+            });
+    }
+
+
+
 }

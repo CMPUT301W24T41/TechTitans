@@ -38,6 +38,7 @@ android {
 dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+    //implementation("com.android.volley:volley:1.2.1")
     val fragment_version = "1.6.2"
 
     implementation("com.google.firebase:firebase-analytics")
@@ -63,6 +64,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     testImplementation("org.mockito:mockito-core:4.2.0")
     testImplementation("org.robolectric:robolectric:4.8.1")
+
+    //retrofit
+//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+//    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
 }
 

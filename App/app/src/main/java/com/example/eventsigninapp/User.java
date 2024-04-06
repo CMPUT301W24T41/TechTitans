@@ -53,7 +53,7 @@ public class User implements Serializable {
      */
     private Uri picture;
     private String imgUrl;
-    private String fcmtoken;
+    private String fcmToken;
     private String initials;
 
     private String homePageUrl;
@@ -75,6 +75,7 @@ public class User implements Serializable {
         imgUrl = "";
         initials = "";
         homePageUrl = "";
+        fcmToken = "";
         admin = false;
         profileSet = false;
     }
@@ -221,14 +222,14 @@ public class User implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public void setFcmToken(String fcmtoken) {
-        this.fcmtoken = fcmtoken;
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     ;
 
     public String getFcmToken() {
-        return fcmtoken;
+        return fcmToken;
     }
 
     public Boolean isAdmin() {
