@@ -114,6 +114,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
                 try {
                     eventController.checkInUser(user.getId());
                     databaseController.pushEventToFirestore(event);
+                    showCheckInConfirmation();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
