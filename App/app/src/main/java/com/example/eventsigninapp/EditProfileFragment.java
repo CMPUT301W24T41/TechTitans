@@ -15,6 +15,9 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.squareup.picasso.Picasso;
 
 import java.net.MalformedURLException;
@@ -46,8 +49,8 @@ public class EditProfileFragment extends DialogFragment {
     Uri profilePictureUri = userController.getUser().getPicture();
     String profilePictureUrl = profilePictureUri != null ? profilePictureUri.toString() : "";
 
-    String userInitials = userController.getUser().getInitials();
-    Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
+    String userInitials;
+    Drawable initialsDrawable;
     public EditProfileFragment(){}
 
     @Override
@@ -62,7 +65,8 @@ public class EditProfileFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
-
+        userInitials = userController.getUser().getInitials();
+        initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
         // Find views
         firstName = view.findViewById(R.id.editFirstName);
         lastName = view.findViewById(R.id.editLastName);
@@ -78,12 +82,14 @@ public class EditProfileFragment extends DialogFragment {
         homepage.setText(userController.getUser().getHomePageUrl());
 
         // this gives you a default dummy profile pic
+
+
         // if there is no profile pic in the database
-        if (!profilePictureUrl.isEmpty()) {
+        if (userController.getUser().isProfileSet()) {
             Picasso.get().load(profilePictureUrl).into(profPic);
         } else {
             // Load a default image instead
-            Picasso.get().load(R.drawable.user).into(profPic);
+            profPic.setImageDrawable(initialsDrawable);
         }
 
         profPic.setOnClickListener(new View.OnClickListener(){
@@ -106,6 +112,13 @@ public class EditProfileFragment extends DialogFragment {
                 Uri newProf = userController.getUser().getPicture();
 
 
+                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                try {
+                    Phonenumber.PhoneNumber num = phoneUtil.parse(newContact, "CA");
+                } catch (NumberParseException e) {
+                    contact.setError("Enter a Canadian Number");
+                    return;
+                }
 
                 //setting an https before hand for validation
                 if (!newHomepage.startsWith("http://") && !newHomepage.startsWith("https://")) {
@@ -146,12 +159,13 @@ public class EditProfileFragment extends DialogFragment {
 
             if (imageUri != null) {
                 Picasso.get().load(imageUri).into(profPic);
+                userController.getUser().setProfileSet(true);
             } else {
                 // Load a default image instead
                 profPic.setImageDrawable(initialsDrawable);
             }
-            // Update profilePictureUrl with the new image URI
-            profilePictureUrl = imageUri.toString();
+//            // Update profilePictureUrl with the new image URI
+//            profilePictureUrl = imageUri.toString();
 
         }
     }

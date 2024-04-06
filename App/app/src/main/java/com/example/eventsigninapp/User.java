@@ -61,6 +61,7 @@ public class User implements Serializable {
 
 
     private Boolean admin;
+    private Boolean profileSet;
 
     protected User() {
         attendingEvents = new ArrayList<>();
@@ -75,6 +76,7 @@ public class User implements Serializable {
         initials = "";
         homePageUrl = "";
         admin = false;
+        profileSet = false;
     }
 
     protected User(String id) {
@@ -96,14 +98,17 @@ public class User implements Serializable {
         this.homePageUrl = homepage;
     }
 
-    protected User(String id, String first, String last, String contact,String homepage, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin) {
+    protected User(String id, String first, String last, String contact,String homepage, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin, Boolean profileSet) {
         this(id, first, last);
         this.contact = contact;
         this.homePageUrl = homepage;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
         this.admin = admin;
-    }
+        if(profileSet != null) {
+            this.profileSet = profileSet;
+        }
+}
 
 
 
@@ -269,5 +274,11 @@ public class User implements Serializable {
     }
 
     public String getHomePageUrl() {return homePageUrl;}
-    public void  setHomePageUrl(String homePageUrl) {this.homePageUrl = homePageUrl;}
+    public void setHomePageUrl(String homePageUrl) {this.homePageUrl = homePageUrl;}
+
+    public Boolean isProfileSet() {return profileSet;}
+
+    public void setProfileSet(Boolean profileSet){
+        this.profileSet = profileSet;
+    }
 }
