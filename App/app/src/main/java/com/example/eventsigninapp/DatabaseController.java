@@ -590,15 +590,13 @@ public class DatabaseController {
 
     public void findEventByQrResult(String qrResult, GetEventCallback callback) {
         db.collection("events")
-                .whereEqualTo("uuid", qrResult)
+                .whereEqualTo("eventCheckInQrCodeString", qrResult)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         Event event = document.toObject(Event.class);
                         callback.onGetEventCallback(event);
-                    } else {
-                        callback.onGetEventCallback(null);
                     }
                 });
         db.collection("events")
@@ -609,8 +607,6 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         Event event = document.toObject(Event.class);
                         callback.onGetEventCallback(event);
-                    } else {
-                        callback.onGetEventCallback(null);
                     }
                 });
     }

@@ -154,14 +154,14 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         });
 
         detailsQrCodeButton.setOnClickListener(v -> {
-            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getUuid());
+            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getEventDetailsQrCodeString());
             QRCodeFragment qrCodeFragment = new QRCodeFragment(getContext(), container, qrCodeBitmap);
             qrCodeFragment.setTitle("Event Details QR Code");
             qrCodeFragment.show();
         });
 
         checkInQrCodeButton.setOnClickListener(v -> {
-            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getEventDetailsQrCodeString());
+            Bitmap qrCodeBitmap = Organizer.generateQRCode(event.getEventCheckInQrCodeString());
             QRCodeFragment qrCodeFragment = new QRCodeFragment(getContext(), container, qrCodeBitmap);
             qrCodeFragment.setTitle("Event Check In QR Code");
             qrCodeFragment.show();

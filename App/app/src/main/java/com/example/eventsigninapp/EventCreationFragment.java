@@ -99,7 +99,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             event.setDescription(eventDescriptionText);
             event.setPosterUri(eventCreationView.getPosterUri());
 
-            Bitmap bitmap = Organizer.generateQRCode(event.getUuid());
+            Bitmap bitmap = Organizer.generateQRCode(event.getEventCheckInQrCodeString());
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
             String path = MediaStore.Images.Media.insertImage(requireContext().getContentResolver(), bitmap, "QR Code", null);
