@@ -153,12 +153,18 @@ public class EventCreationFragment extends Fragment implements EventCreationView
 
     @Override
     public void onSetCheckInClick() {
-
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Scan the QR code for event check-in");
+        options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
+        setCheckInLauncher.launch(options);
     }
 
     @Override
     public void onSetDetailsClick() {
-
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Scan the QR code for event details");
+        options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
+        setDetailsLauncher.launch(options);
     }
 
     private void subscribeToTopic(String topic) {
