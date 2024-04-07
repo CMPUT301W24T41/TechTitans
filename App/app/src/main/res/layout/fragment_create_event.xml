@@ -73,36 +73,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/createEventTitleEditText" />
 
-        <EditText
-            android:id="@+id/createEventDateEditText"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:autofillHints=""
-            android:editable="false"
-            android:ems="10"
-            android:hint="@string/date_colon"
-            android:importantForAutofill="no"
-            android:inputType="date"
-            app:layout_constraintEnd_toStartOf="@+id/guidelineVertCenter"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationPickerText" />
-
-        <EditText
-            android:id="@+id/createEventTimeEditText"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:editable="false"
-            android:ems="10"
-            android:hint="@string/time_colon"
-            android:importantForAutofill="no"
-            android:inputType="time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guidelineVertCenter"
-            app:layout_constraintTop_toTopOf="@+id/createEventDateEditText" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/createEventSetCheckInButton"
             android:layout_width="0dp"
@@ -114,7 +84,7 @@
             android:text="@string/set_check_in_qr"
             app:layout_constraintEnd_toStartOf="@+id/guidelineVertCenter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/createEventDateEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/locationPickerText" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/createEventSetDetailsButton"
@@ -134,7 +104,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:hint="Capacity (optional):"
+            android:hint="@string/capacity_optional"
             android:importantForAutofill="no"
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
@@ -155,15 +125,17 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/locationPickerButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/createEventCapacityEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/createEventCapacityEditText"
+            android:importantForAutofill="no" />
 
         <Button
             android:id="@+id/locationPickerButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="end|center_horizontal"
             android:background="@drawable/location_icon"
             android:clickable="true"
+            android:contentDescription="@string/location_icon"
             app:layout_constraintBottom_toBottomOf="@+id/locationPickerText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/locationPickerText" />
@@ -207,13 +179,5 @@
             app:srcCompat="@drawable/event_image" />
 
     </androidx.cardview.widget.CardView>
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/createEventConfirmButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createEventClickAboveTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
