@@ -71,4 +71,6 @@
     <string name="click_to_change">Click above to change image.</string>
     <string name="set_check_in_qr">Set Check-in QR</string>
     <string name="set_details_qr">Set Details QR</string>
+    <string name="capacity_optional">Capacity (optional):</string>
+    <string name="location_icon">Location icon</string>
 </resources>
