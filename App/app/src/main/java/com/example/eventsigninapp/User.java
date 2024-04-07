@@ -56,7 +56,12 @@ public class User implements Serializable {
     private String fcmToken;
     private String initials;
 
+    private String homePageUrl;
+
+
+
     private Boolean admin;
+    private Boolean profileSet;
 
     protected User() {
         attendingEvents = new ArrayList<>();
@@ -69,8 +74,10 @@ public class User implements Serializable {
         location = "";
         imgUrl = "";
         initials = "";
+        homePageUrl = "";
         fcmToken = "";
         admin = false;
+        profileSet = false;
     }
 
     protected User(String id) {
@@ -86,18 +93,23 @@ public class User implements Serializable {
         this.lastName = last;
     }
 
-    protected User(String id, String first, String last, String contact) {
+    protected User(String id, String first, String last, String contact, String homepage) {
         this(id, first, last);
         this.contact = contact;
+        this.homePageUrl = homepage;
     }
 
-    protected User(String id, String first, String last, String contact, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin) {
+    protected User(String id, String first, String last, String contact,String homepage, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin, Boolean profileSet) {
         this(id, first, last);
         this.contact = contact;
+        this.homePageUrl = homepage;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
         this.admin = admin;
-    }
+        if(profileSet != null) {
+            this.profileSet = profileSet;
+        }
+}
 
 
 
@@ -225,6 +237,10 @@ public class User implements Serializable {
     }
 
 
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
 
     /**
      * This method should be used to delete the picture of the user
@@ -258,4 +274,12 @@ public class User implements Serializable {
         return generateInitials();
     }
 
+    public String getHomePageUrl() {return homePageUrl;}
+    public void setHomePageUrl(String homePageUrl) {this.homePageUrl = homePageUrl;}
+
+    public Boolean isProfileSet() {return profileSet;}
+
+    public void setProfileSet(Boolean profileSet){
+        this.profileSet = profileSet;
+    }
 }
