@@ -235,12 +235,12 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         String userInitials = userController.getUser().getInitials();
         Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
 
-        if (userController.getUser().isProfileSet()) {
+        if (userController.getUser().isProfileSet() && newPicture != null) {
             pictureUri = newPicture;
             databaseController.uploadProfilePicture(pictureUri, userController.getUser());
             userController.getUser().setProfileSet(true);
         } else {
-
+            userController.getUser().setProfileSet(false);
             Bitmap bitmap = ((BitmapDrawable) initialsDrawable).getBitmap();
 
             // Save Bitmap to a file
