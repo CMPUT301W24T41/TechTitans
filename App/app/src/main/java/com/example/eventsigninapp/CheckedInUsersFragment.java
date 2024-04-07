@@ -13,11 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import okhttp3.internal.annotations.EverythingIsNonNull;
 
-public class CheckedInUsersFragment extends Fragment implements DatabaseController.GetCheckedInUsersCallback {
+public class CheckedInUsersFragment extends Fragment implements DatabaseController.GetCheckedInUsersCallback, DatabaseController.GetCheckedInUserCountCallback {
     private DatabaseController dbController;
     private UserArrayAdapter userAdapter;
     private TextView checkedInCount;
@@ -50,12 +51,13 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
         mapButton = view.findViewById(R.id.button_to_map);
 
         checkedInUsers = new ArrayList<>();
-        userAdapter = new UserArrayAdapter(requireContext(), checkedInUsers);
+        userAdapter = new UserArrayAdapter(requireContext(), checkedInUsers, event);
         dbController = new DatabaseController();
 
         checkedInList.setAdapter(userAdapter);
 
         dbController.getCheckedInUsersFromFirestore(event, this);
+        dbController.getCheckedInUserCountFromFirestore(event, this);
 
         backButton.setOnClickListener(l -> {
             Bundle bundle = new Bundle();
@@ -112,4 +114,20 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
             Log.e("DEBUG", String.format("Error getting checked in users: %s", e.getMessage()));
         }
     }
+
+
+    @Override
+    public void onGetCheckedInUserCountCallback(Event event, HashMap<?,?> users) {
+        try {
+            HashMap<String, String> checkedInUsersCount = (HashMap<String, String>) users;
+            for (String uuid : checkedInUsersCount.keySet()) {
+                String count = checkedInUsersCount.get(uuid);
+                event.addCheckedInCount(uuid, Integer.valueOf(count));
+            }
+
+        } catch (Exception e) {
+            Log.e("DEBUG", String.format("Error getting checked in user count: %s", e.getMessage()));
+        }
+    }
+
 }

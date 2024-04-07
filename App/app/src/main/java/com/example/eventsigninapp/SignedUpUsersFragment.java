@@ -45,7 +45,7 @@ public class SignedUpUsersFragment extends Fragment implements DatabaseControlle
         backButton = view.findViewById(R.id.back_button);
 
         signedUpUsers = new ArrayList<>();
-        userAdapter = new UserArrayAdapter(requireContext(), signedUpUsers);
+        userAdapter = new UserArrayAdapter(requireContext(), signedUpUsers, event);
         dbController = new DatabaseController();
 
         signedUpList.setAdapter(userAdapter);

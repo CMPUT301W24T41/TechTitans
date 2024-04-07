@@ -13,6 +13,7 @@ public class EventController {
         }
 
         event.addCheckedInUser(uuid);
+        event.increaseCheckedInCount(uuid);
     }
 
     public void signUpUser(String uuid) throws EventFullException, AlreadySignedUpException {

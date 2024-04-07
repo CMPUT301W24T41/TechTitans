@@ -32,6 +32,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
     private List<User> users;
     private Context context;
     private int layoutID;
+    private Event event;
 
 
     private UserController userController = new UserController();
@@ -42,10 +43,11 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
 
     private Map<String, ImageView> imageViewMap = new HashMap<>();
 
-    public UserArrayAdapter(Context context, List<User> users) {
+    public UserArrayAdapter(Context context, List<User> users, Event event) {
         super(context, 0,  users);
         this.users = users;
         this.context = context;
+        this.event = event;
     }
     public UserArrayAdapter(Context context, int layoutID, List<User> users) {
         super(context, layoutID, users);
@@ -68,10 +70,14 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
 
             TextView firstName = view.findViewById(R.id.first_name);
             TextView lastName = view.findViewById(R.id.last_name);
+            TextView userCheckedInCount = view.findViewById(R.id.checked_in_count);
 
             try {
                 firstName.setText(user.getFirstName());
                 lastName.setText(user.getLastName());
+                Integer count =  event.getCheckedInCount(user.getId());
+                userCheckedInCount.setText(String.valueOf(count));
+
             } catch (Exception e) {
                 Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
             }
