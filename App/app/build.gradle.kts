@@ -72,8 +72,8 @@ dependencies {
 
 }
 
-//secrets {
-//    propertiesFileName = "secrets.properties"
-//    defaultPropertiesFileName = "local.defaults.properties"
-//    ignoreList.add("sdk.*")
-//}
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("sdk.*")
+}
