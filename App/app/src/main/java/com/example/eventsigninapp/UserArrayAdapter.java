@@ -119,9 +119,9 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             xButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    users.get(position).deletePicture();
                     databaseController.deleteProfilePicture(user);
-                    notifyDataSetChanged();
+                    users.get(position).deletePicture();
+                    profilePic.setImageResource(R.drawable.ic_default_profile);
                 }
             });
 
