@@ -19,12 +19,11 @@ import java.util.ArrayList;
 public class AdminEventListFragment extends Fragment implements DatabaseController.GetAllEventsCallback {
 
     // Member variables
-    DatabaseController databaseController = new DatabaseController();
-    ArrayList<Event> events;
-    ListView eventList;
-    AdminEventArrayAdapter eventsArrayAdapter;
-    TextView title;
-    EventDetailsFragment frag;
+    private DatabaseController databaseController = new DatabaseController();
+    private ArrayList<Event> events;
+    private ListView eventList;
+    private AdminEventArrayAdapter eventsArrayAdapter;
+    private TextView title;
 
     // Default constructor
     public AdminEventListFragment(){};

@@ -101,16 +101,17 @@ public class UserControllerTest {
 
     @Test
     public void testEditProfile() {
-        User mockUser = new User("123456", "John", "Doe", "123456");
+        User mockUser = new User("123456", "John", "Doe","another.com", "123456");
 
 
         userController.setUser(mockUser);
 
-        userController.editProfile("Jane", "Smith", "789012", Uri.parse("images/prof"));
+        userController.editProfile("Jane", "Smith", "789012", "test.com", Uri.parse("images/prof"));
 
         assertEquals("Jane", userController.getUser().getFirstName());
         assertEquals("Smith", userController.getUser().getLastName());
         assertEquals("789012", userController.getUser().getContact());
+        assertEquals("test.com", userController.getUser().getHomePageUrl());
         assertEquals("images/prof", userController.getUser().getPicture().toString());
     }
 

@@ -18,8 +18,8 @@ public class Event implements Serializable {
 
     // The capacity of the event, 0 if uncapped
     private int capacity;
-    private final Collection<String> signedUpUsersUUIDs; // collection of signed up users
-    private final Collection<String> checkedInUsersUUIDs; // collection of checked in users
+    private Collection<String> signedUpUsersUUIDs; // collection of signed up users
+    private Collection<String> checkedInUsersUUIDs; // collection of checked in users
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
@@ -27,7 +27,6 @@ public class Event implements Serializable {
     private final Date date;
     private String creatorUUID;
     private String description;
-
     private String eventCheckInQrCodeString;
     private String eventDetailsQrCodeString;
 
@@ -51,6 +50,15 @@ public class Event implements Serializable {
 
         this.creatorUUID = creatorUUID;
     }
+
+    public Event(String uuid, String name, String creatorUUID, int capacity) {
+        this();
+        this.uuid = uuid;
+        this.name = name;
+        this.creatorUUID = creatorUUID;
+        this.capacity = capacity;
+    }
+
 
     public String getCreatorUUID() {
         return creatorUUID;
@@ -253,6 +261,14 @@ public class Event implements Serializable {
 
     public boolean isSameEvent(Event event) {
         return this.getUuid().equals(event.getUuid());
+    }
+
+    public void setCheckedInUsersUUIDs(ArrayList<String> checkedInUsers) {
+        this.checkedInUsersUUIDs = checkedInUsers;
+    }
+
+    public void setSignedUpUsersUUIDs(ArrayList<String> signedUpUsers) {
+        this.signedUpUsersUUIDs = signedUpUsers;
     }
 
     public String getEventCheckInQrCodeString() {

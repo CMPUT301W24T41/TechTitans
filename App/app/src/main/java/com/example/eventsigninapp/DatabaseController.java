@@ -1,10 +1,15 @@
 package com.example.eventsigninapp;
 
+import static androidx.core.app.ActivityCompat.recreate;
+
+import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -24,9 +29,13 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 
 public class DatabaseController {
@@ -63,8 +72,10 @@ public class DatabaseController {
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
         userData.put("fcmToken", user.getFcmToken());
+        userData.put("homepage", user.getHomePageUrl());
         // this checks if the user is an admin
         userData.put("admin", user.isAdmin());
+        userData.put("profileSet", user.isProfileSet());
 
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
@@ -108,9 +119,11 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("homepage"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents"),
-                                document.getBoolean("admin")
+                                document.getBoolean("admin"),
+                                document.getBoolean("profileSet")
                         );
                         userController.setUser(pulledUser);
                         this.updateWithProfPictureFromWeb(pulledUser);
@@ -151,9 +164,11 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("homepage"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents"),
-                                document.getBoolean("admin")
+                                document.getBoolean("admin"),
+                                document.getBoolean("profileSet")
 
                         );
                         callback.onCallback(pulledUser);
@@ -178,13 +193,35 @@ public class DatabaseController {
         // Delete the profile picture from Firebase Storage
         profilePicRef.delete()
                 .addOnSuccessListener(aVoid -> {
-                    // Upon successful deletion, update the user's picture URI
+                    // Upon successful deletion, update the event's picture URI
                     event.setPosterUri(null);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Database", "deleteEventPicture: Error, failure to delete image", e);
                 });
     }
+
+
+
+    /**
+     * This method deletes the given picture uri from the storage for the given eventID
+     *
+     * @param eventID the eventID's picture is being deleted
+     */
+    public void deleteEventPicture(String eventID) {
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("event_posters/" + eventID);
+
+        // Delete the profile picture from Firebase Storage
+        profilePicRef.delete()
+                .addOnSuccessListener(aVoid -> {
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Database", "deleteEventPicture: Error, failure to delete image", e);
+                });
+    }
+
 
 
     /**
@@ -214,7 +251,7 @@ public class DatabaseController {
         path = path.substring(path.indexOf("/o/") + 3);
 
         StorageReference profilePicRef = storageRef.child(path);
-        Log.d("deldel'", "deleteImageFromUri: " + profilePicRef);
+//        Log.d("deldel'", "deleteImageFromUri: " + profilePicRef);
         // Delete the profile picture from Firebase Storage
         profilePicRef.delete()
                 .addOnSuccessListener(aVoid -> {
@@ -222,7 +259,7 @@ public class DatabaseController {
                     Log.d("deldel", "deleteImageFromUri: Successfully deleted");
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("deldel", "deleteEventPicture: Error, failure to delete image", e);
+                    Log.e("deldel", "deleteImageFromUri: Error, failure to delete image", e);
                 });
     }
 
@@ -297,6 +334,21 @@ public class DatabaseController {
     }
 
 
+    /**
+     * fetches the profile picture of other users on the platform using a callback,
+     * this version is used to help load into the correct ImageView for list items
+     *
+     * @param userID   the id of the user's picture to fetch
+     * @param imageView ImageView the image view upon successful acquiring image from storage
+     * @param callback due to the asynchronous nature of firestore, to fetch the user properly a callback is needed
+     *                 *                  to access a user fetched from the database, use the following code:
+     *                 *                  userIDController.getOtherUserProfilePicture(userID, new UserIDController.userCallback() {
+     *                 *                  public void onCallback(Uri picture,ImageView imageView ) {
+     *                 *
+     *                 *                  }
+     *                 *                  });
+     */
+
     public void getUserProfilePicture(String userID, ImageView imageView, ImageUriCallback callback) {
         StorageReference storageRef = storage.getReference();
         StorageReference profilePicRef = storageRef.child("profile_pictures/" + userID);
@@ -353,6 +405,29 @@ public class DatabaseController {
     }
 
 
+
+    /**
+     * Deletes the information of the given event
+     *
+     * @param eventID the eventID to be deleted
+     */
+
+    public void deleteEventInfo(String eventID) {
+        db.collection("events").document(eventID).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Handle successful deletion
+                        Log.d("Database", "event document deleted successfully");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors
+                    Log.e("Database", "Error deleting event document", e);
+                });
+    }
+
+
     /**
      * Deletes both the users information and their user profile picture
      *
@@ -360,21 +435,60 @@ public class DatabaseController {
      */
 
     public void deleteUser(User user) {
+
+        // delete all hosting events of the user
+
+        ArrayList<String> hostingEvents =  user.getHostingEvents();
+        if(hostingEvents != null) {
+            for (int i = 0; i < hostingEvents.size(); i++) {
+                deleteEvent(hostingEvents.get(i));
+            }
+        }
+        // delete all instances of a user attending an event
+
+        ArrayList<String> attendingEvents = user.getAttendingEvents();
+
+        if(attendingEvents != null) {
+            for (int i = 0; i < attendingEvents.size(); i++) {
+                removeUserFromEvent(user.getId(), attendingEvents.get(i));
+            }
+        }
+
         deleteUserInfo(user);
         deleteProfilePicture(user);
+
     }
 
 
     /**
      * Deletes both the event information and the event poster
      *
-     * @param event the user to be deleted
+     * @param event the event to be deleted
      */
     public void deleteEvent(Event event) {
+        // delete each case where a user is signed up for this event
+        ArrayList<String> signedUpUser = new ArrayList<>(event.getSignedUpUsersUUIDs());
+        for(int i = 0; i < signedUpUser.size(); i++){
+            deleteAttendingEvent(signedUpUser.get(i), event.getUuid());
+        }
+        deleteHostingEvent(event.getUuid(), event.getCreatorUUID());
+        // Remove event from list and notify adapter
         deleteEventInfo(event);
         deleteEventPicture(event);
+
+        deleteImageInFolder("event_check_in_qr_codes", event.getUuid());
+        deleteImageInFolder("event_description_qr_codes", event.getUuid());
     }
 
+    /**
+         * Deletes both the event information and the event poster
+     *
+             * @param eventID the event's ID for event to be deleted
+     */
+    public void deleteEvent(String eventID) {
+        deleteEventInfo(eventID);
+        deleteEventPicture(eventID);
+    }
     /**
      * This function retrieves users that signed up to an event from the database.
      *
@@ -417,6 +531,8 @@ public class DatabaseController {
     public void removeUserFromEvent(String userID, String eventID) {
         DocumentReference eventRef = db.collection("events").document(eventID);
         eventRef.update("signedUpUsers", FieldValue.arrayRemove(userID));
+        eventRef.update("checkedInUsers", FieldValue.arrayRemove(userID));
+
     }
 
     /**
@@ -611,11 +727,6 @@ public class DatabaseController {
                 });
     }
 
-    /**
-     * This function gets all the events from the database.
-     *
-     * @param callback callback to add the events to the list of events
-     */
     public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
         CollectionReference events = db.collection("events");
 
@@ -624,17 +735,40 @@ public class DatabaseController {
                     if (task.isSuccessful()) {
                         ArrayList<Event> eventList = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                            eventList.add(doc.toObject(Event.class));
+                            String uuid = doc.getString("uuid");
+                            String name = doc.getString("name");
+                            String creatorUUID = doc.getString("creatorUUID");
+                            int capacity = doc.getLong("capacity").intValue();
+                            String description = doc.getString("description");
+                            String eventDetailsQrCodeString = doc.getString("eventDetailsQrCodeString");
+
+                            // Retrieve the two lists
+                            ArrayList<String> checkedInUsers = (ArrayList<String>) doc.get("checkedInUsers");
+                            ArrayList<String> signedUpUsers = (ArrayList<String>) doc.get("signedUpUsers");
+
+
+                            // Create Event object using constructor
+                            Event event = new Event(uuid, name, creatorUUID, capacity);
+                            event.setDescription(description);
+                            event.setEventDetailsQrCodeString(eventDetailsQrCodeString);
+                            // Set other fields as needed
+                            event.setCheckedInUsersUUIDs(checkedInUsers);
+                            event.setSignedUpUsersUUIDs(signedUpUsers);
+                            Log.d("displayd", "getAllEventsFromFirestore: " + event.getCheckedInUsersUUIDs());
+
+                            // Add Event object to the list
+                            eventList.add(event);
                         }
                         callback.onGetAllEventsCallback(eventList);
                     } else {
-                        Log.e("DEBUG", "Error retrieving events");
+                        Log.e("DEBUG", "Error retrieving events", task.getException());
                     }
                 });
     }
 
 
-    public void getAllUsersFromFirestore(GetAllUserCallback callback) {
+
+    public void getAllUsersFromFirestore(GetAllUsersCallback callback) {
         CollectionReference users = db.collection("users");
         users.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -647,9 +781,11 @@ public class DatabaseController {
                                         doc.getString("firstName"),
                                         doc.getString("lastName"),
                                         doc.getString("contact"),
+                                        doc.getString("homepage"),
                                         (ArrayList<String>) doc.get("attendingEvents"),
                                         (ArrayList<String>) doc.get("hostingEvents"),
-                                        doc.getBoolean("admin")
+                                        doc.getBoolean("admin"),
+                                        doc.getBoolean("profileSet")
                                 );
 
                                 Log.d("userCreated", "onComplete: New User created" + doc.getString("id"));
@@ -851,13 +987,24 @@ public class DatabaseController {
 
     }
 
+    public void deleteAttendingEvent(String user, String eventID) {
+        DocumentReference userRef = db.collection("users").document(user);
+        userRef.update("attendingEvents", FieldValue.arrayRemove(eventID));
+    }
+
+    public void deleteHostingEvent(String uuid, String creatorUUID) {
+        DocumentReference userRef = db.collection("users").document(creatorUUID);
+        userRef.update("hostingEvents", FieldValue.arrayRemove(uuid));
+
+    }
+
 
     public interface GetAllImagesCallback {
         void onGetAllImagesCallback(ArrayList<Uri> allImages);
     }
 
 
-    public interface GetAllUserCallback {
+    public interface GetAllUsersCallback {
         void onGetAllUserCallback(User user);
     }
 
@@ -873,6 +1020,7 @@ public class DatabaseController {
     public interface GetCheckInLocationCallback {
         void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
     }
+
 
     public void addFCMTokenToUser(String userID, String token){
         DocumentReference eventRef = db.collection("users").document(userID);
@@ -891,6 +1039,7 @@ public class DatabaseController {
                 });
     }
     public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback){
+
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
         // Fetch the event document
         eventRef.get().addOnCompleteListener(task -> {
@@ -915,6 +1064,59 @@ public class DatabaseController {
             }
         });
     }
+
+    /**
+     *  Adds an admin promotion code to remote
+     * @param adminCode code to be added
+     */
+
+    public void pushAdminCode(String adminCode){
+        DocumentReference adminDoc = db.collection("admin").document(adminCode);
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", adminCode);
+        adminDoc.set(data, SetOptions.merge());
+
+    }
+
+    /**
+     * checks if the admincode given exists on remote, if it does delete the admin code and make the user an admin
+     * , otherwise does nothing
+     * @param adminCode the adminCode to be checked
+     * @param user the user to be upgraded if successful
+     */
+    public void updateAdmin(String adminCode, User user, Context context){
+        DocumentReference adminDoc = db.collection("admin").document(adminCode);
+        adminDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.get("code") != null) {
+                    adminDoc.delete();
+                    user.setAdmin(true);
+                    putUserToFirestore(user);
+                    Toast.makeText(context, "promoted to admin!", Toast.LENGTH_SHORT).show();
+                    recreate((Activity) context);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // do nothing
+            }
+        });
+
+
+        }
+
+
+    public void deleteImageInFolder(String folderName, String imageName) {
+        // Create a reference to the file to delete
+        StorageReference imageRef = storage.getReference().child(folderName).child(imageName);
+
+        // Delete the file
+        imageRef.delete();
+    }
+
+
 
 
 
