@@ -15,6 +15,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +51,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     TextView firstName;
     TextView lastName;
     TextView contact;
+    TextView homepage;
     ImageView profPic;
 
     Uri profilePictureUri = userController.getUser().getPicture();
@@ -72,12 +75,13 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         firstName = rootView.findViewById(R.id.user_first_name);
         lastName = rootView.findViewById(R.id.user_last_name);
         contact = rootView.findViewById(R.id.user_number);
+        homepage = rootView.findViewById(R.id.user_home_page);
         profPic = rootView.findViewById(R.id.profilePicture);
 
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
-
+        homepage.setText(userController.getUser().getHomePageUrl());
 
         //profPic.setImageDrawable(initialsDrawable);
         updateProfilePicture(profilePictureUri);
@@ -126,6 +130,8 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             }
         });
 
+
+
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +152,10 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
             }
         });
 
+        // opens the url when the homepage is clicked
+        homepage.setMovementMethod(LinkMovementMethod.getInstance());
+
+
         // this supposed to delete your profile image
         Button deletePictureButton = rootView.findViewById(R.id.deleteButton);
         deletePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +165,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
                     // Call the deleteProfilePicture() method of your UserController
                     userController.deleteProfilePicture(getContext());
                     databaseController.deleteProfilePicture(userController.getUser());
+                    userController.getUser().setProfileSet(false);
                     // update your UI to reflect the deletion of the picture
                     updateProfilePicture(null);
 
@@ -186,8 +197,13 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
-            databaseController.uploadProfilePicture(imageUri, userController.getUser());
+
             databaseController.putUserToFirestore(userController.getUser());
+
+            if (imageUri != null) {
+                Picasso.get().load(imageUri).into(profPic);
+                userController.getUser().setProfileSet(true);
+            }
             // Update profilePictureUrl with the new URI
             updateProfilePicture(imageUri);
 
@@ -196,10 +212,12 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
 
     @Override
-    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, Uri newPicture) {
+    public void onProfileUpdate(String newFirstName, String newLastName, String newContact, String newHomepage, Uri newPicture) {
         firstName.setText(newFirstName);
         lastName.setText(newLastName);
         contact.setText(newContact);
+        homepage.setText(newHomepage);
+
 
         updateProfilePicture(newPicture);
 
@@ -213,14 +231,16 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     private void updateProfilePicture(Uri newPicture) {
         // Update profile picture
         Picasso picasso = Picasso.get();
-        Uri pictureUri;
+        Uri pictureUri = Uri.EMPTY;;
         String userInitials = userController.getUser().getInitials();
         Drawable initialsDrawable = InitialsDrawableGenerator.generateInitialsDrawable(userInitials);
 
-        if (newPicture != null) {
+        if (userController.getUser().isProfileSet()) {
             pictureUri = newPicture;
+            databaseController.uploadProfilePicture(pictureUri, userController.getUser());
+            userController.getUser().setProfileSet(true);
         } else {
-            pictureUri = Uri.EMPTY;
+
             Bitmap bitmap = ((BitmapDrawable) initialsDrawable).getBitmap();
 
             // Save Bitmap to a file
@@ -231,13 +251,16 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
                 fos.flush();
                 fos.close();
                 pictureUri = Uri.fromFile(file);
-                // upload the image, so it persits through multiple runs and on all menus
                 databaseController.uploadProfilePicture(pictureUri, userController.getUser());
+
+                pictureUri = Uri.EMPTY;
+                // upload the image, so it persits through multiple runs and on all menus
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
 
 
         // Load the pictureUri using Picasso

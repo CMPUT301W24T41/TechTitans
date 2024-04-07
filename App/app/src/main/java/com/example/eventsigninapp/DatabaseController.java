@@ -72,8 +72,10 @@ public class DatabaseController {
         userData.put("attendingEvents", user.getAttendingEvents());
         userData.put("hostingEvents", user.getHostingEvents());
         userData.put("fcmToken", user.getFcmToken());
+        userData.put("homepage", user.getHomePageUrl());
         // this checks if the user is an admin
         userData.put("admin", user.isAdmin());
+        userData.put("profileSet", user.isProfileSet());
 
 
         DocumentReference userDocument = db.collection("users").document(user.getId());
@@ -117,9 +119,11 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("homepage"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents"),
-                                document.getBoolean("admin")
+                                document.getBoolean("admin"),
+                                document.getBoolean("profileSet")
                         );
                         userController.setUser(pulledUser);
                         this.updateWithProfPictureFromWeb(pulledUser);
@@ -160,9 +164,11 @@ public class DatabaseController {
                                 document.getString("firstName"),
                                 document.getString("lastName"),
                                 document.getString("contact"),
+                                document.getString("homepage"),
                                 (ArrayList<String>) document.get("attendingEvents"),
                                 (ArrayList<String>) document.get("hostingEvents"),
-                                document.getBoolean("admin")
+                                document.getBoolean("admin"),
+                                document.getBoolean("profileSet")
 
                         );
                         callback.onCallback(pulledUser);
@@ -783,9 +789,11 @@ public class DatabaseController {
                                         doc.getString("firstName"),
                                         doc.getString("lastName"),
                                         doc.getString("contact"),
+                                        doc.getString("homepage"),
                                         (ArrayList<String>) doc.get("attendingEvents"),
                                         (ArrayList<String>) doc.get("hostingEvents"),
-                                        doc.getBoolean("admin")
+                                        doc.getBoolean("admin"),
+                                        doc.getBoolean("profileSet")
                                 );
 
                                 Log.d("userCreated", "onComplete: New User created" + doc.getString("id"));
