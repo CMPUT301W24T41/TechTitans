@@ -15,8 +15,6 @@ public class EventCreationView {
     private final EditText eventTitle;
     private final EditText eventDescription;
     private final EditText eventCapacity;
-    private final EditText eventDate;
-    private final EditText eventTime;
     private final ImageView eventPoster;
     private final Button locationPickerButton;
     private final EditText locationPickerText;
@@ -33,8 +31,6 @@ public class EventCreationView {
         eventDescription = rootView.findViewById(R.id.createEventDescEditText);
         eventPoster = rootView.findViewById(R.id.createEventImageView);
         eventCapacity = rootView.findViewById(R.id.createEventCapacityEditText);
-        eventDate = rootView.findViewById(R.id.createEventDateEditText);
-        eventTime = rootView.findViewById(R.id.createEventTimeEditText);
         //captureImage = rootView.findViewById(R.id.imageView);
         setCheckInButton = rootView.findViewById(R.id.createEventSetCheckInButton);
         setDetailsButton = rootView.findViewById(R.id.createEventSetDetailsButton);
