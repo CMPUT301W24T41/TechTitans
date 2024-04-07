@@ -6,10 +6,13 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
@@ -17,12 +20,20 @@ import static com.google.common.reflect.Reflection.getPackageName;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.greaterThan;
 
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridView;
 
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.NoMatchingViewException;
+import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -33,6 +44,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -64,7 +76,7 @@ public class AdminIntentTest {
         databaseController.pushEventToFirestore(dummyEvent);
         Uri blankImageUri = Uri.parse("android.resource://com.example." + PACKAGE_NAME + R.drawable.logo_placeholder);
         Log.d("intentTest", "setUp: " + blankImageUri);
-        databaseController.putEventPosterToFirestore("00002_ImageGridTest", blankImageUri);
+        databaseController.uploadProfilePicture(blankImageUri, dummyUser);
 
     }
 
@@ -75,6 +87,41 @@ public class AdminIntentTest {
         Intents.release();
     }
 
+
+    @Test
+    public void testDeleteImage() throws InterruptedException{
+
+        onView(withText("ALL IMAGES")).check(matches(isDisplayed()));
+        onView(withText("ALL IMAGES")).perform(click());
+        Thread.sleep(5000);
+
+
+        final int[] childCount = {0};
+        onView(withId(R.id.allImagesGrid)).check(matches(isDisplayed())).check(new ViewAssertion() {
+            @Override
+            public void check(View view, NoMatchingViewException noViewFoundException) {
+                if (view instanceof ViewGroup) {
+                    childCount[0] = ((ViewGroup) view).getChildCount();
+                }
+            }
+        });
+
+
+        Thread.sleep(5000);
+
+        onData(anything())
+                .inAdapterView(withId(R.id.allImagesGrid))
+                .atPosition(0)
+                .onChildView(withId(R.id.gridImageXButtons))
+                .perform(click());
+
+        Thread.sleep(5000);
+
+
+        onView(withId(R.id.allImagesGrid))
+                .check(matches(hasChildCount(childCount[0] - 1)));
+
+    }
 
 
     @Test
@@ -142,19 +189,34 @@ public class AdminIntentTest {
 
     }
 
-    @Test
-    public void testDeleteImage() throws InterruptedException{
 
-    }
 
     @Test
     public void testGenerateCode() throws InterruptedException{
 
+        onView(withText("ADMIN")).check(matches(isDisplayed()));
+        onView(withText("ADMIN")).perform(click());
+        Thread.sleep(5000);
+
+
+        onView(withText("No code Generated Yet")).check(matches(isDisplayed()));
+
+        onView(withText("GENERATE")).check(matches(isDisplayed()));
+        onView(withText("GENERATE")).perform(click());
+
+
+        onView(withText("No code Generated Yet")).check(doesNotExist());
+
+
     }
 
 
     @Test
-    public void testReturn() throws InterruptedException{
+    public void testReturn(){
+        onView(withText("RETURN")).perform(click());
+
+        // Check if the main activity is started
+        intended(hasComponent(MainActivity.class.getName()));
 
     }
 

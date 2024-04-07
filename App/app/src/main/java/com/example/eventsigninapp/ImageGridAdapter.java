@@ -47,6 +47,7 @@ public class ImageGridAdapter extends ArrayAdapter<Uri> {
         ImageView xButton = gridItemView.findViewById(R.id.gridImageXButtons);
         Log.d("success found", "getView: loading:" + imageUri.get(position));
         Picasso.get().load(imageUri.get(position)).into(imageView);
+        imageView.setTag(imageUri.get(position).toString());
 
 
         xButton.setOnClickListener(new View.OnClickListener(){
