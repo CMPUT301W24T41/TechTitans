@@ -119,10 +119,11 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
     @Override
     public void onGetCheckedInUserCountCallback(Event event, HashMap<?,?> users) {
         try {
-            HashMap<String, String> checkedInUsersCount = (HashMap<String, String>) users;
+            HashMap<String, Long> checkedInUsersCount = (HashMap<String, Long>) users;
             for (String uuid : checkedInUsersCount.keySet()) {
-                String count = checkedInUsersCount.get(uuid);
-                event.addCheckedInCount(uuid, Integer.valueOf(count));
+                Long value = checkedInUsersCount.get(uuid);
+                Integer count = (int) (long) value;
+                event.addCheckedInCount(uuid, count);
             }
 
         } catch (Exception e) {
