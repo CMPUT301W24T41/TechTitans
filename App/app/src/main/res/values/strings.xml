@@ -8,7 +8,9 @@
     <string name="host_event">Host Event</string>
     <string name="confirm">Confirm</string>
     <string name="attendee_limit">Attendee Limit - optional</string>
-    <string name="pick_location">Add event location - optional</string>
+
+    <string name="pick_location">Add event location (optional)</string>
+
     <string name="upload_poster_text">Click on image to upload a Poster</string>
     <string name="description_of_event">Event Description:</string>
     <string name="title_of_even">Title of Event:</string>
@@ -61,5 +63,6 @@
     <string name="default_notification_channel_id">com.example.eventsigninapp</string>
     <string name="check_in_qr_code">Check-In QR Code</string>
     <string name="event_description_qr_code">Event Description QR Code</string>
+    <string name="see_location_text">See this event on a map</string>
     <string name="enable_location_tracking_prompt">Enable location tracking for this event</string>
 </resources>
