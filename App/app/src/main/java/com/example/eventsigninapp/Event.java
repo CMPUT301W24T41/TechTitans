@@ -162,7 +162,7 @@ public class Event implements Serializable {
             checkedInEventCount.put(uuid, count + 1);
         }
         else {
-            checkedInEventCount.put(uuid, 3);
+            checkedInEventCount.put(uuid, 1);
         }
     }
 

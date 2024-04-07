@@ -631,11 +631,11 @@ public class DatabaseController {
                         String description = document.getString("description");
 
                         userCheckedInCount[0] = (HashMap<?, ?>) document.get("checkedInEventCount");
-                        HashMap<String, String> checkedInUsersCountStr = (HashMap<String, String>) userCheckedInCount[0];
+                        HashMap<String, Long> checkedInUsersCountStr = (HashMap<String, Long>) userCheckedInCount[0];
 
                         // Setting the event
                         Event event = new Event();
-                        event.setCreatorUUID(uuid);
+                        event.setUuid(uuid);
                         event.setName(name);
                         event.setCreatorUUID(creatorUUID);
                         event.setCapacity(capacity);
@@ -650,8 +650,10 @@ public class DatabaseController {
                         }
                         event.setDescription(description);
                         for (String user : checkedInUsersCountStr.keySet()) {
-                            String count = checkedInUsersCountStr.get(user);
-                            event.addCheckedInCount(user, Integer.valueOf(count));
+                            // Firebase stores numbers (checked in count) as Long, need to convert to Integer
+                            Long value = checkedInUsersCountStr.get(user);
+                            Integer count = (int) (long) value;
+                            event.addCheckedInCount(user, count);
                         }
 
 
