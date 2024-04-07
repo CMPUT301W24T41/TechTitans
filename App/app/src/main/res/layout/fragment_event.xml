@@ -125,11 +125,11 @@
                 android:id="@+id/imageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/upload_poster"
-                android:textSize="20sp"
+                android:layout_marginTop="1dp"
                 android:background="@color/blue"
                 android:clickable="true"
-                android:layout_marginTop="1dp"/>
+                android:text="@string/upload_poster"
+                android:textSize="20sp" />
         </androidx.cardview.widget.CardView>
 
 

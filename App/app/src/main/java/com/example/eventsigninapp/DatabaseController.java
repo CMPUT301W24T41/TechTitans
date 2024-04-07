@@ -706,17 +706,13 @@ public class DatabaseController {
 
     public void findEventByQrResult(String qrResult, GetEventCallback callback) {
         db.collection("events")
-                .whereEqualTo("uuid", qrResult)
+                .whereEqualTo("eventCheckInQrCodeString", qrResult)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         Event event = document.toObject(Event.class);
                         callback.onGetEventCallback(event);
-                        Log.e("CHECKIN", String.format("Event %s successfully retrieved", event.getName()));
-                    } else {
-                        callback.onGetEventCallback(null);
-                        Log.e("CHECKIN", "Failed to retrieve event");
                     }
                 });
         db.collection("events")
@@ -727,10 +723,6 @@ public class DatabaseController {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         Event event = document.toObject(Event.class);
                         callback.onGetEventCallback(event);
-                        Log.e("CHECKIN", String.format("Event %s details QR code successfully retrieved", event.getName()));
-                    } else {
-                        Log.e("CHECKIN", "Failed to retrieve event details fragment");
-                        callback.onGetEventCallback(null);
                     }
                 });
     }
