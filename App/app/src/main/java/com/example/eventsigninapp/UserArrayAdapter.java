@@ -63,7 +63,6 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
         if (layoutID == 0) {
             view = LayoutInflater.from(context).inflate(R.layout.attendee_list_item, parent, false);
 
-
             Log.e("DEBUG", "User adapter called");
 
             User user = users.get(position);
@@ -72,16 +71,20 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             TextView lastName = view.findViewById(R.id.last_name);
             TextView userCheckedInCount = view.findViewById(R.id.checked_in_count);
 
-            try {
+            if (Objects.equals(user.getFirstName(), "") && Objects.equals(user.getLastName(), "")) {
+                firstName.setText(user.getId());
+                lastName.setText("");
+                Integer count =  event.getCheckedInCount(user.getId());
+                userCheckedInCount.setText(String.valueOf(count));
+            } else {
                 firstName.setText(user.getFirstName());
                 lastName.setText(user.getLastName());
                 Integer count =  event.getCheckedInCount(user.getId());
                 userCheckedInCount.setText(String.valueOf(count));
 
-            } catch (Exception e) {
-                Log.e("DEBUG", String.format("Error: %s", e.getMessage()));
-            }
-        } else if (layoutID == R.layout.admin_user_list_item) {
+                }
+        }
+        else if (layoutID == R.layout.admin_user_list_item) {
             User user = users.get(position);
 
             view = LayoutInflater.from(context).inflate(layoutID, parent, false);
@@ -103,13 +106,17 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
 
 
             databaseController.getUserProfilePicture(user.getId(), profilePic, this);
-
-            if(Objects.equals(user.getId(), userController.getUser().getId())) {
-                deleteButton.setVisibility(View.INVISIBLE);
+            if(user.isAdmin() != null){
+                if(user.isAdmin()) {
+                    deleteButton.setVisibility(View.INVISIBLE);
+                }
             }
+
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     users.remove(user);
                     notifyDataSetChanged();
                     databaseController.deleteUser(user);
@@ -120,9 +127,9 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
             xButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    users.get(position).deletePicture();
                     databaseController.deleteProfilePicture(user);
-                    notifyDataSetChanged();
+                    users.get(position).deletePicture();
+                    profilePic.setImageResource(R.drawable.ic_default_profile);
                 }
             });
 

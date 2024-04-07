@@ -10,6 +10,8 @@
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/user"
+        android:clipToOutline="true"
+        android:background="@drawable/rounded_corner_profile_bg"
         android:layout_marginBottom="16dp"/>
 
     <TextView
@@ -43,13 +45,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editLastName"
         android:layout_marginTop="8dp"
-        android:hint="Contact Information" />
+        android:hint="Contact Information (Phone Number)"
+        android:maxLength="10"/>
+
+    <EditText
+        android:id="@+id/editURL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editContact"
+        android:layout_marginTop="8dp"
+        android:hint="Homepage URL" />
 
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editContact"
+        android:layout_below="@id/editURL"
         android:layout_marginTop="16dp"
         android:text="Save" />
 </RelativeLayout>

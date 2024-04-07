@@ -1,7 +1,13 @@
 package com.example.eventsigninapp;
 
 
+import android.location.Location;
 import android.net.Uri;
+import android.util.Log;
+
+
+import com.google.firebase.firestore.GeoPoint;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,15 +24,18 @@ public class Event implements Serializable {
 
     // The capacity of the event, 0 if uncapped
     private int capacity;
-    private final Collection<String> signedUpUsersUUIDs; // collection of signed up users
-    private final Collection<String> checkedInUsersUUIDs; // collection of checked in users
+
+    private final ArrayList<String> signedUpUsersUUIDs; // collection of signed up users
+    private final ArrayList<String> checkedInUsersUUIDs; // collection of checked in users
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
-    private Object location;
+    private GeoPoint location;
+
     private final Date date;
     private String creatorUUID;
     private String description;
+    private String eventCheckInQrCodeString;
     private String eventDetailsQrCodeString;
     private HashMap<String, Integer> checkedInEventCount;
 
@@ -38,6 +47,7 @@ public class Event implements Serializable {
         signedUpUsersUUIDs = new ArrayList<String>();
         posterUri = null;
         checkInQRCodeUri = null;
+        eventCheckInQrCodeString = UUID.randomUUID().toString();
         eventDetailsQrCodeString = UUID.randomUUID().toString();
         location = null;
         date = null;
@@ -50,6 +60,15 @@ public class Event implements Serializable {
 
         this.creatorUUID = creatorUUID;
     }
+
+    public Event(String uuid, String name, String creatorUUID, int capacity) {
+        this();
+        this.uuid = uuid;
+        this.name = name;
+        this.creatorUUID = creatorUUID;
+        this.capacity = capacity;
+    }
+
 
     public String getCreatorUUID() {
         return creatorUUID;
@@ -87,11 +106,19 @@ public class Event implements Serializable {
         this.name = name;
     }
 
+
+    public GeoPoint getLocation() {
+
+        return this.location;
+    }
+
     /**
      * This method should be used to set the location of the event
      * @param location the name of the event
      */
-    public void setLocation(String location) {
+
+    public void setLocation(GeoPoint location) {
+
         this.location = location;
     }
 
@@ -206,6 +233,7 @@ public class Event implements Serializable {
         eventMap.put("capacity", capacity);
         eventMap.put("date", date);
         eventMap.put("location", location);
+        eventMap.put("eventCheckInQrCodeString", eventCheckInQrCodeString);
         eventMap.put("eventDetailsQrCodeString", eventDetailsQrCodeString);
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
@@ -270,5 +298,21 @@ public class Event implements Serializable {
 
     public boolean isSameEvent(Event event) {
         return this.getUuid().equals(event.getUuid());
+    }
+
+    public void setCheckedInUsersUUIDs(ArrayList<String> checkedInUsers) {
+        this.checkedInUsersUUIDs = checkedInUsers;
+    }
+
+    public void setSignedUpUsersUUIDs(ArrayList<String> signedUpUsers) {
+        this.signedUpUsersUUIDs = signedUpUsers;
+    }
+
+    public String getEventCheckInQrCodeString() {
+        return eventCheckInQrCodeString;
+    }
+
+    public void setEventCheckInQrCodeString(String eventCheckInQrCodeString) {
+        this.eventCheckInQrCodeString = eventCheckInQrCodeString;
     }
 }

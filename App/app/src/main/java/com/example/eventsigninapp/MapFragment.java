@@ -29,6 +29,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
     ArrayList<Location> locations;
     Event event;
     GoogleMap map;
+    final int ZOOM_LEVEL = 15;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
+        dbController.getCheckInLocationsFromFirestore(event, this);
+
         backButton.setOnClickListener(l -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable("event", event);
@@ -71,8 +75,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
                     .commit();
         });
 
-        addMarkersToMap();
-
         return view;
     }
 
@@ -82,7 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
             LatLng point = new LatLng(loc.getLatitude(), loc.getLongitude());
             map.addMarker(new MarkerOptions().position(point));
         }
-        map.moveCamera(CameraUpdateFactory.newLatLng(center));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, ZOOM_LEVEL));
     }
 
     private LatLng getAvgLatLng() {
@@ -92,7 +94,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
             totalLng += loc.getLongitude();
         }
 
+        if (totalLat == 0 || totalLng == 0) {
+            return new LatLng(0, 0);
+        }
+
         return new LatLng(totalLat / locations.size(), totalLng / locations.size());
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
     }
 
     @Override
@@ -104,10 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Databas
             loc.setLongitude(gPoint.getLongitude());
             locations.add(loc);
         }
+        addMarkersToMap();
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
-    }
 }

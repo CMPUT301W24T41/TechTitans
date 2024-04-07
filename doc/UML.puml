@@ -259,6 +259,8 @@ class User {
     -ArrayList<String> hostingEvents
     -Uri picture
     -String imgUrl
+    -Boolean admin
+    -Boolean profileSet
 }
 
 class UserArrayAdapter {
@@ -303,11 +305,80 @@ class AdminActivty{
     -UserController userController
     #onCreate(savedInstanceState: Bundle)
     }
+AdminActivty "0..1" o-- "1" DatabaseController
 AdminActivty "1" *-- "0...1" AdminEventListFragment
 AdminActivty "1" *-- "0...1" AdminUserListFragment
 AdminActivty "1" *-- "0...1" AdminImageListFragment
 AdminActivty "1" *-- "0...1" AdminCodeGeneratorFragment
 AdminActivty --> MainActivity
+
+class AdminCodeGeneratorFragment{
+    -DatabaseController databaseController
+    +onCreate(savedInstanceState: Bundle)
+    +onCreateView(inflater: LayoutInflater, container: ViewGroup. savedInstanceState: Bundle)
+}
+
+class AdminEventArrayAdapter{
+    -DatabaseController databaseController
+    -ArrayList<Event> events
+    -Context: context
+    -int layoutID
+    -ImageView eventPoster
+    +AdminEventArrayAdapter(context: Context, layoutID: int, events: ArrayList<Event>)
+    +getView(postion: int, convertView: View, part: ViewGroup)
+}
+AdminEventArrayAdapter "0..1" o-- "1" DatabaseController
+AdminEventArrayAdapter "0..1" o-- "0..*" Event
+
+class AdminEventListFragment{
+    -DatabaseController databaseController
+    -ArrayList<Event> events
+    -ListView eventList
+    -AdminEventArrayAdapter eventsArrayAdapter
+    -TextView title
+    +AdminEventListFragment()
+    +onCreate(savedInstanceState: Bundle)
+    +onCreateView(inflater: LayoutInflater, container: ViewGroup. savedInstanceState: Bundle)
+}
+AdminEventListFragment "0..1" o-- "1" DatabaseController
+AdminEventListFragment "0..1" -- "1" AdminEventArrayAdapter
+
+
+class AdminImageListFragment{
+    -DatabaseController databaseController
+    -ArrayList<Uri> images
+    -GridView imageGrid
+    -ImageGridAdapter imageGridAdpter;
+    +onCreate(savedInstanceState: Bundle)
+    +onCreateView(inflater: LayoutInflater, container: ViewGroup. savedInstanceState: Bundle)
+}
+AdminImageListFragment "0..1" o-- "1" DatabaseController
+AdminImageListFragment "0..1" -- "1" ImageGridAdapter
+
+
+class AdminUserListFragment{
+    -DatabaseController databaseController
+    -ArrayList<User> users
+    -UserArrayAdapter userArrayAdapter;
+    +onCreate(savedInstanceState: Bundle)
+    +onCreateView(inflater: LayoutInflater, container: ViewGroup. savedInstanceState: Bundle)
+}
+
+AdminImageListFragment "0..1" o-- "1" DatabaseController
+AdminImageListFragment "0..1" -- "1" UserArrayAdapter
+
+class ImageGridAdapter{
+    -Context: context
+    -List<Uri> imageUri
+    -DatabaseController databaseController
+    -int layoutID
+    +ImageAdapter(context: Context, layoutID: int, imageUri: List<Uri)
+    +getView(postion: int, convertView: View, part: ViewGroup)
+}
+
+ImageGridAdapter "0..1" o-- "1" DatabaseController
+
+
 
 skinparam nodesep 25
 skinparam ranksep 100

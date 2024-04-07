@@ -1,5 +1,7 @@
 package com.example.eventsigninapp;
 
+import android.util.Log;
+
 public class EventController {
     private final Event event;
 
@@ -14,6 +16,7 @@ public class EventController {
         else {
             event.increaseCheckedInCount(uuid);         // Setting checked in count to 1
             event.addCheckedInUser(uuid);
+
         }
 
     }
