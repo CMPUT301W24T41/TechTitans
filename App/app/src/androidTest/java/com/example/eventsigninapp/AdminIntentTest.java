@@ -4,6 +4,7 @@ import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
@@ -13,6 +14,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
 import static com.google.common.reflect.Reflection.getPackageName;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.Matchers.greaterThan;
 
 import android.net.Uri;
@@ -83,7 +86,7 @@ public class AdminIntentTest {
     }
 
     @Test
-    public void testSomething() throws InterruptedException, IOException {
+    public void testDeleteEvent() throws InterruptedException, IOException {
         disableAnimations();
 
         onView(withText("Events:")).check(matches(isDisplayed()));
@@ -92,7 +95,25 @@ public class AdminIntentTest {
         onView(withId(R.id.adminList)).check(matches(hasMinimumChildCount(1)));
 
 
+        onData(anything())
+                .inAdapterView(withId(R.id.adminList)) 
+                .atPosition(0)
+                .onChildView(withId(R.id.adminViewEventXButton))
+                .perform(click());
+
+        // delete event
+        onData(anything())
+                .inAdapterView(withId(R.id.adminList))
+                .atPosition(0) // Click on the first item
+                .onChildView(withId(R.id.adminViewDeleteEvent))
+                .perform(click());
+
+        // checks if event no longer exists
+        onView(allOf(withId(R.id.adminList), withText("ToBeDeletedEvent"))).check(doesNotExist());
+
     }
+
+
 }
 
 
