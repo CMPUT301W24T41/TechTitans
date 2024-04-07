@@ -16,6 +16,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.google.common.reflect.Reflection.getPackageName;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 
 import android.net.Uri;
@@ -63,11 +64,7 @@ public class AdminIntentTest {
         databaseController.pushEventToFirestore(dummyEvent);
         Uri blankImageUri = Uri.parse("android.resource://com.example." + PACKAGE_NAME + R.drawable.logo_placeholder);
         Log.d("intentTest", "setUp: " + blankImageUri);
-        databaseController.uploadProfilePicture(blankImageUri, dummyUser);
-        databaseController.putEventPosterToFirestore("00001", blankImageUri);
-        databaseController.putEventPosterToFirestore("00001_ImageGridTest", blankImageUri);
-
-
+        databaseController.putEventPosterToFirestore("00002_ImageGridTest", blankImageUri);
 
     }
 
@@ -78,16 +75,10 @@ public class AdminIntentTest {
         Intents.release();
     }
 
-    private void disableAnimations() throws IOException {
-        UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        uiDevice.executeShellCommand("settings put global window_animation_scale 0");
-        uiDevice.executeShellCommand("settings put global transition_animation_scale 0");
-        uiDevice.executeShellCommand("settings put global animator_duration_scale 0");
-    }
+
 
     @Test
-    public void testDeleteEvent() throws InterruptedException, IOException {
-        disableAnimations();
+    public void testDeleteEvent() throws InterruptedException{
 
         onView(withText("Events:")).check(matches(isDisplayed()));
         Thread.sleep(5000);
@@ -95,11 +86,13 @@ public class AdminIntentTest {
         onView(withId(R.id.adminList)).check(matches(hasMinimumChildCount(1)));
 
 
+
+        // Check if "ToBeDeleteEvent" text is displayed
         onData(anything())
-                .inAdapterView(withId(R.id.adminList)) 
-                .atPosition(0)
-                .onChildView(withId(R.id.adminViewEventXButton))
-                .perform(click());
+                .inAdapterView(withId(R.id.adminList))
+                .atPosition(0) // Assert at least one matching item
+                .onChildView(withText(containsString("ToBeDeletedEvent")))
+                .check(matches(isDisplayed()));
 
         // delete event
         onData(anything())
@@ -108,12 +101,69 @@ public class AdminIntentTest {
                 .onChildView(withId(R.id.adminViewDeleteEvent))
                 .perform(click());
 
+        Thread.sleep(5000);
+
         // checks if event no longer exists
         onView(allOf(withId(R.id.adminList), withText("ToBeDeletedEvent"))).check(doesNotExist());
 
     }
 
 
+
+
+    @Test
+    public void testDeleteUser() throws InterruptedException {
+
+        onView(withText("USERS")).check(matches(isDisplayed()));
+        onView(withText("USERS")).perform(click());
+        Thread.sleep(5000);
+
+        onView(withId(R.id.adminList)).check(matches(hasMinimumChildCount(1)));
+
+
+
+        onData(anything())
+                .inAdapterView(withId(R.id.adminList))
+                .atPosition(0) // Assert at least one matching item
+                .onChildView(withText(containsString("ToBeDeletedUser")))
+                .check(matches(isDisplayed()));
+
+        // delete event
+        onData(anything())
+                .inAdapterView(withId(R.id.adminList))
+                .atPosition(0) // Click on the first item
+                .onChildView(withId(R.id.adminViewDeleteUser))
+                .perform(click());
+
+        Thread.sleep(5000);
+
+        // checks if event no longer exists
+        onView(allOf(withId(R.id.adminList), withText("ToBeDeletedUser"))).check(doesNotExist());
+
+    }
+
+    @Test
+    public void testDeleteImage() throws InterruptedException{
+
+    }
+
+    @Test
+    public void testGenerateCode() throws InterruptedException{
+
+    }
+
+
+    @Test
+    public void testReturn() throws InterruptedException{
+
+    }
+
+
+
+
+
+
 }
+
 
 
