@@ -15,12 +15,12 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-public class AdminUserListFragment extends Fragment implements DatabaseController.GetAllUserCallback {
+public class AdminUserListFragment extends Fragment implements DatabaseController.GetAllUsersCallback {
 
     // Member variables
-    DatabaseController databaseController = new DatabaseController();
-    ArrayList<User> users;
-    UserArrayAdapter userArrayAdapter;
+    private DatabaseController databaseController = new DatabaseController();
+    private ArrayList<User> users;
+    private UserArrayAdapter userArrayAdapter;
 
     // Default constructor
     public AdminUserListFragment(){};

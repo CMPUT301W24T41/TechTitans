@@ -97,13 +97,17 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
 
 
             databaseController.getUserProfilePicture(user.getId(), profilePic, this);
-
-            if(Objects.equals(user.getId(), userController.getUser().getId())) {
-                deleteButton.setVisibility(View.INVISIBLE);
+            if(user.isAdmin() != null){
+                if(user.isAdmin()) {
+                    deleteButton.setVisibility(View.INVISIBLE);
+                }
             }
+
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     users.remove(user);
                     notifyDataSetChanged();
                     databaseController.deleteUser(user);

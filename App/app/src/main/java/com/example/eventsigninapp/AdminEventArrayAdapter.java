@@ -19,8 +19,9 @@ import androidx.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements DatabaseController.EventImageUriCallbacks {
+public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements DatabaseController.EventImageUriCallbacks, DatabaseController.GetCheckedInUsersCallback{
 
     // Member variables
     private ArrayList<Event> events;
@@ -65,13 +66,14 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
             eventTitle.setText(event.getName());
             organizerID.setText(String.format(context.getString(R.string.organizerid), event.getCreatorUUID()));
             eventID.setText(String.format(context.getString(R.string.eventid), event.getUuid()));
-            eventCapacity.setText(String.format(context.getString(R.string.division), event.getSignedUpUsersUUIDs().size(), event.getCapacity()));
+            databaseController.getCheckedInUsersFromFirestore(event, this);
+            eventCapacity.setText(String.format(context.getString(R.string.division), event.getCheckedInUsersUUIDs().size(), event.getCapacity()));
 
             // Set onClickListener for delete button
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Remove event from list and notify adapter
+
                     events.remove(event);
                     notifyDataSetChanged();
                     // Delete event from database
@@ -125,5 +127,10 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
     @Override
     public void onError(Exception e) {
         return;
+    }
+
+    @Override
+    public void onGetCheckedInUsersCallback(Event event, ArrayList<?> users) {
+
     }
 }
