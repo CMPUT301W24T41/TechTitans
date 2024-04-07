@@ -163,7 +163,8 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     public void onGetEventCallback(Event event) {
         if (event != null) {
             this.event = event;
-            if (!Objects.equals(event.getUuid(), this.resultString)) {
+            if (!Objects.equals(event.getEventCheckInQrCodeString(), this.resultString)) {
+
                 openEventDetails();
             } else {
                 UserController userController = new UserController();
@@ -173,7 +174,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
                 try {
                     eventController.checkInUser(user.getId());
                     databaseController.pushEventToFirestore(event);
-                    showCheckInConfirmation();
+                    databaseController.getEventPoster(event.getUuid(), this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

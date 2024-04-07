@@ -55,6 +55,7 @@ dependencies {
     implementation ("com.github.dhaval2404:imagepicker:2.1")
     implementation ("com.github.yalantis:ucrop:2.2.8")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.googlecode.libphonenumber:libphonenumber:8.12.57")
     implementation ("com.squareup.picasso:picasso:2.8")
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test.ext:junit:1.1.5")

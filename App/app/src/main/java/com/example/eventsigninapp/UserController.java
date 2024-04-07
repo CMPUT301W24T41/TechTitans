@@ -104,9 +104,10 @@ public class UserController {
      * @param firstName  the new first name
      * @param lastName   the new last name
      * @param contact    the new contact information
+     * @param homePage   the new homepageUrl
      * @param pictureUri the new URI of the profile picture
      */
-    public void editProfile(String firstName, String lastName, String contact, Uri pictureUri) {
+    public void editProfile(String firstName, String lastName, String contact, String homePage, Uri pictureUri) {
         if (firstName != null && !firstName.isEmpty()) {
             user.setFirstName(firstName);
         }
@@ -117,6 +118,10 @@ public class UserController {
 
         if (contact != null) {
             user.setContact(contact);
+        }
+
+        if (homePage != null){
+            user.setHomePageUrl(homePage);
         }
 
         if (pictureUri != null) {
