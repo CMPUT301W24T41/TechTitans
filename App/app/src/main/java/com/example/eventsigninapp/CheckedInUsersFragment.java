@@ -86,30 +86,26 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
 
     @Override
     public void onGetCheckedInUsersCallback(Event event, ArrayList<?> users) {
-        try {
-            if (users.size() == 0) {
-                checkedInCount.setText(String.format(Locale.CANADA, "There are no attendees checked into your event."));
-            }
+        checkedInCount.setText(String.format(Locale.CANADA, "There are %d attendees checked into your event.", users.size()));
 
-            for (int i = 0; i < users.size(); i++) {
-                event.addCheckedInUser((String) users.get(i));
+        for (int i = 0; i < users.size(); i++) {
+            event.addCheckedInUser((String) users.get(i));
 
-                dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
-                    @Override
-                    public void onCallback(User user) {
-                        checkedInUsers.add(user);
-                        checkedInCount.setText(String.format(Locale.CANADA, "There are %d attendees checked in to this event.", checkedInUsers.size()));
-                        userAdapter.notifyDataSetChanged();
-                    }
+            int finalI = i;
+            dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
+                @Override
+                public void onCallback(User user) { // user has profile
+                    checkedInUsers.add(user);
+                    userAdapter.notifyDataSetChanged();
+                }
 
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e("DEBUG", String.format("Error getting checked in users: %s", e.getMessage()));
-                    }
-                });
-            }
-        } catch (Exception e) {
-            Log.e("DEBUG", String.format("Error getting checked in users: %s", e.getMessage()));
+                @Override
+                public void onError(Exception e) { // user has no profile
+                    User user = new User((String) users.get(finalI));
+                    checkedInUsers.add(user);
+                    userAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

@@ -4,10 +4,11 @@
     <string name="CheckInMessage">Welcome! \nCheck in seamlessly\nwith your QR code.</string>
     <string name="lastName">Last Name</string>
     <string name="firstName">First Name</string>
-    <string name="check_in">Check In With Qr Code</string>
+    <string name="check_in">Check In With QR Code</string>
     <string name="host_event">Host Event</string>
     <string name="confirm">Confirm</string>
-    <string name="attendee_limit">Attendee Limit - Optional:</string>
+    <string name="attendee_limit">Attendee Limit - optional</string>
+    <string name="pick_location">Add event location - optional</string>
     <string name="upload_poster_text">Click on image to upload a Poster</string>
     <string name="description_of_event">Event Description:</string>
     <string name="title_of_even">Title of Event:</string>
