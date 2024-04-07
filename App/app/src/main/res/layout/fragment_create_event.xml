@@ -32,8 +32,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/createEventConfirmButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createEventClickAboveTextView">
@@ -86,7 +87,7 @@
             android:inputType="date"
             app:layout_constraintEnd_toStartOf="@+id/guidelineVertCenter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/createEventCapacityEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/locationPickerText" />
 
         <EditText
             android:id="@+id/createEventTimeEditText"
@@ -133,12 +134,53 @@
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:hint="Capacity:"
+            android:hint="Capacity (optional):"
             android:importantForAutofill="no"
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/createEventDescEditText" />
+
+        <EditText
+            android:id="@+id/locationPickerText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_margin="3dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="@string/pick_location"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/locationPickerButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createEventCapacityEditText" />
+
+        <Button
+            android:id="@+id/locationPickerButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end|center_horizontal"
+            android:background="@drawable/location_icon"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="@+id/locationPickerText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/locationPickerText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/createEventConfirmButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_corner_bg"
+            android:backgroundTint="@color/color2"
+            android:text="@string/confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createEventSetCheckInButton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
@@ -165,20 +207,6 @@
             app:srcCompat="@drawable/event_image" />
 
     </androidx.cardview.widget.CardView>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/createEventConfirmButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_corner_bg"
-        android:backgroundTint="@color/color2"
-        android:text="@string/confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group"

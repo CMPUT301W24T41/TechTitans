@@ -1,7 +1,11 @@
 package com.example.eventsigninapp;
 
 
+import android.location.Location;
 import android.net.Uri;
+import android.util.Log;
+
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,12 +22,12 @@ public class Event implements Serializable {
 
     // The capacity of the event, 0 if uncapped
     private int capacity;
-    private final Collection<String> signedUpUsersUUIDs; // collection of signed up users
-    private final Collection<String> checkedInUsersUUIDs; // collection of checked in users
+    private final ArrayList<String> signedUpUsersUUIDs; // collection of signed up users
+    private final ArrayList<String> checkedInUsersUUIDs; // collection of checked in users
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
-    private Object location;
+    private GeoPoint location;
     private final Date date;
     private String creatorUUID;
     private String description;
@@ -88,11 +92,15 @@ public class Event implements Serializable {
         this.name = name;
     }
 
+    public GeoPoint getLocation() {
+        return this.location;
+    }
+
     /**
      * This method should be used to set the location of the event
      * @param location the name of the event
      */
-    public void setLocation(String location) {
+    public void setLocation(GeoPoint location) {
         this.location = location;
     }
 

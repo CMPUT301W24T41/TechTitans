@@ -3,6 +3,7 @@ package com.example.eventsigninapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
@@ -31,9 +33,10 @@ import kotlin.Unit;
  * A simple {@link Fragment} subclass for managing event creation.
  * Allows users to input event details, select images, and generate QR codes for events.
  */
-public class EventCreationFragment extends Fragment implements EventCreationView.EventCreationListener {
+public class EventCreationFragment extends Fragment implements EventCreationView.EventCreationListener, EventCreationView.PickLocationListener, LocationPickerDialog.DialogCloseListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private GeoPoint eventLocation;
     private String eventDetailsQrCodeString;
     private String eventCheckInQrCodeString;
     private ActivityResultLauncher<ScanOptions> setDetailsLauncher;
@@ -58,6 +61,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
 
         setDetailsLauncher = registerForActivityResult(new ScanContract(), this::processDetailsResult);
         setCheckInLauncher = registerForActivityResult(new ScanContract(), this::processCheckInResult);
+        eventCreationView.setPickLocationListener(this);
 
         createImagePickerLauncher();
 
@@ -108,6 +112,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
             event.setPosterUri(eventCreationView.getPosterUri());
+            event.setLocation(eventLocation);
 
             Bitmap bitmap = Organizer.generateQRCode(event.getEventCheckInQrCodeString());
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -179,5 +184,30 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     }
 
 
+    @Override
+    public void onPickLocationClick() {
+        Bundle bundle = new Bundle();
+        String locationQuery = eventCreationView.getLocationQuery();
+        bundle.putString("query", locationQuery);
+        LocationPickerDialog pickLocation = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            pickLocation = new LocationPickerDialog(this);
+            pickLocation.setArguments(bundle);
+            pickLocation.show(getActivity().getSupportFragmentManager(), "Select location");
+        } else {
+            Toast.makeText(requireContext(), "Make sure that the API used is current", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    @Override
+    public void onDialogClose(Location location) {
+        if (location == null) {
+            Toast.makeText(requireContext(), "No event location added", Toast.LENGTH_LONG).show();
+            eventCreationView.clearLocation();
+            return;
+        }
+        eventLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+        Toast.makeText(requireContext(), "Event location confirmed!", Toast.LENGTH_LONG).show();
+        Log.e("LOCATION", String.valueOf(location));
+    }
 }

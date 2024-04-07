@@ -1,5 +1,7 @@
 package com.example.eventsigninapp;
 
+import android.util.Log;
+
 public class EventController {
     private final Event event;
 
@@ -9,6 +11,7 @@ public class EventController {
 
     public void checkInUser(String uuid) throws AlreadyCheckedInException {
         if (event.isUserCheckedIn(uuid)) {
+            Log.e("CHECKIN", "exception thrown");
             throw new AlreadyCheckedInException("Attendee is already checked in to the event");
         }
 

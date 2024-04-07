@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ public class EventCreationView {
     private final EditText eventDate;
     private final EditText eventTime;
     private final ImageView eventPoster;
+    private final Button locationPickerButton;
+    private final EditText locationPickerText;
     private final Button confirmButton;
     private final Button setCheckInButton;
     private final Button setDetailsButton;
@@ -36,6 +39,12 @@ public class EventCreationView {
         setCheckInButton = rootView.findViewById(R.id.createEventSetCheckInButton);
         setDetailsButton = rootView.findViewById(R.id.createEventSetDetailsButton);
         confirmButton = rootView.findViewById(R.id.createEventConfirmButton);
+        locationPickerButton = rootView.findViewById(R.id.locationPickerButton);
+        locationPickerText = rootView.findViewById(R.id.locationPickerText);
+    }
+
+    public void setPickLocationListener(PickLocationListener listener) {
+        locationPickerButton.setOnClickListener(v -> listener.onPickLocationClick());
     }
 
     public void setListener(EventCreationListener listener) {
@@ -70,10 +79,22 @@ public class EventCreationView {
         return Integer.parseInt(eventCapacity.getText().toString().trim());
     }
 
+    public String getLocationQuery() {
+        return locationPickerText.getText().toString().trim();
+    }
+
+    public void clearLocation() {
+        locationPickerText.setText("");
+    }
+
     interface EventCreationListener {
         void onConfirmButtonClick();
         void onImageClick();
         void onSetCheckInClick();
         void onSetDetailsClick();
+    }
+
+    interface PickLocationListener {
+        void onPickLocationClick();
     }
 }

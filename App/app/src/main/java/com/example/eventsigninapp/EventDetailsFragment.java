@@ -42,7 +42,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
     private TextView eventDescription, announcement;
     private ImageView eventPoster;
     private Button backButton, editEventButton, notifyUsersButton, menuButton;
-    private AppCompatButton detailsQrCodeButton, checkInQrCodeButton;
+    private AppCompatButton detailsQrCodeButton, checkInQrCodeButton, seeEventLocationButton;
     private ToggleButton signUpButton;
     private Event event;
     private ArrayList<String> signedUpUsersUUIDs = new ArrayList<>();
@@ -103,9 +103,14 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         detailsQrCodeButton = view.findViewById(R.id.detailsQrCodeButton);
         checkInQrCodeButton = view.findViewById(R.id.checkInQrCodeButton);
         menuButton = view.findViewById(R.id.action_selection);
+        seeEventLocationButton = view.findViewById(R.id.see_location_button);
 
         menuButton.setVisibility(View.GONE);
         signUpButton.setVisibility(View.GONE);
+
+        if (event.getLocation() == null) {
+            seeEventLocationButton.setVisibility(View.GONE);
+        }
 
         String[] actions = {"Notify users", "See signed up users", "See checked in users"};
 
@@ -120,6 +125,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
 
         // Retrieve the event from the bundle passed from the EventListFragment
         if (event != null) {
+            Log.e("CHECKIN", event.getUuid()); // TODO: DELETE
             // Use the event object to update the UI
             // Call the getEventPoster function
             databaseController.getEventPoster(event.getUuid(), this);
@@ -145,6 +151,13 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             }
         });
 
+        seeEventLocationButton.setOnClickListener(l -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", event);
+            EventLocationDialog eventLocationDialog = new EventLocationDialog();
+            eventLocationDialog.setArguments(bundle);
+            eventLocationDialog.show(getActivity().getSupportFragmentManager(), "Event location");
+        });
 
         backButton.setOnClickListener(l -> {
             FragmentManager fragmentManager = getFragmentManager();
@@ -200,6 +213,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
+                Log.e("SIGNUP", String.format("Passing in %s", event.getUuid()));
                 bundle.putSerializable("event", event);
                 switch (position) {
                     case 0: // organizer chooses "notify users"
@@ -210,6 +224,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
                         break;
                     case 1: // organizer chooses "see signed up users"
                         SignedUpUsersFragment signedUpFrag = new SignedUpUsersFragment();
+                        Log.e("SIGNUP", "Setting " + String.valueOf(bundle.get("event")));
                         signedUpFrag.setArguments(bundle);
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, signedUpFrag)
@@ -402,7 +417,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
                 // Users found, update UI with signed up users
                 signedUpUsersUUIDs = (ArrayList<String>) users;
                 updateSignUpButton(event);
-                Log.d("EventDetails", "Signed up users found: " + signedUpUsersUUIDs.toString());
+                Log.d("SIGNUP", "Signed up users found: " + signedUpUsersUUIDs.toString());
             } else {
                 // Users not found or error occurred
                 // Handle this case
