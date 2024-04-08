@@ -38,7 +38,6 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.uiautomator.UiDevice;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,7 +70,7 @@ public class AdminIntentTest {
 
         // making event and user that will be used to test deletion
         Event dummyEvent = new Event("00001", "ToBeDeletedEvent", "Unknown", 1000);
-        User dummyUser = new User("00001", "ToBeDeletedUser", "lastName", "123-456-7890");
+        User dummyUser = new User("00001", "ToBeDeletedUser", "lastName", "123-456-7890","google.ca");
         databaseController.putUserToFirestore(dummyUser);
         databaseController.pushEventToFirestore(dummyEvent);
         Uri blankImageUri = Uri.parse("android.resource://com.example." + PACKAGE_NAME + R.drawable.logo_placeholder);

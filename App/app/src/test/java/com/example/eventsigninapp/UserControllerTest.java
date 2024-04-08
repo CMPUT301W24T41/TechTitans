@@ -101,7 +101,7 @@ public class UserControllerTest {
 
     @Test
     public void testEditProfile() {
-        User mockUser = new User("123456", "John", "Doe","another.com", "123456");
+        User mockUser = new User("123456", "John", "Doe", "another.com", "123456");
 
 
         userController.setUser(mockUser);
@@ -115,47 +115,4 @@ public class UserControllerTest {
         assertEquals("images/prof", userController.getUser().getPicture().toString());
     }
 
-    //These methods are being unused and also seemingly(?) duplicated in eventController, removing for now
-
-//    /**
-//     * This method tests the checkIn method of the User class.
-//     */
-//    @Test
-//    public void testCheckIn() throws EventController.AlreadyCheckedInException {
-//        User user = mockUser();
-//        userController.setUser(user);
-//        userController.checkIn(mockEvent);
-//
-//
-//        verify(mockEventController).checkInUser(user.getId());
-//    }
-//
-//
-//    @Test
-//    public void testSignUp() throws EventController.EventFullException, EventController.AlreadySignedUpException {
-//        UserController userController = new UserController();
-//        User user = new User();
-//        userController.setUser(user);
-//
-//        when(mockEvent.isFull()).thenReturn(false);
-//
-//        userController.signUp(mockEvent);
-//
-//        verify(mockEventController).signUpUser(user.getId());
-//        Collection<String> attendingEvents = new HashSet<>();
-//        attendingEvents.add(mockEvent.getUuid());
-//        assertEquals(attendingEvents, user.getAttendingEvents());
-//    }
-//
-//
-//    @Test
-//    public void testSignUp_EventIsFull_PrintsErrorMessage() throws EventController.EventFullException, EventController.AlreadySignedUpException {
-//        UserController userController = new UserController();
-//        User user = new User();
-//        userController.setUser(user);
-//
-//        when(mockEvent.isFull()).thenReturn(true);
-//
-//        userController.signUp(mockEvent);
-//    }
 }
