@@ -295,6 +295,19 @@ class MessagingService{
 MessagingService -- UserController
 MessagingService -- DatabaseController
 
+class MyEventsFragment {
+    -userController: UserController
+    -dbController: DatabaseController
+    -myEventsArrayList: ArrayList<Event>
+    -myEventsArrayAdapter: EventArrayAdapter
+    -myEventsView: MyEventsView
+    -frag: EventDetailsFragment
+    -checkedInUsers: Collection<String>
+    -signedUpEvents: ArrayList<String>
+    -purgeOldEventsFromArrayLists(newEventsArrayList:ArrayList<Event>)
+    +onItemClick(event: Event, position: int)
+}
+
 
 skinparam nodesep 25
 skinparam ranksep 100
