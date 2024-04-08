@@ -1202,8 +1202,8 @@ public class DatabaseController {
 
         Map<String, Object> data = new HashMap<>();
         data.put("fcmToken", token);
-        DocumentReference userRef = db.collection("users").document(userID);
-        userRef.update(data)
+        DocumentReference eventRef = db.collection("users").document(userID);
+        eventRef.set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
