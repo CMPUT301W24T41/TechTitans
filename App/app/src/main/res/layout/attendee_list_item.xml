@@ -12,7 +12,10 @@
         android:layout_height="30dp"
         android:layout_margin="4dp"
         android:contentDescription="@string/profile_picture_of_user"
-        android:src="@drawable/ic_default_profile" />
+        android:src="@drawable/ic_default_profile"
+        android:background="@drawable/rounded_corner_profile_bg"
+        android:clipToOutline="true"
+        />
 
     <TextView
         android:id="@+id/first_name"

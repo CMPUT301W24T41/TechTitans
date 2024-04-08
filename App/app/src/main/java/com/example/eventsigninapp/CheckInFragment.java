@@ -31,7 +31,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.firestore.GeoPoint;
+
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -101,7 +103,9 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
      * @return locationVerified true if an attendee can check in, false otherwise
      */
     private boolean verifyUserLocation(Location userLocation) {
+
         GeoPoint eventLocation = null;
+
         if (event == null) {
             Log.e("LOCATION", "null event in verify user location");
             return false;
@@ -164,7 +168,9 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     public void onGetEventCallback(Event event) {
         if (event != null) {
             this.event = event;
+
             if (!Objects.equals(event.getUuid(), this.resultString)) {
+
                 openEventDetails();
             } else {
                 UserController userController = new UserController();
@@ -174,7 +180,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
                 try {
                     eventController.checkInUser(user.getId());
                     databaseController.pushEventToFirestore(event);
-                    showCheckInConfirmation();
+                    databaseController.getEventPoster(event.getUuid(), this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
