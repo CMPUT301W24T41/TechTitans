@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,12 +74,20 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
 
             if (Objects.equals(user.getFirstName(), "") && Objects.equals(user.getLastName(), "")) {
                 firstName.setText(user.getId());
-                lastName.setText("");
+                lastName.setText("Unidentified Guest");
+                lastName.setTextColor(Color.parseColor("#2196F3"));
                 Integer count =  event.getCheckedInCount(user.getId());
                 userCheckedInCount.setText(String.valueOf(count));
             } else {
                 firstName.setText(user.getFirstName());
                 lastName.setText(user.getLastName());
+
+                // FIXME
+                if (event.getCheckedInCount(user.getId()) == null) {
+                    userCheckedInCount.setText(0);
+                    userCheckedInCount.setVisibility(View.INVISIBLE);
+                }
+
                 Integer count =  event.getCheckedInCount(user.getId());
                 userCheckedInCount.setText(String.valueOf(count));
 
