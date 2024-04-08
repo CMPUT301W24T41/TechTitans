@@ -1095,8 +1095,15 @@ public class DatabaseController {
 
 
     public void addFCMTokenToUser(String userID, String token){
+        // this is needed to prevent crashes in intent tests, where the userid does not exist
+        if (userID == null || userID.isEmpty()) {
+            Log.e("AddFCMToken", "Invalid userID");
+            return;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("fcmToken", token);
         DocumentReference eventRef = db.collection("users").document(userID);
-        eventRef.update("fcmToken", token)
+        eventRef.set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
