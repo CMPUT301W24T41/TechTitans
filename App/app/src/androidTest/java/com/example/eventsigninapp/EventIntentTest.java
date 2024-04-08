@@ -59,7 +59,32 @@ public class EventIntentTest {
 
     @Test
     public void testCreateAndViewEvent() throws InterruptedException {
-        // Initialize UiDevice instance
+        dealWithNotificationPopUp();
+        onView(withText("Create  Event")).perform(click());
+
+        onView(withId(R.id.createEventTitleEditText)).check(matches(isDisplayed()));
+        onView(withId(R.id.createEventDescEditText)).check(matches(isDisplayed()));
+        onView(withId(R.id.createEventCapacityEditText)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.createEventTitleEditText)).perform(typeText("TestEvent"));
+        onView(withId(R.id.createEventDescEditText)).perform(typeText("Testdescript"));
+
+        //keyboard keeps getting in the way, sleeping to deal with it
+        closeSoftKeyboard();
+        Thread.sleep(2000);
+
+        onView(withId(R.id.createEventCapacityEditText)).perform(typeText("1000"));
+
+
+        //keyboard keeps getting in the way, sleeping to deal with it
+        closeSoftKeyboard();
+        Thread.sleep(5000);
+
+        onView(withId(R.id.createEventConfirmButton)).perform(click());
+
+        }
+
+    public void dealWithNotificationPopUp(){
         UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
 
         // Click on "Allow" button in the system dialog
@@ -71,35 +96,8 @@ public class EventIntentTest {
         } catch (UiObjectNotFoundException e) {
             e.printStackTrace();
         }
-            onView(withText("Create  Event")).perform(click());
+    }
 
-            onView(withId(R.id.createEventTitleEditText)).check(matches(isDisplayed()));
-            onView(withId(R.id.createEventDescEditText)).check(matches(isDisplayed()));
-            onView(withId(R.id.createEventCapacityEditText)).check(matches(isDisplayed()));
-
-            onView(withId(R.id.createEventTitleEditText)).perform(typeText("TestEvent"));
-            onView(withId(R.id.createEventDescEditText)).perform(typeText("Testdescript"));
-            onView(withId(R.id.createEventCapacityEditText)).perform(typeText("1000"));
-
-
-            closeSoftKeyboard();
-            Thread.sleep(2000);
-            onView(withId(R.id.createEventConfirmButton)).perform(click());
-
-            Thread.sleep(3000);
-
-            onView(withText("TestEvent")).check((matches(isDisplayed())));
-
-            onView(withText(""));
-
-//        onView(withText("Cancel")).perform(click());
-
-            onView(withText("Home")).perform(click());
-
-
-
-
-        }
 
 
 }

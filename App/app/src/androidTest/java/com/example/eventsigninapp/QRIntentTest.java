@@ -60,17 +60,7 @@ public class QRIntentTest {
     @Test
     public void openQRcodeScannerTest(){
 
-        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
-
-        // Click on "Allow" button in the system dialog
-        try {
-            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
-            if (allowButton.exists() && allowButton.isEnabled()) {
-                allowButton.click();
-            }
-        } catch (UiObjectNotFoundException e) {
-            e.printStackTrace();
-        }
+        dealWithNotificationPopUp();
         onView(withText("Check In")).perform(click());
 
 
@@ -82,23 +72,55 @@ public class QRIntentTest {
 
     @Test
     public void openQRShareIntentTest() throws InterruptedException {
+        dealWithNotificationPopUp();
         onView(withText("Create  Event")).perform(click());
 
-        onView(withId(R.id.titleOfEvent)).perform(typeText("TestEvent"));
-        onView(withId(R.id.descriptionOfEvent)).perform(typeText("Testdescript"));
-        onView(withId(R.id.attendeeLimit)).perform(typeText("1000"));
+        onView(withId(R.id.createEventTitleEditText)).check(matches(isDisplayed()));
+        onView(withId(R.id.createEventDescEditText)).check(matches(isDisplayed()));
+        onView(withId(R.id.createEventCapacityEditText)).check(matches(isDisplayed()));
 
+        onView(withId(R.id.createEventTitleEditText)).perform(typeText("TestEvent"));
+        onView(withId(R.id.createEventDescEditText)).perform(typeText("Testdescript"));
 
+        //keyboard keeps getting in the way, sleeping to deal with it
         closeSoftKeyboard();
         Thread.sleep(2000);
-        onView(withId(R.id.confirmButton)).perform(click());
+
+        onView(withId(R.id.createEventCapacityEditText)).perform(typeText("1000"));
 
 
-        onView(withId(R.id.qrCodeImageView)).check((matches(isDisplayed())));
+        //keyboard keeps getting in the way, sleeping to deal with it
+        closeSoftKeyboard();
+        Thread.sleep(5000);
+
+        onView(withId(R.id.createEventConfirmButton)).perform(click());
+
+        Thread.sleep(3000);
+
+        onView(withText("Testdescript")).check((matches(isDisplayed())));
+        onView(withText("CHECK-IN QR CODE")).perform(click());
+        Thread.sleep(3000);
+
 
         onView(withText("Share")).perform(click());
+        Thread.sleep(3000);
+
 
         intended(hasAction(android.content.Intent.ACTION_CHOOSER));
+    }
+
+    public void dealWithNotificationPopUp(){
+        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
+
+        // Click on "Allow" button in the system dialog
+        try {
+            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
+            if (allowButton.exists() && allowButton.isEnabled()) {
+                allowButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 

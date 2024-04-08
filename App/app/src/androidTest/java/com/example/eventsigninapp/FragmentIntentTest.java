@@ -14,6 +14,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.action.ViewActions.click;
 
 import androidx.core.widget.TextViewCompat;
 import androidx.test.espresso.action.ViewActions;
@@ -59,6 +63,32 @@ public class FragmentIntentTest {
 
     @Test
     public void testHomeFragment() {
+        dealWithNotificationPopUp();
+
+
+        onView(withText("Home")).perform(click());
+        onView(withText("Browse All Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testEventDetailsFragment() {
+        dealWithNotificationPopUp();
+        onView(withText("Home")).perform(click());
+
+        onView(withId(R.id.all_events_list)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(0, click())
+        );
+    }
+
+    @Test
+    public void testMyEventsFragment() {
+        dealWithNotificationPopUp();
+        onView(withText("My Events")).perform(click());
+        onView(withText("My Signed Up Events")).check(matches(isDisplayed()));
+    }
+
+
+    public void dealWithNotificationPopUp(){
         UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
 
         // Click on "Allow" button in the system dialog
@@ -70,28 +100,6 @@ public class FragmentIntentTest {
         } catch (UiObjectNotFoundException e) {
             e.printStackTrace();
         }
-
-        onView(withText("Home")).perform(click());
-        onView(withText("Browse All Events")).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testEventDetailsFragment() {
-        onView(withText("Home")).perform(click());
-
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list
-        )).atPosition(0).perform(click());
-
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list)).atPosition(0).perform(click());
-
-    }
-
-    @Test
-    public void testMyEventsFragment() {
-        onView(withText("My Events")).perform(click());
-        onView(withText("My Signed Up Events")).check(matches(isDisplayed()));
-    }
-
-}
+    }}
 
 
