@@ -189,6 +189,10 @@ public class Event implements Serializable {
         return checkedInUsersUUIDs.contains(uuid);
     }
 
+    /**
+     * This method should be used to increase user checked in count
+     * @param uuid the uuid of the user
+     */
     public void increaseCheckedInCount(String uuid) {
         if (checkedInEventCount.containsKey(uuid)) {
             Integer count = checkedInEventCount.get(uuid);
@@ -199,10 +203,19 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * This method should be used to add a user to checked in count list
+     * @param uuid uuid of user
+     * @param count the checked in count for the user
+     */
     public void addCheckedInCount(String uuid, Integer count) {
         checkedInEventCount.put(uuid, count);
     }
 
+    /**
+     * This method should be used to get the checked in count of the user
+     * @param uuid the uuid of the user to get checked in count
+     */
     public Integer getCheckedInCount(String uuid) {
         return checkedInEventCount.get(uuid);
     }
