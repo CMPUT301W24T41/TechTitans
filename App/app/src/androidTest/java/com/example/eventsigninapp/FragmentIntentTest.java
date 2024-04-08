@@ -14,6 +14,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.action.ViewActions.click;
 
 import androidx.core.widget.TextViewCompat;
 import androidx.test.espresso.action.ViewActions;
@@ -23,6 +27,10 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,27 +63,43 @@ public class FragmentIntentTest {
 
     @Test
     public void testHomeFragment() {
+        dealWithNotificationPopUp();
+
+
         onView(withText("Home")).perform(click());
         onView(withText("Browse All Events")).check(matches(isDisplayed()));
     }
 
     @Test
     public void testEventDetailsFragment() {
+        dealWithNotificationPopUp();
         onView(withText("Home")).perform(click());
 
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list
-        )).atPosition(0).perform(click());
-
-        onData(is(instanceOf(Event.class))).inAdapterView(withId(R.id.all_events_list)).atPosition(0).perform(click());
-
+        onView(withId(R.id.all_events_list)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(0, click())
+        );
     }
 
     @Test
     public void testMyEventsFragment() {
+        dealWithNotificationPopUp();
         onView(withText("My Events")).perform(click());
         onView(withText("My Signed Up Events")).check(matches(isDisplayed()));
     }
 
-}
+
+    public void dealWithNotificationPopUp(){
+        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
+
+        // Click on "Allow" button in the system dialog
+        try {
+            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
+            if (allowButton.exists() && allowButton.isEnabled()) {
+                allowButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
+    }}
 
 

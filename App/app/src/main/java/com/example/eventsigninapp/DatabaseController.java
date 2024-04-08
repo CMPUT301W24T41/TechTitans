@@ -567,25 +567,36 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * Retrieves the count of users checked into an event from Firestore.
+     *
+     * @param event    The event for which to retrieve the checked-in user count.
+     * @param callback The callback function to handle the retrieved user count.
+     */
     public void getCheckedInUserCountFromFirestore(Event event, GetCheckedInUserCountCallback callback) {
         final HashMap<?,?>[] userCheckedInCount = new HashMap<?,?>[1]; // effectively final
         CollectionReference eventsRef = db.collection("events");
-        eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Log.e("db", "Called on complete");
+
+        // Fetch the event document
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
                 DocumentSnapshot document = task.getResult();
                 userCheckedInCount[0] = (HashMap<?, ?>) document.get("checkedInEventCount");
                 if (userCheckedInCount[0] != null) {
-                    Log.e("db", "The retrieval was successful");
                     callback.onGetCheckedInUserCountCallback(event, userCheckedInCount[0]);
                 } else {
-                    Log.e("Database", "Error retrieving checked in users");
+                    Log.e("Database", "Error retrieving checked-in user count");
                 }
             }
         });
     }
 
+    /**
+     * Uploads the event poster image to Firestore Storage.
+     *
+     * @param eventID  The ID of the event to which the poster belongs.
+     * @param imageUri The URI of the poster image to be uploaded.
+     */
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
         if (imageUri == null) {
             return;
@@ -598,13 +609,19 @@ public class DatabaseController {
                 .addOnSuccessListener(taskSnapshot -> eventPosterRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     Log.d("Database", "Image download URL: " + uri.toString());
                 }).addOnFailureListener(e -> {
-                    Log.e("Database", "putEventPosterToFirestore: Error, failure to get URL data", e);
+                    Log.e("Database", "Error getting URL data after uploading image", e);
                 }))
                 .addOnFailureListener(e -> {
-                    Log.e("Database", "putEventPosterToFirestore: Error, failure to upload image", e);
+                    Log.e("Database", "Error uploading event poster image", e);
                 });
     }
 
+    /**
+     * Uploads the event check-in QR code image to Firestore Storage.
+     *
+     * @param eventID  The ID of the event to which the check-in QR code belongs.
+     * @param imageUri The URI of the check-in QR code image to be uploaded.
+     */
     public void putEventCheckInQRCodeToFirestore(String eventID, Uri imageUri) {
         if (imageUri == null) {
             return;
@@ -617,13 +634,19 @@ public class DatabaseController {
                 .addOnSuccessListener(taskSnapshot -> eventQRCodeRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     Log.d("Database", "Image download URL: " + uri.toString());
                 }).addOnFailureListener(e -> {
-                    Log.e("Database", "putEventCheckInQRCodeToFirestore: Error, failure to get URL data", e);
+                    Log.e("Database", "Error getting URL data after uploading image", e);
                 }))
                 .addOnFailureListener(e -> {
-                    Log.e("Database", "putEventCheckInQRCodeToFirestore: Error, failure to upload image", e);
+                    Log.e("Database", "Error uploading event check-in QR code image", e);
                 });
     }
 
+    /**
+     * Uploads the event description QR code image to Firestore Storage.
+     *
+     * @param eventID  The ID of the event to which the description QR code belongs.
+     * @param imageUri The URI of the description QR code image to be uploaded.
+     */
     public void putEventDescriptionQRCodeToFirestore(String eventID, Uri imageUri) {
         if (imageUri == null) {
             return;
@@ -636,19 +659,30 @@ public class DatabaseController {
                 .addOnSuccessListener(taskSnapshot -> eventQRCodeRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     Log.d("Database", "Image download URL: " + uri.toString());
                 }).addOnFailureListener(e -> {
-                    Log.e("Database", "putEventDescriptionQRCodeToFirestore: Error, failure to get URL data", e);
+                    Log.e("Database", "Error getting URL data after uploading image", e);
                 }))
                 .addOnFailureListener(e -> {
-                    Log.e("Database", "putEventDescriptionQRCodeToFirestore: Error, failure to upload image", e);
+                    Log.e("Database", "Error uploading event description QR code image", e);
                 });
     }
 
+    /**
+     * Retrieves all event images (poster, check-in QR code, description QR code) from Firestore Storage.
+     *
+     * @param eventID   The ID of the event.
+     * @param callbacks The callback functions to handle the retrieved image URIs.
+     */
     public void getEventImages(String eventID, EventImageUriCallbacks callbacks) {
         getEventPoster(eventID, callbacks);
         getEventCheckInQRCode(eventID, callbacks);
         getEventDescriptionQRCode(eventID, callbacks);
     }
 
+    /**
+     * Retrieves the poster image of the specified event from Firestore Storage.
+     * @param eventID The ID of the event.
+     * @param callback Callback to handle the retrieved image URI.
+     */
     public void getEventPoster(String eventID, EventImageUriCallbacks callback) {
         StorageReference storageRef = storage.getReference();
         StorageReference eventPosterRef = storageRef.child("event_posters/" + eventID);
@@ -663,6 +697,13 @@ public class DatabaseController {
         });
     }
 
+
+    /**
+     * Retrieves the poster image of the specified event from Firestore Storage and displays it on an ImageView.
+     * @param eventID The ID of the event.
+     * @param imageView The ImageView to display the image.
+     * @param callback Callback to handle the retrieved image URI.
+     */
     public void getEventPoster(String eventID, ImageView imageView, EventImageUriCallbacks callback) {
         StorageReference storageRef = storage.getReference();
         StorageReference eventPosterRef = storageRef.child("event_posters/" + eventID);
@@ -677,6 +718,12 @@ public class DatabaseController {
         });
     }
 
+
+    /**
+     * Retrieves the check-in QR code image of the specified event from Firestore Storage.
+     * @param eventID The ID of the event.
+     * @param callback Callback to handle the retrieved image URI.
+     */
     public void getEventCheckInQRCode(String eventID, EventImageUriCallbacks callback) {
         StorageReference storageRef = storage.getReference();
         StorageReference eventQRCodeRef = storageRef.child("event_check_in_qr_codes/" + eventID);
@@ -690,6 +737,12 @@ public class DatabaseController {
         });
     }
 
+
+    /**
+     * Retrieves the description QR code image of the specified event from Firestore Storage.
+     * @param eventID The ID of the event.
+     * @param callback Callback to handle the retrieved image URI.
+     */
     public void getEventDescriptionQRCode(String eventID, EventImageUriCallbacks callback) {
         StorageReference storageRef = storage.getReference();
         StorageReference eventQRCodeRef = storageRef.child("event_description_qr_codes/" + eventID);
@@ -703,6 +756,11 @@ public class DatabaseController {
         });
     }
 
+
+    /**
+     * Stores the event data in Firestore and uploads associated images to Firestore Storage.
+     * @param event The event object to store.
+     */
     public void pushEventToFirestore(Event event) {
         String uuid = event.getUuid();
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
@@ -715,6 +773,11 @@ public class DatabaseController {
         putEventPosterToFirestore(uuid, event.getPosterUri());
     }
 
+    /**
+     * Retrieves an event from Firestore using its UUID.
+     * @param uuid The UUID of the event to retrieve.
+     * @param callback Callback to handle the retrieved event object.
+     */
     public void getEventFromFirestore(String uuid, GetEventCallback callback) {
         DocumentReference eventRef = db.collection("events").document(uuid);
 
@@ -730,6 +793,11 @@ public class DatabaseController {
         });
     }
 
+    /**
+     * Searches for an event using a QR code result string.
+     * @param qrResult The QR code result string.
+     * @param callback Callback to handle the retrieved event object.
+     */
     public void findEventByQrResult(String qrResult, GetEventCallback callback) {
         final HashMap<?,?>[] userCheckedInCount = new HashMap<?,?>[1];
         db.collection("events")
@@ -796,6 +864,11 @@ public class DatabaseController {
                 });
     }
 
+
+    /**
+     * Retrieves all events stored in Firestore.
+     * @param callback Callback to handle the retrieved list of events.
+     */
     public void getAllEventsFromFirestore(GetAllEventsCallback callback) {
         CollectionReference events = db.collection("events");
 
@@ -838,7 +911,10 @@ public class DatabaseController {
     }
 
 
-
+    /**
+     * Retrieves all users stored in Firestore.
+     * @param callback Callback to handle the retrieved list of users.
+     */
     public void getAllUsersFromFirestore(GetAllUsersCallback callback) {
         CollectionReference users = db.collection("users");
         users.get()
@@ -870,6 +946,13 @@ public class DatabaseController {
     }
 
 
+
+    /**
+     * Retrieves all images from Firebase Storage and passes their URIs to the provided callback.
+     * Images are fetched from two different folders: "event_posters" and "profile_pictures".
+     *
+     * @param callback The callback function to handle the retrieved image URIs.
+     */
     public void getAllImagesFromFirestore(GetAllImagesCallback callback) {
         ArrayList<Uri> allImages = new ArrayList<>();
 
@@ -915,6 +998,15 @@ public class DatabaseController {
             }
         });
     }
+
+
+    /**
+     * Retrieves all images within the specified folder from Firebase Storage and passes their URIs
+     * to the provided callback.
+     *
+     * @param folderName The name of the folder containing the images.
+     * @param callback   The callback function to handle the retrieved image URIs.
+     */
 
     public void getAllImagesInFolder(String folderName, ImageUriCallback callback) {
         // Get a reference to the desired folder in Firebase Storage
@@ -1001,8 +1093,11 @@ public class DatabaseController {
     }
 
     /**
-     * This method takes an event of type Event and a String newUserId. It then adds this user to
-     * the event on firestore under the signedUpUsers array. It will not add duplicates
+     * Adds the specified user to the signed-up users list of the event and the specified event to
+     * the attending events list of the user in Firestore.
+     *
+     * @param event The event to which the user will be added.
+     * @param user  The user to be added to the event and attending events list.
      */
     public void addSignedUpUser(Event event, User user) {
 
@@ -1039,6 +1134,12 @@ public class DatabaseController {
                 });
     }
 
+    /**
+     * Adds the specified event to the attending events list of the user in Firestore.
+     *
+     * @param user  The user to whom the event will be added.
+     * @param event The event to be added to the user's attending events list.
+     */
     public void addEventToUser(User user, Event event) {
         DocumentReference eventRef = db.collection("users").document(user.getId());
         eventRef.update("attendingEvents", FieldValue.arrayUnion(event.getUuid()))
@@ -1060,10 +1161,23 @@ public class DatabaseController {
 
 
 
+    /**
+     * Removes the specified event from the attending events list of the user in Firestore.
+     *
+     * @param user    The ID of the user from whose attending events list the event will be removed.
+     * @param eventID The ID of the event to be removed from the attending events list.
+     */
     public void deleteAttendingEvent(String user, String eventID) {
         DocumentReference userRef = db.collection("users").document(user);
         userRef.update("attendingEvents", FieldValue.arrayRemove(eventID));
     }
+
+    /**
+     * Removes the specified event from the hosting events list of the user in Firestore.
+     *
+     * @param uuid        The ID of the event to be removed from the hosting events list.
+     * @param creatorUUID The ID of the user whose hosting events list will be updated.
+     */
 
     public void deleteHostingEvent(String uuid, String creatorUUID) {
         DocumentReference userRef = db.collection("users").document(creatorUUID);
@@ -1071,32 +1185,24 @@ public class DatabaseController {
 
     }
 
-    public interface GetAllImagesCallback {
-        void onGetAllImagesCallback(ArrayList<Uri> allImages);
-    }
 
 
-    public interface GetAllUsersCallback {
-        void onGetAllUserCallback(User user);
-    }
-
-
-    public interface GetEventCallback {
-        void onGetEventCallback(Event event);
-    }
-
-    public interface GetEventCreatorUUIDCallback {
-        void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
-    }
-
-    public interface GetCheckInLocationCallback {
-        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
-    }
-
-
+    /**
+     * Adds the FCM token to the specified user in Firestore.
+     *
+     * @param userID The ID of the user to add the FCM token to.
+     * @param token  The FCM token to be added.
+     */
     public void addFCMTokenToUser(String userID, String token){
+        // this is needed to prevent crashes in intent tests, where the userid does not exist
+        if (userID == null || userID.isEmpty()) {
+            Log.e("AddFCMToken", "Invalid userID");
+            return;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("fcmToken", token);
         DocumentReference eventRef = db.collection("users").document(userID);
-        eventRef.update("fcmToken", token)
+        eventRef.set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -1110,6 +1216,13 @@ public class DatabaseController {
                     }
                 });
     }
+
+    /**
+     * Retrieves the creator UUID of the specified event from Firestore.
+     *
+     * @param event    The event for which to retrieve the creator UUID.
+     * @param callback Callback function to handle the retrieved creator UUID.
+     */
     public void getEventCreatorUUID(Event event, GetEventCreatorUUIDCallback callback){
 
         DocumentReference eventRef = db.collection("events").document(event.getUuid());
@@ -1180,6 +1293,11 @@ public class DatabaseController {
         }
 
 
+    /**
+     * Deletes an image from the specified folder in the storage.
+     * @param folderName The name of the folder containing the image
+     * @param imageName The name of the image to be deleted
+     */
     public void deleteImageInFolder(String folderName, String imageName) {
         // Create a reference to the file to delete
         StorageReference imageRef = storage.getReference().child(folderName).child(imageName);
@@ -1258,4 +1376,25 @@ public class DatabaseController {
     }
 
 
+    public interface GetAllImagesCallback {
+        void onGetAllImagesCallback(ArrayList<Uri> allImages);
+    }
+
+
+    public interface GetAllUsersCallback {
+        void onGetAllUserCallback(User user);
+    }
+
+
+    public interface GetEventCallback {
+        void onGetEventCallback(Event event);
+    }
+
+    public interface GetEventCreatorUUIDCallback {
+        void onGetEventCreatorUUIDCallback(Event event, String creatorUUID);
+    }
+
+    public interface GetCheckInLocationCallback {
+        void onGetCheckInLocationCallback(Event event, ArrayList<?> checkInLocations);
+    }
 }

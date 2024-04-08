@@ -38,6 +38,10 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -89,6 +93,17 @@ public class AdminIntentTest {
 
     @Test
     public void testDeleteImage() throws InterruptedException{
+        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
+
+        // Click on "Allow" button in the system dialog
+        try {
+            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
+            if (allowButton.exists() && allowButton.isEnabled()) {
+                allowButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
 
         onView(withText("ALL IMAGES")).check(matches(isDisplayed()));
         onView(withText("ALL IMAGES")).perform(click());
@@ -159,6 +174,8 @@ public class AdminIntentTest {
 
     @Test
     public void testDeleteUser() throws InterruptedException {
+        dealWithNotificationPopUp();
+
 
         onView(withText("USERS")).check(matches(isDisplayed()));
         onView(withText("USERS")).perform(click());
@@ -192,6 +209,8 @@ public class AdminIntentTest {
 
     @Test
     public void testGenerateCode() throws InterruptedException{
+        dealWithNotificationPopUp();
+
 
         onView(withText("ADMIN")).check(matches(isDisplayed()));
         onView(withText("ADMIN")).perform(click());
@@ -212,11 +231,26 @@ public class AdminIntentTest {
 
     @Test
     public void testReturn(){
+        dealWithNotificationPopUp();
         onView(withText("RETURN")).perform(click());
 
         // Check if the main activity is started
         intended(hasComponent(MainActivity.class.getName()));
 
+    }
+
+    public void dealWithNotificationPopUp(){
+        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
+
+        // Click on "Allow" button in the system dialog
+        try {
+            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
+            if (allowButton.exists() && allowButton.isEnabled()) {
+                allowButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 

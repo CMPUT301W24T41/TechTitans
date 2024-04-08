@@ -23,6 +23,10 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,30 +58,52 @@ public class UserProfileIntentTest {
 
     @Test
     public void testProfEdit() throws InterruptedException {
+
+        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
+
+        // Click on "Allow" button in the system dialog
+        try {
+            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
+            if (allowButton.exists() && allowButton.isEnabled()) {
+                allowButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
         // get to profile
+        Thread.sleep(3000);
+
         onView(withText("Profile")).perform(click());
 
 
-        onView(withText("First Name")).check(matches(isDisplayed()));
-        onView(withText("Last Name")).check(matches(isDisplayed()));
-        onView(withText("Contact")).check(matches(isDisplayed()));
+        onView(withId(R.id.user_first_name)).check(matches(isDisplayed()));
+        onView(withId(R.id.user_last_name)).check(matches(isDisplayed()));
+        onView(withId(R.id.user_number)).check(matches(isDisplayed()));
+        onView(withId(R.id.user_home_page)).check(matches(isDisplayed()));
+
 
 
         //verify editing can be opened
-        onView(withText("Edit")).perform(click());
+        onView(withId(R.id.editButton)).perform(click());
 
         onView(withId(R.id.editFirstName)).check(matches(isDisplayed()));
         onView(withId(R.id.editLastName)).check(matches(isDisplayed()));
         onView(withId(R.id.editContact)).check(matches(isDisplayed()));
         onView(withId(R.id.editProfileImage)).check(matches(isDisplayed()));
+        onView(withId(R.id.editURL)).check(matches(isDisplayed()));
 
         onView(withId(R.id.editFirstName)).perform(clearText());
         onView(withId(R.id.editLastName)).perform(clearText());
         onView(withId(R.id.editContact)).perform(clearText());
+        onView(withId(R.id.editURL)).perform(clearText());
+
 
         onView(withId(R.id.editFirstName)).perform(typeText("John"));
         onView(withId(R.id.editLastName)).perform(typeText("Smith"));
-        onView(withId(R.id.editContact)).perform(typeText("johnsmith@mail.com"));
+        onView(withId(R.id.editContact)).perform(typeText("7801234567"));
+        onView(withId(R.id.editURL)).perform(typeText("google.ca"));
+
+
 
 
         //sleeping to avoid crash
@@ -87,12 +113,15 @@ public class UserProfileIntentTest {
 
         onView(withText("John")).check(matches(isDisplayed()));
         onView(withText("Smith")).check(matches(isDisplayed()));
-        onView(withText("johnsmith@mail.com")).check(matches(isDisplayed()));
+        onView(withText("7801234567")).check(matches(isDisplayed()));
+        onView(withText("http://google.ca")).check(matches(isDisplayed()));
+
 
 
     }
 
 
+    // Trying to edit profile twice to see if it works
     @Test
     public void doubleProfEditTest() throws InterruptedException {
         testProfEdit();
@@ -108,6 +137,9 @@ public class UserProfileIntentTest {
         onView(withId(R.id.buttonSave)).perform(click());
 
         onView(withText("JoJo")).check(matches(isDisplayed()));
+        onView(withText("Smith")).check(matches(isDisplayed()));
+        onView(withText("7801234567")).check(matches(isDisplayed()));
+        onView(withText("http://google.ca")).check(matches(isDisplayed()));
 
 
     }

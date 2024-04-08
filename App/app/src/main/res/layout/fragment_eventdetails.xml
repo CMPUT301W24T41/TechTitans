@@ -146,7 +146,7 @@
         <ImageButton
             android:id="@+id/poster"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:background="@color/lightBlue"
             android:contentDescription="@string/event_poster"
             android:contextClickable="true"

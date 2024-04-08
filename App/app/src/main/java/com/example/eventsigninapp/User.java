@@ -11,6 +11,9 @@ import java.util.HashSet;
 
 public class User implements Serializable {
 
+    /**
+     * This variable stores the URL of the all users' profile picture in Firebase Storage
+     */
     private static final String profilePicpath = "gs://eventsigninapp-2ec69.appspot.com/profile_pictures/";
 
     /**
@@ -49,19 +52,40 @@ public class User implements Serializable {
     private ArrayList<String> hostingEvents;
 
     /**
-     * This variable stores the picture of the user
+     * This variable stores the picture of the user as a Uri object
      */
     private Uri picture;
+
+    /**
+     * This variable stores the URL of the user's profile picture
+     */
     private String imgUrl;
+
+    /**
+     * This variable stores the Firebase Cloud Messaging (FCM) token associated with the user
+     */
     private String fcmToken;
+
+    /**
+     * This variable stores the initials of the user, which can be used as a representation if the picture is unavailable
+     */
     private String initials;
 
+    /**
+     * This variable stores the URL of the user's homepage, if applicable
+     */
     private String homePageUrl;
 
-
-
+    /**
+     * This variable indicates whether the user has administrative privileges
+     */
     private Boolean admin;
+
+    /**
+     * This variable indicates whether the user's profile image is set or not
+     */
     private Boolean profileSet;
+
 
     protected User() {
         attendingEvents = new ArrayList<>();
@@ -99,18 +123,17 @@ public class User implements Serializable {
         this.homePageUrl = homepage;
     }
 
-    protected User(String id, String first, String last, String contact,String homepage, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin, Boolean profileSet) {
+    protected User(String id, String first, String last, String contact, String homepage, ArrayList<String> attendingEvents, ArrayList<String> hostingEvents, Boolean admin, Boolean profileSet) {
         this(id, first, last);
         this.contact = contact;
         this.homePageUrl = homepage;
         this.attendingEvents = attendingEvents;
         this.hostingEvents = hostingEvents;
         this.admin = admin;
-        if(profileSet != null) {
+        if (profileSet != null) {
             this.profileSet = profileSet;
         }
-}
-
+    }
 
 
     /**
@@ -197,7 +220,7 @@ public class User implements Serializable {
     }
 
     /**
-     * This method should be used to set the contact information of the user
+     * This method should be used to set the contact information of the user.
      *
      * @param contact the contact information of the user
      */
@@ -205,45 +228,80 @@ public class User implements Serializable {
         this.contact = contact;
     }
 
-
+    /**
+     * This method retrieves the picture of the user.
+     *
+     * @return the URI of the user's picture
+     */
     public Uri getPicture() {
         return this.picture;
     }
 
+    /**
+     * This method sets the picture of the user.
+     *
+     * @param picture the URI of the user's picture
+     */
     public void setPicture(Uri picture) {
         this.picture = picture;
     }
 
+    /**
+     * This method retrieves the URL of the user's picture.
+     *
+     * @return the URL of the user's picture
+     */
     public String getImgUrl() {
         return imgUrl;
     }
 
+    /**
+     * This method sets the URL of the user's picture.
+     *
+     * @param imgUrl the URL of the user's picture
+     */
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
 
+    /**
+     * This method sets the Firebase Cloud Messaging (FCM) token associated with the user.
+     *
+     * @param fcmToken the FCM token
+     */
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
 
-    ;
-
+    /**
+     * This method retrieves the Firebase Cloud Messaging (FCM) token associated with the user.
+     *
+     * @return the FCM token
+     */
     public String getFcmToken() {
         return fcmToken;
     }
 
+    /**
+     * This method checks if the user is an admin.
+     *
+     * @return true if the user is an admin, false otherwise
+     */
     public Boolean isAdmin() {
         return admin;
     }
 
-
+    /**
+     * This method sets the user's admin status.
+     *
+     * @param admin true if the user is an admin, false otherwise
+     */
     public void setAdmin(Boolean admin) {
         this.admin = admin;
     }
 
-
     /**
-     * This method should be used to delete the picture of the user
+     * This method should be used to delete the user's picture.
      */
     public void deletePicture() {
         this.picture = null;
@@ -251,7 +309,9 @@ public class User implements Serializable {
     }
 
     /**
-     * This method should be used to generate and set the initials of the user
+     * This method generates and sets the initials of the user.
+     *
+     * @return the generated initials
      */
     private String generateInitials() {
         StringBuilder initialsBuilder = new StringBuilder();
@@ -267,19 +327,48 @@ public class User implements Serializable {
     }
 
     /**
-     * This method should be used to get the initials of the user
+     * This method retrieves the initials of the user.
+     *
      * @return the initials of the user
      */
     public String getInitials() {
         return generateInitials();
     }
 
-    public String getHomePageUrl() {return homePageUrl;}
-    public void setHomePageUrl(String homePageUrl) {this.homePageUrl = homePageUrl;}
+    /**
+     * This method retrieves the URL of the user's homepage.
+     *
+     * @return the URL of the user's homepage
+     */
+    public String getHomePageUrl() {
+        return homePageUrl;
+    }
 
-    public Boolean isProfileSet() {return profileSet;}
+    /**
+     * This method sets the URL of the user's homepage.
+     *
+     * @param homePageUrl the URL of the user's homepage
+     */
+    public void setHomePageUrl(String homePageUrl) {
+        this.homePageUrl = homePageUrl;
+    }
 
-    public void setProfileSet(Boolean profileSet){
+    /**
+     * This method checks if the user's profile is set up.
+     *
+     * @return true if the user's profile is set up, false otherwise
+     */
+    public Boolean isProfileSet() {
+        return profileSet;
+    }
+
+    /**
+     * This method sets the user's profile status.
+     *
+     * @param profileSet true if the user's profile is set up, false otherwise
+     */
+    public void setProfileSet(Boolean profileSet) {
         this.profileSet = profileSet;
     }
 }
+
