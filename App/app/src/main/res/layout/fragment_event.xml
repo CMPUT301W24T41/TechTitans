@@ -108,8 +108,8 @@
                 android:layout_gravity="start"
                 android:textSize="20sp"
                 android:layout_margin="3dp"
-                android:padding="5dp"
-                android:gravity="top"
+                android:padding="9dp"
+                android:textColor="@color/black"
                 android:textColorHint="#827717"
                 android:hint="@string/pick_date" />
         </androidx.cardview.widget.CardView>
