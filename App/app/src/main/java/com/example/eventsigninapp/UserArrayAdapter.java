@@ -78,20 +78,24 @@ public class UserArrayAdapter extends ArrayAdapter<User> implements DatabaseCont
                 lastName.setTextColor(Color.parseColor("#2196F3"));
                 Integer count =  event.getCheckedInCount(user.getId());
                 userCheckedInCount.setText(String.valueOf(count));
+
+                // For Signed Up
+                if (event.getCheckedInCount(user.getId()) == null) {
+                    userCheckedInCount.setText("0");
+                }
             } else {
                 firstName.setText(user.getFirstName());
                 lastName.setText(user.getLastName());
 
-                // FIXME
-                if (event.getCheckedInCount(user.getId()) == null) {
-                    userCheckedInCount.setText(0);
-                    userCheckedInCount.setVisibility(View.INVISIBLE);
-                }
-
                 Integer count =  event.getCheckedInCount(user.getId());
                 userCheckedInCount.setText(String.valueOf(count));
 
+                // For Signed Up
+                if (event.getCheckedInCount(user.getId()) == null) {
+                    userCheckedInCount.setText("0");
                 }
+
+            }
         }
         else if (layoutID == R.layout.admin_user_list_item) {
             User user = users.get(position);
