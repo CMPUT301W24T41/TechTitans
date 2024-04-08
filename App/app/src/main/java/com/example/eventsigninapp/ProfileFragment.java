@@ -78,8 +78,8 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         contact = rootView.findViewById(R.id.user_number);
         homepage = rootView.findViewById(R.id.user_home_page);
         profPic = rootView.findViewById(R.id.profilePicture);
-
         profPicLogo = rootView.findViewById(R.id.editProfileSubtext);
+
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
@@ -135,6 +135,13 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
 
 
         profPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserController.selectImage(ProfileFragment.this);
+            }
+        });
+
+        profPicLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UserController.selectImage(ProfileFragment.this);
