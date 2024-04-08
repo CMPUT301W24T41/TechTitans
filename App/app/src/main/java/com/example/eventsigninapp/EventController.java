@@ -11,11 +11,14 @@ public class EventController {
 
     public void checkInUser(String uuid) throws AlreadyCheckedInException {
         if (event.isUserCheckedIn(uuid)) {
-            Log.e("CHECKIN", "exception thrown");
-            throw new AlreadyCheckedInException("Attendee is already checked in to the event");
+            event.increaseCheckedInCount(uuid);
+        }
+        else {
+            event.increaseCheckedInCount(uuid);         // Setting checked in count to 1
+            event.addCheckedInUser(uuid);
+
         }
 
-        event.addCheckedInUser(uuid);
     }
 
     public void signUpUser(String uuid) throws EventFullException, AlreadySignedUpException {

@@ -9,3 +9,5 @@
 local.properties
 secrets.properties
 local.defaults.properties
+App/local.defaults.properties
+App/secrets.properties

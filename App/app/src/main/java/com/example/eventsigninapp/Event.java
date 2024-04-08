@@ -5,7 +5,9 @@ import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
+
 import com.google.firebase.firestore.GeoPoint;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,17 +24,21 @@ public class Event implements Serializable {
 
     // The capacity of the event, 0 if uncapped
     private int capacity;
-    private Collection<String> signedUpUsersUUIDs; // collection of signed up users
-    private Collection<String> checkedInUsersUUIDs; // collection of checked in users
+
+    private ArrayList<String> signedUpUsersUUIDs; // collection of signed up users
+    private ArrayList<String> checkedInUsersUUIDs; // collection of checked in users
+
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
     private GeoPoint location;
+
     private final Date date;
     private String creatorUUID;
     private String description;
     private String eventCheckInQrCodeString;
     private String eventDetailsQrCodeString;
+    private HashMap<String, Integer> checkedInEventCount;
 
     public Event() {
         //TODO: generate a unique id on creation
@@ -47,6 +53,7 @@ public class Event implements Serializable {
         location = null;
         date = null;
         capacity = 0;
+        checkedInEventCount = new HashMap<>();
     }
 
     public Event(String creatorUUID) {
@@ -100,7 +107,9 @@ public class Event implements Serializable {
         this.name = name;
     }
 
+
     public GeoPoint getLocation() {
+
         return this.location;
     }
 
@@ -108,7 +117,9 @@ public class Event implements Serializable {
      * This method should be used to set the location of the event
      * @param location the name of the event
      */
+
     public void setLocation(GeoPoint location) {
+
         this.location = location;
     }
 
@@ -173,6 +184,24 @@ public class Event implements Serializable {
         return checkedInUsersUUIDs.contains(uuid);
     }
 
+    public void increaseCheckedInCount(String uuid) {
+        if (checkedInEventCount.containsKey(uuid)) {
+            Integer count = checkedInEventCount.get(uuid);
+            checkedInEventCount.put(uuid, count + 1);
+        }
+        else {
+            checkedInEventCount.put(uuid, 1);
+        }
+    }
+
+    public void addCheckedInCount(String uuid, Integer count) {
+        checkedInEventCount.put(uuid, count);
+    }
+
+    public Integer getCheckedInCount(String uuid) {
+        return checkedInEventCount.get(uuid);
+    }
+
     /**
      * This method should be used to add a user to the signed up users list
      * @param uuid the uuid of the user to sign up
@@ -210,6 +239,7 @@ public class Event implements Serializable {
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
         eventMap.put("description", description);
+        eventMap.put("checkedInEventCount", checkedInEventCount);
         return eventMap;
     }
 
@@ -271,13 +301,6 @@ public class Event implements Serializable {
         return this.getUuid().equals(event.getUuid());
     }
 
-    public String getEventCheckInQrCodeString() {
-        return eventCheckInQrCodeString;
-    }
-
-    public void setEventCheckInQrCodeString(String eventCheckInQrCodeString) {
-        this.eventCheckInQrCodeString = eventCheckInQrCodeString;
-    }
 
     public void setCheckedInUsersUUIDs(ArrayList<String> checkedInUsers) {
         this.checkedInUsersUUIDs = checkedInUsers;
@@ -285,5 +308,14 @@ public class Event implements Serializable {
 
     public void setSignedUpUsersUUIDs(ArrayList<String> signedUpUsers) {
         this.signedUpUsersUUIDs = signedUpUsers;
+
+    }
+
+    public String getEventCheckInQrCodeString() {
+        return eventCheckInQrCodeString;
+    }
+
+    public void setEventCheckInQrCodeString(String eventCheckInQrCodeString) {
+        this.eventCheckInQrCodeString = eventCheckInQrCodeString;
     }
 }

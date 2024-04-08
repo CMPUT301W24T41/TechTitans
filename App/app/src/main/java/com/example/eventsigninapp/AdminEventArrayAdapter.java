@@ -27,7 +27,6 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
     private ArrayList<Event> events;
     private Context context;
     private int layoutID;
-    private ImageView eventPoster;
     private DatabaseController databaseController = new DatabaseController();
 
     // Constructor
@@ -55,7 +54,7 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
             TextView organizerID = view.findViewById(R.id.adminViewOrganizerID);
             TextView eventID = view.findViewById(R.id.adminViewEventID);
             TextView eventCapacity = view.findViewById(R.id.adminViewEventCapacity);
-            eventPoster = view.findViewById(R.id.adminViewEventPosterImage);
+            ImageView eventPoster = view.findViewById(R.id.adminViewEventPosterImage);
             Button deleteButton = view.findViewById(R.id.adminViewDeleteEvent);
             ImageView deleteImage = view.findViewById(R.id.adminViewEventXButton);
 
@@ -88,7 +87,7 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
                     // Set poster URI to null, remove image, and notify adapter
                     events.get(position).setPosterUri(null);
                     databaseController.deleteEventPicture(event);
-                    notifyDataSetChanged();
+                    eventPoster.setImageResource(R.drawable.event_image);
                 }
             });
         }

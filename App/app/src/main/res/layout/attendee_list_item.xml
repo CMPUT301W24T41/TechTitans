@@ -19,7 +19,10 @@
 
     <TextView
         android:id="@+id/first_name"
-        android:layout_width="wrap_content"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/first_name"
@@ -28,10 +31,28 @@
 
     <TextView
         android:id="@+id/last_name"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/lastName"
+        android:textSize="15sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/checked_in_times"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Checked In Times:"
+        android:textSize="15sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/checked_in_count"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="0"
         android:textSize="15sp"
         android:textColor="@color/black"/>
 
