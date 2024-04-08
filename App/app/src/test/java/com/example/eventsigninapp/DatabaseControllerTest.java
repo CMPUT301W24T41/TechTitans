@@ -112,7 +112,7 @@ public class DatabaseControllerTest {
     @Test
     public void testPutUserToFirestore() {
         // Arrange
-        User testUser = new User("testId", "John", "Doe", "testContact", new ArrayList<>(), new ArrayList<>(), false);
+        User testUser = new User("testId", "John", "Doe", "testContact","token", new ArrayList<>(), new ArrayList<>(),false, false);
 
         Map<String, Object> expectedUserData = new HashMap<>();
         expectedUserData.put("id", "testId");
@@ -230,7 +230,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void updateWithProfPictureFromWeb_Successful() {
+    public void updateWithProfPictureFromWebSuccessful() {
         // Arrange
         String imageUrl = "https://example.com/image.jpg";
         when(mockStorage.getReferenceFromUrl(any())).thenReturn(mockStorageReference);
@@ -270,7 +270,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void uploadProfilePicture_Successful() {
+    public void uploadProfilePictureSuccessful() {
         // Arrange
         when(mockStorage.getReference()).thenReturn(mockStorageReference);
         StorageReference childStorage = mock(StorageReference.class);
