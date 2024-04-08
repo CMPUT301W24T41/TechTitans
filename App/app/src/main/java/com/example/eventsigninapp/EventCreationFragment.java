@@ -89,9 +89,9 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         String eventNameText = eventCreationView.getEventName();
         String eventDescriptionText = eventCreationView.getEventDescription();
         // Subscribe to topics ie create the 3 types of topic for this event
-        subscribeToTopic(event.getUuid()+"-Important");
-        subscribeToTopic(event.getUuid()+"-Reminders");
-        subscribeToTopic(event.getUuid()+"-Promotions");
+//        subscribeToTopic(event.getUuid()+"-Important");
+//        subscribeToTopic(event.getUuid()+"-Reminders");
+//        subscribeToTopic(event.getUuid()+"-Promotions");
 
 
         if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {

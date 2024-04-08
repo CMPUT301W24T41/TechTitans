@@ -1,7 +1,6 @@
 package com.example.eventsigninapp;
 
 import android.location.Location;
-import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
@@ -82,7 +81,29 @@ public class DatabaseController {
         notificationData.put("topic", topic);
         DocumentReference notificationDocument = db.collection("notifications").document(id);
         notificationDocument.set(notificationData, SetOptions.merge());
+        DocumentReference announcementDocument = db.collection("announcements").document(topic);
+        announcementDocument.set(notificationData, SetOptions.merge());
     }
+
+    public void getAnnouncementFromFirestore(String topic, getAnnouncementCallback callback) {
+        DocumentReference announcementRef = db.collection("announcements").document(topic);
+        announcementRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Document exists, invoke the callback with the document
+                    callback.onCallback(document);
+                } else {
+                    // Document doesn't exist
+                    callback.onCallback(null); // Passing null to indicate document doesn't exist
+                }
+            } else {
+                // Error getting document
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
 
 
     /**
@@ -859,7 +880,6 @@ public class DatabaseController {
 
     }
 
-
     public interface GetAllImagesCallback {
         void onGetAllImagesCallback(ArrayList<Uri> allImages);
     }
@@ -925,6 +945,10 @@ public class DatabaseController {
     }
 
 
+    public interface getAnnouncementCallback {
+        void onCallback(DocumentSnapshot document);
+        void onFailure(Exception e);
+    }
 
 
     public interface EventImageUriCallbacks {

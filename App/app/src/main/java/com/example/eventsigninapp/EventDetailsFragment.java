@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +29,22 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class acts as a controller for the event details page.
@@ -39,7 +52,7 @@ import java.util.ArrayList;
 public class EventDetailsFragment extends Fragment implements DatabaseController.EventImageUriCallbacks {
     DatabaseController databaseController = new DatabaseController();
     UserController userController = new UserController();
-    private TextView eventDescription, announcement;
+    private TextView eventDescription;
     private ImageView eventPoster;
     private Button backButton, editEventButton, notifyUsersButton, menuButton;
     private AppCompatButton detailsQrCodeButton, checkInQrCodeButton;
@@ -48,6 +61,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
     private ArrayList<String> signedUpUsersUUIDs = new ArrayList<>();
     private String eventCreator;
     private ListPopupWindow actionSelectionPopup;
+    private ExpandableListView announcements;
 
     /**
      * Used for passing in data through Bundle from
@@ -94,7 +108,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
 
         // Find views
         eventDescription = view.findViewById(R.id.eventDetails);
-        announcement = view.findViewById(R.id.eventAnnouncements);
+        announcements = view.findViewById(R.id.eventAnnouncements);
         eventPoster = view.findViewById(R.id.poster);
         editEventButton = view.findViewById(R.id.editEventButton);
         notifyUsersButton = view.findViewById(R.id.notifyUsersButton);
@@ -103,6 +117,8 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         detailsQrCodeButton = view.findViewById(R.id.detailsQrCodeButton);
         checkInQrCodeButton = view.findViewById(R.id.checkInQrCodeButton);
         menuButton = view.findViewById(R.id.action_selection);
+        announcements = view.findViewById(R.id.eventAnnouncements);
+
 
         menuButton.setVisibility(View.GONE);
         signUpButton.setVisibility(View.GONE);
@@ -239,7 +255,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
 
     private void showSignUpPopup(Event event) {
 
-        String[] signupOptions = {"All Including promotions", "Important updates only", "Reminders only", "None"};
+        String[] signupOptions = {"All Including promotions", "Important updates only", "Reminders and updates", "None"};
 
         // Inflate the custom layout
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.notification_preferences_dialog, null);
@@ -282,71 +298,40 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
         signUpButton.setClickable(false);
         databaseController.addSignedUpUser(event, userController.getUser());
         databaseController.addEventToUser(userController.getUser(),event);
-        subscribeToNotifications(selectedItem, event);
+
+        switch (selectedItem) {
+            case "None":
+                return;
+            case "Important updates only":
+                subscribeToNotifications("-Important", event);
+                Toast.makeText(getContext(), "Subscribed to important updates only", Toast.LENGTH_SHORT).show();
+                break;
+            case "Reminders and updates":
+                subscribeToNotifications("-Reminder", event);
+                subscribeToNotifications("-Important", event);
+                Toast.makeText(getContext(), "Subscribed to reminders and updates", Toast.LENGTH_SHORT).show();
+                break;
+            case "All Including promotions":
+                subscribeToNotifications("-Important", event);
+                subscribeToNotifications("-Reminder", event);
+                subscribeToNotifications("-Promotions", event);
+                Toast.makeText(getContext(), "Subscribed to all notifications", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     private void subscribeToNotifications(String selectedItem, Event event) {
-
-        if(selectedItem.equals("None")){
-            return;
-        } else if (selectedItem.equals("Important updates only")) {
-            selectedItem = "Important";
-        } else if (selectedItem.equals("Reminders only")) {
-            selectedItem = "Reminder";
-        } else if (selectedItem.equals("All")) {
-            FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + "-Important")
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            String msg = "Subscribed";
-                            if (!task.isSuccessful()) {
-                                msg = "Subscribe failed";
-                            }
-                            Log.d("EventDetails", msg + " to " + event.getUuid() + "-Important");
-                            //Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + "-Reminder")
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            String msg = "Subscribed";
-                            if (!task.isSuccessful()) {
-                                msg = "Subscribe failed";
-                            }
-                            Log.d("EventDetails", msg + " to " + event.getUuid() + "-Reminder");
-                            //Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + "-Promotions")
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            String msg = "Subscribed";
-                            if (!task.isSuccessful()) {
-                                msg = "Subscribe failed";
-                            }
-                            Log.d("EventDetails", msg + " to " + event.getUuid() + "-Promotions");
-                            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            return;
-
-        }
-
-        String finalSelectedItem = selectedItem;
-        FirebaseMessaging.getInstance().subscribeToTopic(selectedItem + event.getUuid())
-
+        FirebaseMessaging.getInstance().subscribeToTopic(event.getUuid() + selectedItem)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Subscribed";
-                        if (!task.isSuccessful()) {
-                            msg = "Subscribe failed";
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe failed";
+                            }
+                            Log.d("EventDetails", msg + " to " + event.getUuid() + selectedItem);
+
                         }
-                        Log.d("EventDetails", msg + " to " + finalSelectedItem + event.getUuid());
-                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
                 });
 
     }
@@ -468,4 +453,7 @@ public class EventDetailsFragment extends Fragment implements DatabaseController
             });
         }
     }
+
+
+
 }
