@@ -82,7 +82,6 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
             databaseController = new DatabaseController();
             databaseController.findEventByQrResult(resultString, this);
-
         }
     }
 
@@ -127,6 +126,9 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
     }
 
 
+    /**
+     * Retrieves the user's location and checks them into the event.
+     */
     private void getUserLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
@@ -170,7 +172,6 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
             this.event = event;
 
             if (!Objects.equals(event.getEventCheckInQrCodeString(), this.resultString)) {
-
                 openEventDetails();
             } else {
                 UserController userController = new UserController();
@@ -183,6 +184,9 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                databaseController.getEventPoster(event.getUuid(), this);
+                showCheckInConfirmation();
             }
         }
     }
@@ -231,11 +235,11 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
 
     @Override
     public void onEventPosterCallback(Uri imageUri) {
-        event.setPosterUri(imageUri);
-        if (!(imageUri == null)) {
-            event.setPosterUri(imageUri);
+        if (imageUri == null) {
+            // Load the default event image
+            return;
         }
-        // showCheckInConfirmation();
+        event.setPosterUri(imageUri);
     }
 
     @Override
