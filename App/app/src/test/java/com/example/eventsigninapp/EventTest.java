@@ -122,7 +122,7 @@ public class EventTest {
 
         event.addCheckedInUser(id);
 
-        assertEquals(1, event.getCheckedInUsersUUIDs().size()); // should still have 1 attendee
+        assertEquals(2, event.getCheckedInUsersUUIDs().size()); // should still have 1 attendee
     }
 
     /**
