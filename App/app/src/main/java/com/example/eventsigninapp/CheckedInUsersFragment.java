@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,10 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
     private Button mapButton;
     private ArrayList<User> checkedInUsers;
     private Event event;
+    private Integer count;
+    private int firstMilestone;
+    private int secondMilestone;
+    private int thirdMilestone;
 
 
     @Override
@@ -118,12 +123,34 @@ public class CheckedInUsersFragment extends Fragment implements DatabaseControll
             HashMap<String, Long> checkedInUsersCount = (HashMap<String, Long>) users;
             for (String uuid : checkedInUsersCount.keySet()) {
                 Long value = checkedInUsersCount.get(uuid);
-                Integer count = (int) (long) value;
+                count = (int) (long) value;
                 event.addCheckedInCount(uuid, count);
             }
+            checkMilestones();
 
         } catch (Exception e) {
             Log.e("DEBUG", String.format("Error getting checked in user count: %s", e.getMessage()));
+        }
+    }
+
+    private void checkMilestones() {
+        if (!event.isCapped()) {
+            firstMilestone = 50;
+            secondMilestone = 150;
+            thirdMilestone = 300;
+        } else {
+            int cap = event.getCapacity();
+            firstMilestone = (int) Math.round(cap * 0.3);
+            secondMilestone = (int) Math.round(cap * 0.7);
+            thirdMilestone = (int) Math.round(cap * 0.9);
+        }
+
+        if (count >= firstMilestone && count < secondMilestone) {
+            Toast.makeText(getContext(), String.format(Locale.CANADA, "Congratulations! %d attendees are checked in! (your first milestone)", count), Toast.LENGTH_LONG).show();
+        } else if (count >= secondMilestone && count < thirdMilestone) {
+            Toast.makeText(getContext(), String.format(Locale.CANADA, "Congratulations! %d attendees are checked in! (your second milestone)", count), Toast.LENGTH_LONG).show();
+        } else if (count >= thirdMilestone) {
+            Toast.makeText(getContext(), String.format(Locale.CANADA, "Congratulations! %d attendees are checked in! (your third milestone)", count), Toast.LENGTH_LONG).show();
         }
     }
 
