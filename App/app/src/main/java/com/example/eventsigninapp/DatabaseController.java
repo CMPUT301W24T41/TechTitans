@@ -726,9 +726,11 @@ public class DatabaseController {
                         Date date =  document.getDate("date");
                         Object location = document.getString("location");
                         String eventDetailsQrCodeString = document.getString("eventDetailsQrCodeString");
+                        String eventCheckInQrCodeString = document.getString("eventCheckInQrCodeString");
                         ArrayList<String> checkedInUsers = (ArrayList) document.get("checkedInUsers");
                         ArrayList<String> signedUpUsers = (ArrayList) document.get("signedUpUsers");
                         String description = document.getString("description");
+
 
                         userCheckedInCount[0] = (HashMap<?, ?>) document.get("checkedInEventCount");
                         HashMap<String, Long> checkedInUsersCountStr = (HashMap<String, Long>) userCheckedInCount[0];
@@ -742,6 +744,7 @@ public class DatabaseController {
 //                        event.setDate(date);
 //                        event.setLocation(location);
                         event.setEventDetailsQrCodeString(eventDetailsQrCodeString);
+                        event.setEventCheckInQrCodeString(eventCheckInQrCodeString);
                         for (String checkedUser: checkedInUsers) {
                             event.addCheckedInUser(checkedUser);
                         }
