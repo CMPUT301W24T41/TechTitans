@@ -87,6 +87,10 @@ public class EventCreationView {
         return eventDescription.getText().toString().trim();
     }
 
+    public String getDate() {
+        return dateButton.getText().toString().trim();
+    }
+
     interface ImageButtonListener {
         void onImageButtonClick();
     }

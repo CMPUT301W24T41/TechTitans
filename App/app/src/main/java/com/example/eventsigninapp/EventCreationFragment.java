@@ -108,15 +108,18 @@ public class EventCreationFragment extends Fragment implements EventCreationView
 
         String eventNameText = eventCreationView.getEventName();
         String eventDescriptionText = eventCreationView.getEventDescription();
+        String DateString = eventCreationView.getDate();
+
         // Subscribe to topics ie create the 3 types of topic for this event
         subscribeToTopic(event.getUuid()+"-Important");
         subscribeToTopic(event.getUuid()+"-Reminders");
         subscribeToTopic(event.getUuid()+"-Promotions");
 
-        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
+        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty() && !DateString.isEmpty()) {
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
             event.setPosterUri(eventCreationView.getPosterUri());
+            event.setDate(DateString);
 
             Bitmap bitmap = Organizer.generateQRCode(event.getEventCheckInQrCodeString());
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -145,7 +148,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
                 .addToBackStack(null)
                 .commit();
         } else {
-            Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please fill up all fields", Toast.LENGTH_SHORT).show();
         }
     }
     private void subscribeToTopic(String topic) {
