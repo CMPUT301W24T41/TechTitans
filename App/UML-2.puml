@@ -172,13 +172,26 @@ EventCreationFragment -- UserController
 EventCreationFragment "1" *-- "1" EventCreationView
 
 class EventCreationView {
-    -EditText eventEditText
+    -EditText eventTitle
     -EditText eventDescription
-    -Button imageButton
+    -EditText eventCapacity
+    -ImageView eventPoster
+    -Button locationPickerButton
+    -EditText locationPickerText
     -Button confirmButton
-    -ImageView captureImage
+    -Button setCheckInButton
+    -Button setDetailsButton
+    -Button setDetailsButton
     -View rootView
+    -DatePickerDialog datePickerDialog
+    -View.OnClickListener dateButtonClickListener
+    -EditText dateButton
+    -String date
     -Uri posterUri
+    +setDateButtonClickListener(View.OnClickListener listener)
+    +setPickLocationListener(PickLocationListener listener)
+    +setListener(EventCreationListener listener)
+    +setEventPoster(Uri uri)
     +setImageButtonListener(listener: ImageButtonListener)
     +setConfirmButtonListener(listener: ConfirmButtonListener)
     +getEventName(): String
@@ -252,6 +265,70 @@ class QRCodeFragment {
     -String ARG_QR_CODE_BITMAP
     -ImageView qrCodeImageView
 }
+
+class CheckedInUsersFragment {
+    -DatabaseController dbController
+    -UserArrayAdapter userAdapter
+    -TextView checkedInCount
+    -ListView checkedInList
+    -Button backButton
+    -Button mapButton
+    -ArrayList<User> checkedInUsers
+    -Event event
+    -Integer count
+    -int firstMilestone
+    -int secondMilestone
+    -int thirdMilestone
+    -checkMilestones()
+}
+CheckedInUsersFragment "0...1" o-- "1" DatabaseController
+CheckedInUsersFragment "0...1" o-- "1" UserArrayAdapter
+GetCheckedInUsersCallback <.. CheckedInUsersFragment
+GetCheckedInUsersCountCallback <.. CheckedInUsersFragment
+EventDetailsFragment "0..*" *.. "1" CheckedInUsersFragment
+CheckedInUsersFragment "0..*" *.. "1" MapFragment
+
+class SignedUpUsersFragment {
+    -DatabaseController dbController
+    -UserArrayAdapter userAdapter
+    -TextView signedUpCount
+    -ListView signedUpList
+    -Button backButton
+    -ArrayList<User> signedUpUsers
+    -Event event
+}
+SignedUpUsersFragment "0...1" o-- "1" DatabaseController
+SignedUpUsersFragment "0...1" o-- "1" UserArrayAdapter
+GetSignedUpUsersCallback <.. SignedUpUsersFragment
+EventDetailsFragment "0..*" *.. "1" SignedUpUsersFragment
+
+class LocationPickerDialog {
+    -GoogleMap map
+    -Location selectedLocation
+    -DialogCloseListener listener
+    -String locationQuery
+    -List<Address> addresses
+    -UiSettings mapUI
+    -int ZOOM_LEVEL
+    -showResultOnMap()
+}
+LocationPickerDialog "0...1" o-- "1" DialogCloseListener
+OnMapReadyCallback <.. LocationPickerDialog
+EventCreationFragment "1" *.. "1" LocationPickerDialog
+
+class MapFragment {
+    -Button backButton
+    -TextView eventTitle
+    -DatabaseController dbController
+    -ArrayList<Location> locations
+    -Event event
+    -GoogleMap map
+    -int ZOOM_LEVEL
+    -addMarkersToMap()
+    -getAvgLatLng(): LatLng
+}
+OnMapReadyCallback <.. MapFragment
+GetCheckInLocationCallback <.. MapFragment
 
 'Done
 class User {
