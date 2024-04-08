@@ -1199,10 +1199,11 @@ public class DatabaseController {
             Log.e("AddFCMToken", "Invalid userID");
             return;
         }
+
         Map<String, Object> data = new HashMap<>();
         data.put("fcmToken", token);
-        DocumentReference eventRef = db.collection("users").document(userID);
-        eventRef.set(data, SetOptions.merge())
+        DocumentReference userRef = db.collection("users").document(userID);
+        userRef.update(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
