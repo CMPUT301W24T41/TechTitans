@@ -53,6 +53,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
     TextView contact;
     TextView homepage;
     ImageView profPic;
+    ImageView profPicLogo;
 
     Uri profilePictureUri = userController.getUser().getPicture();
 
@@ -78,6 +79,7 @@ public class ProfileFragment extends Fragment implements EditProfileFragment.OnP
         homepage = rootView.findViewById(R.id.user_home_page);
         profPic = rootView.findViewById(R.id.profilePicture);
 
+        profPicLogo = rootView.findViewById(R.id.editProfileSubtext);
         firstName.setText(userController.getUser().getFirstName());
         lastName.setText(userController.getUser().getLastName());
         contact.setText(userController.getUser().getContact());
