@@ -80,10 +80,13 @@
             android:ems="15"
             android:hint="@string/date_of_the_event"
             android:importantForAutofill="no"
-            android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/createEventDescEditText" />
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/createEventDescEditText"
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true" />
 
 
         <androidx.appcompat.widget.AppCompatButton
