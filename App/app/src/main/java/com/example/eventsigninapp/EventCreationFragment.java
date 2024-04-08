@@ -26,6 +26,7 @@ import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 import kotlin.Unit;
 
@@ -188,6 +189,9 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     public void onPickLocationClick() {
         Bundle bundle = new Bundle();
         String locationQuery = eventCreationView.getLocationQuery();
+        if (Objects.equals(locationQuery, "")){
+            locationQuery ="University of Alberta";
+        }
         bundle.putString("query", locationQuery);
         LocationPickerDialog pickLocation = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
