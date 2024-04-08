@@ -116,27 +116,29 @@
 
         <Button
             android:id="@+id/editButton"
-            android:layout_width="match_parent"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profileDetailsLayout"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="38dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="199dp"
             android:background="@drawable/rounded_button_background"
             android:backgroundTint="@color/color2"
             android:text="Edit Profile"
+            android:padding="13dp"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/deleteButton"
-            android:layout_width="match_parent"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profileDetailsLayout"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="9dp"
             android:background="@drawable/rounded_button_background"
             android:backgroundTint="@color/Red"
+            android:padding="13dp"
             android:text="Delete Picture"
             android:textSize="18sp" />
 
@@ -147,10 +149,11 @@
             android:layout_below="@+id/deleteButton"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="80dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginEnd="9dp"
             android:background="@drawable/rounded_button_background"
             android:backgroundTint="@color/Red"
             android:text="Admin Controls"
+            android:padding="13dp"
             android:textSize="18sp" />
 
     </RelativeLayout>
