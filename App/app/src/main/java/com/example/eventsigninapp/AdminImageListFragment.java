@@ -18,10 +18,10 @@ import java.util.ArrayList;
 public class AdminImageListFragment extends Fragment implements DatabaseController.GetAllImagesCallback {
 
     // Member variables
-    DatabaseController databaseController = new DatabaseController();
-    ArrayList<Uri> images;
-    GridView imageGrid;
-    ImageGridAdapter imageGridAdapter;
+    private DatabaseController databaseController = new DatabaseController();
+    private ArrayList<Uri> images;
+    private GridView imageGrid;
+    private ImageGridAdapter imageGridAdapter;
 
     // Default constructor
     public AdminImageListFragment(){};

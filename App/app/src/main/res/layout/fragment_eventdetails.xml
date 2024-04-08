@@ -104,6 +104,18 @@
             android:text="@string/event_description_qr_code"
             android:textColor="#EEF5FF" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/see_location_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/see_location_text"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_below="@id/checkInQrCodeButton"
+            android:backgroundTint="#176887"
+            android:checked="false"
+            android:textColor="#EEF5FF" />
+
         <TextView
             android:id="@+id/eventDetailsHeader"
             android:layout_width="match_parent"

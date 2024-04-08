@@ -93,6 +93,25 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <TextView
+                android:id="@+id/datePickerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="20sp"
+                android:layout_margin="3dp"
+                android:padding="9dp"
+                android:textColor="@color/black"
+                android:textColorHint="#827717"
+                android:hint="@string/pick_date" />
+        </androidx.cardview.widget.CardView>
 
         <!-- Image Section -->
         <androidx.cardview.widget.CardView
@@ -118,6 +137,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
+            app:cardCornerRadius="12dp">
+
+            <EditText
+                android:id="@+id/locationPickerText"
+                android:layout_width="345dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:ems="10"
+                android:hint="@string/pick_location"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="#827717"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/locationPickerButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|center_horizontal"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/location_icon"
+                android:clickable="true" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
 
@@ -125,11 +173,11 @@
                 android:id="@+id/imageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/upload_poster"
-                android:textSize="20sp"
+                android:layout_marginTop="1dp"
                 android:background="@color/blue"
                 android:clickable="true"
-                android:layout_marginTop="1dp"/>
+                android:text="@string/upload_poster"
+                android:textSize="20sp" />
         </androidx.cardview.widget.CardView>
 
 

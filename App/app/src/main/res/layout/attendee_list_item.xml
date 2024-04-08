@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/light_blue_border"
+    android:background="@color/color1"
     android:gravity="center_vertical">
 
     <ImageView
@@ -12,11 +12,17 @@
         android:layout_height="30dp"
         android:layout_margin="4dp"
         android:contentDescription="@string/profile_picture_of_user"
-        android:src="@drawable/ic_default_profile" />
+        android:src="@drawable/ic_default_profile"
+        android:background="@drawable/rounded_corner_profile_bg"
+        android:clipToOutline="true"
+        />
 
     <TextView
         android:id="@+id/first_name"
-        android:layout_width="wrap_content"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/first_name"
@@ -25,10 +31,28 @@
 
     <TextView
         android:id="@+id/last_name"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/lastName"
+        android:textSize="15sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/checked_in_times"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Checked In Times:"
+        android:textSize="15sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/checked_in_count"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="0"
         android:textSize="15sp"
         android:textColor="@color/black"/>
 

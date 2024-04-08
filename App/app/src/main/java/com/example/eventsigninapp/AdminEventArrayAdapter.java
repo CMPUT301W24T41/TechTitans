@@ -19,14 +19,14 @@ import androidx.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements DatabaseController.EventImageUriCallbacks {
+public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements DatabaseController.EventImageUriCallbacks, DatabaseController.GetCheckedInUsersCallback{
 
     // Member variables
     private ArrayList<Event> events;
     private Context context;
     private int layoutID;
-    private ImageView eventPoster;
     private DatabaseController databaseController = new DatabaseController();
 
     // Constructor
@@ -54,7 +54,7 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
             TextView organizerID = view.findViewById(R.id.adminViewOrganizerID);
             TextView eventID = view.findViewById(R.id.adminViewEventID);
             TextView eventCapacity = view.findViewById(R.id.adminViewEventCapacity);
-            eventPoster = view.findViewById(R.id.adminViewEventPosterImage);
+            ImageView eventPoster = view.findViewById(R.id.adminViewEventPosterImage);
             Button deleteButton = view.findViewById(R.id.adminViewDeleteEvent);
             ImageView deleteImage = view.findViewById(R.id.adminViewEventXButton);
 
@@ -65,13 +65,14 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
             eventTitle.setText(event.getName());
             organizerID.setText(String.format(context.getString(R.string.organizerid), event.getCreatorUUID()));
             eventID.setText(String.format(context.getString(R.string.eventid), event.getUuid()));
-            eventCapacity.setText(String.format(context.getString(R.string.division), event.getSignedUpUsersUUIDs().size(), event.getCapacity()));
+            databaseController.getCheckedInUsersFromFirestore(event, this);
+            eventCapacity.setText(String.format(context.getString(R.string.division), event.getCheckedInUsersUUIDs().size(), event.getCapacity()));
 
             // Set onClickListener for delete button
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Remove event from list and notify adapter
+
                     events.remove(event);
                     notifyDataSetChanged();
                     // Delete event from database
@@ -86,7 +87,7 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
                     // Set poster URI to null, remove image, and notify adapter
                     events.get(position).setPosterUri(null);
                     databaseController.deleteEventPicture(event);
-                    notifyDataSetChanged();
+                    eventPoster.setImageResource(R.drawable.event_image);
                 }
             });
         }
@@ -125,5 +126,10 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> implements Datab
     @Override
     public void onError(Exception e) {
         return;
+    }
+
+    @Override
+    public void onGetCheckedInUsersCallback(Event event, ArrayList<?> users) {
+
     }
 }

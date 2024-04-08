@@ -29,7 +29,8 @@
                     android:layout_height="50dp"
                     android:id="@+id/adminViewProfilePictureImage"
                     android:src="@drawable/ic_default_profile"
-
+                    android:background="@drawable/rounded_corner_profile_bg"
+                    android:clipToOutline="true"
                     >
 
                 </ImageView>

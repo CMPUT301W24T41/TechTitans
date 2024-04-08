@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
     android:id="@+id/attendee_list_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
-    tools:context=".AttendeeListActivity">
+    android:background="@color/blue">
 
     <TextView
         android:id="@+id/event_title_text"
@@ -45,10 +43,10 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
 
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/signed_up_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checked_in_title"
-        app:layout_constraintBottom_toTopOf="@id/signed_up_title" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checked_in_title" />
 
     <TextView
         android:id="@+id/signed_up_title"
@@ -60,21 +58,21 @@
         android:text="@string/signed_up_title_text"
 
         android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@id/signed_up_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checked_in_title"
-        app:layout_constraintBottom_toTopOf="@id/signed_up_list"/>
+        app:layout_constraintTop_toBottomOf="@id/checked_in_title" />
 
     <ListView
         android:id="@+id/signed_up_list"
         android:layout_width="match_parent"
         android:layout_height="180dp"
 
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_to_map_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signed_up_title"
-        app:layout_constraintBottom_toTopOf="@id/button_to_map_view" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signed_up_title" />
 
     <Button
         android:id="@+id/button_to_map_view"
@@ -87,11 +85,11 @@
         android:text="@string/go_to_map_text"
 
         android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signed_up_list"/>
+        app:layout_constraintTop_toBottomOf="@id/signed_up_list" />
 
     <Button
         android:id="@+id/back_button"

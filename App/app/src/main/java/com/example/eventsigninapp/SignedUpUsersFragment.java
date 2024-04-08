@@ -30,6 +30,7 @@ public class SignedUpUsersFragment extends Fragment implements DatabaseControlle
 
         Bundle bundle = getArguments();
         if (bundle != null) {
+            Log.e("SIGNUP", "Unpacking " + String.valueOf(bundle.getSerializable("event")));
             event = (Event) bundle.getSerializable("event");
         } else {
             Log.e("DEBUG", "Bundle is null");
@@ -45,7 +46,7 @@ public class SignedUpUsersFragment extends Fragment implements DatabaseControlle
         backButton = view.findViewById(R.id.back_button);
 
         signedUpUsers = new ArrayList<>();
-        userAdapter = new UserArrayAdapter(requireContext(), signedUpUsers);
+        userAdapter = new UserArrayAdapter(requireContext(), signedUpUsers, event);
         dbController = new DatabaseController();
 
         signedUpList.setAdapter(userAdapter);
@@ -69,30 +70,25 @@ public class SignedUpUsersFragment extends Fragment implements DatabaseControlle
 
     @Override
     public void onGetSignedUpUsersCallback(Event event, ArrayList<?> users) {
-        try {
-            if (users.size() == 0) {
-                signedUpCount.setText(String.format(Locale.CANADA, "There are no attendees signed up to your event."));
-            }
+        signedUpCount.setText(String.format(Locale.CANADA, "There are %d attendees signed up to this event.", users.size()));
+        for (int i = 0; i < users.size(); i++) {
+            event.addSignedUpUser((String) users.get(i));
 
-            for (int i = 0; i < users.size(); i++) {
-                event.addSignedUpUser((String) users.get(i));
+            int finalI = i;
+            dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
+                @Override
+                public void onCallback(User user) { // user has a profile
+                    signedUpUsers.add(user);
+                    userAdapter.notifyDataSetChanged();
+                }
 
-                dbController.getUserFromFirestore((String) users.get(i), new DatabaseController.UserCallback() {
-                    @Override
-                    public void onCallback(User user) {
-                        signedUpUsers.add(user);
-                        signedUpCount.setText(String.format(Locale.CANADA, "There are %d attendees signed up to this event.", signedUpUsers.size()));
-                        userAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e("DEBUG", String.format("Error getting signed up users: %s", e.getMessage()));
-                    }
-                });
-            }
-        } catch (Exception e) {
-            Log.e("DEBUG", String.format("Error getting checked in users: %s", e.getMessage()));
+                @Override
+                public void onError(Exception e) { // user has no profile
+                    User user = new User((String) users.get(finalI));
+                    signedUpUsers.add(user);
+                    userAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }
