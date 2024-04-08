@@ -180,7 +180,6 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
                 try {
                     eventController.checkInUser(user.getId());
                     databaseController.pushEventToFirestore(event);
-                    databaseController.getEventPoster(event.getUuid(), this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

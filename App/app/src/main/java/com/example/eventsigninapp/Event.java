@@ -27,6 +27,7 @@ public class Event implements Serializable {
 
     private ArrayList<String> signedUpUsersUUIDs; // collection of signed up users
     private ArrayList<String> checkedInUsersUUIDs; // collection of checked in users
+
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
@@ -300,12 +301,14 @@ public class Event implements Serializable {
         return this.getUuid().equals(event.getUuid());
     }
 
+
     public void setCheckedInUsersUUIDs(ArrayList<String> checkedInUsers) {
         this.checkedInUsersUUIDs = checkedInUsers;
     }
 
     public void setSignedUpUsersUUIDs(ArrayList<String> signedUpUsers) {
         this.signedUpUsersUUIDs = signedUpUsers;
+
     }
 
     public String getEventCheckInQrCodeString() {

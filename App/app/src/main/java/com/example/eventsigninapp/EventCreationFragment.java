@@ -21,6 +21,9 @@ import androidx.fragment.app.Fragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.ByteArrayOutputStream;
 
@@ -30,10 +33,14 @@ import kotlin.Unit;
  * A simple {@link Fragment} subclass for managing event creation.
  * Allows users to input event details, select images, and generate QR codes for events.
  */
-public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener, EventCreationView.PickLocationListener, LocationPickerDialog.DialogCloseListener {
+public class EventCreationFragment extends Fragment implements EventCreationView.EventCreationListener, EventCreationView.PickLocationListener, LocationPickerDialog.DialogCloseListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private GeoPoint eventLocation;
+    private String eventDetailsQrCodeString;
+    private String eventCheckInQrCodeString;
+    private ActivityResultLauncher<ScanOptions> setDetailsLauncher;
+    private ActivityResultLauncher<ScanOptions> setCheckInLauncher;
 
     /**
      * Required empty public constructor for the fragment.
@@ -50,8 +57,10 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         eventCreationView = new EventCreationView(inflater, container);
-        eventCreationView.setImageButtonListener(this);
-        eventCreationView.setConfirmButtonListener(this);
+        eventCreationView.setListener(this);
+
+        setDetailsLauncher = registerForActivityResult(new ScanContract(), this::processDetailsResult);
+        setCheckInLauncher = registerForActivityResult(new ScanContract(), this::processCheckInResult);
         eventCreationView.setPickLocationListener(this);
 
         createImagePickerLauncher();
@@ -66,7 +75,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             if (resultCode == Activity.RESULT_OK) {
                 assert resultIntent != null;
                 Uri uri = resultIntent.getData();
-                eventCreationView.setCaptureImage(uri);
+                eventCreationView.setEventPoster(uri);
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
                 Toast.makeText(requireContext(), ImagePicker.getError(resultIntent), Toast.LENGTH_SHORT).show();
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -75,15 +84,16 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         });
     }
 
-    @Override
-    public void onImageButtonClick() {
-        ImagePicker.with(this)
-            .crop()
-            .maxResultSize(1080, 1080)
-            .createIntent(intent -> {
-                imagePickerLauncher.launch(intent);
-                return Unit.INSTANCE;
-            });
+    private void processDetailsResult(ScanIntentResult result) {
+        if (result != null) {
+            eventDetailsQrCodeString = result.getContents();
+        }
+    }
+
+    private void processCheckInResult(ScanIntentResult result) {
+        if (result != null) {
+            eventCheckInQrCodeString = result.getContents();
+        }
     }
 
     @Override
@@ -134,6 +144,34 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onImageClick() {
+        ImagePicker.with(this)
+                .crop()
+                .maxResultSize(1080, 1080)
+                .createIntent(intent -> {
+                    imagePickerLauncher.launch(intent);
+                    return Unit.INSTANCE;
+                });
+    }
+
+    @Override
+    public void onSetCheckInClick() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Scan the QR code for event check-in");
+        options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
+        setCheckInLauncher.launch(options);
+    }
+
+    @Override
+    public void onSetDetailsClick() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Scan the QR code for event details");
+        options.setCaptureActivity(com.example.eventsigninapp.CaptureAct.class);
+        setDetailsLauncher.launch(options);
+    }
+
     private void subscribeToTopic(String topic) {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
             .addOnCompleteListener(task -> {

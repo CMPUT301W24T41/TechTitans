@@ -45,8 +45,9 @@
 
         <activity
             android:name=".MainActivity"
-
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,31 +55,15 @@
             </intent-filter>
         </activity>
 
-
-
         <activity
             android:name=".CaptureAct"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"/>
 
-
-        <activity
-            android:name=".AttendeeListActivity"
-            android:exported="true">
-            <!-- Remove intent-filter to avoid multiple launchers -->
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-
         <activity
             android:name=".AdminActivity"
-            android:exported="true">
-
-
-        </activity>
+            android:exported="true"/>
 
         <service
             android:name=".MessagingService"
