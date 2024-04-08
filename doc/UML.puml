@@ -102,6 +102,7 @@ class DatabaseController {
     +updateAdmin(adminCode: String, user: User, context: Context)
     +putNotificationToFirestore(title: String, message: String, topic: String, id: String)
     +addFCMTokenToUser(userID: String, token: String)
+    +getCheckedInUserCountFromFirestore(event: Event, GetCheckedInUserCountCallback: callback)
 }
 
 'Done
@@ -133,10 +134,14 @@ class Event {
     -Date date
     -String creatorUUID
     -String description
+    -HashMap<String, Integer> checkedInEventCount
     +isCapped(): boolean
     +isFull(): boolean
     +addCheckedInUser(uuid: String)
     +addSignedUpUser(uuid: String)
+    +addCheckedInCount(uuid: String, count: Integer)
+    +increaseCheckedInCount(uuid: String)
+    +getCheckedInCount(uuid: String): Integer
     +isUserCheckedIn(uuid: String): boolean
     +isUserSignedUp(uuid: String): boolean
 }
@@ -159,8 +164,17 @@ EventController "0...*" o-- "1" Event
 'Done
 class EventCreationFragment {
     -EventCreationView view
-    -ActivityResultLauncher<Intent> imagePickerLauncher
+    -Geopoint eventLocation
+    -String eventDetailsQrCodeString;
+    -String eventCheckInQrCodeString;
+    -ActivityResultLauncher<ScanOptions> setDetailsLauncher;
+    -ActivityResultLauncher<ScanOptions> setCheckInLauncher;
+    -ActivityResultLauncher<Intent> imagePickerLauncher;
+    -DatePickerDialog datePickerDialog;
     -createImagePickerLauncher()
+    -processDetailsResult(ScanIntentResult: result)
+    -processCheckInResult(ScanIntentResult: result)
+    -showDatePickerDialog()
 }
 EventCreationFragment -- DatabaseController
 EventCreationFragment -- UserController
@@ -377,6 +391,32 @@ class ImageGridAdapter{
 }
 
 ImageGridAdapter "0..1" o-- "1" DatabaseController
+
+class MyEventsFragment {
+    -userController: UserController
+    -dbController: DatabaseController
+    -myEventsArrayList: ArrayList<Event>
+    -myEventsArrayAdapter: EventArrayAdapter
+    -myEventsView: MyEventsView
+    -frag: EventDetailsFragment
+    -checkedInUsers: Collection<String>
+    -signedUpEvents: ArrayList<String>
+    -purgeOldEventsFromArrayLists(newEventsArrayList:ArrayList<Event>)
+    +onItemClick(event: Event, position: int)
+}
+MyEventsFragment "0...1" *-- "1" MyEventsView
+MyEventsFragment "0...1" *-- "1" DatabaseController
+MyEventsFragment "0...1" *-- "1" UserController
+MyEventsFragment "0...1" *-- "1" EventDetailsFragment
+MyEventsFragment "0...1" *-- "0...1" Event
+
+
+class MyEventsView{
+    -myEventsListView: RecyclerView
+    -rootView: View
+    +setMyEventsListArrayAdapter(adapter: EventArrayAdapter)
+    +getRootView(): View
+}
 
 
 

@@ -745,7 +745,7 @@ public class DatabaseController {
                         String creatorUUID = document.getString("creatorUUID");
                         int capacity = document.getLong("capacity").intValue();
 //                        Date date =  document.getDate("date");
-                        Object location = document.getString("location");
+                        GeoPoint location = document.getGeoPoint("location");
                         String eventDetailsQrCodeString = document.getString("eventDetailsQrCodeString");
                         String eventCheckInQrCodeString = document.getString("eventCheckInQrCodeString");
                         ArrayList<String> checkedInUsers = (ArrayList) document.get("checkedInUsers");
@@ -763,7 +763,7 @@ public class DatabaseController {
                         event.setCreatorUUID(creatorUUID);
                         event.setCapacity(capacity);
 //                        event.setDate(date);
-//                        event.setLocation(location);
+                        event.setLocation(location);
                         event.setEventDetailsQrCodeString(eventDetailsQrCodeString);
                         event.setEventCheckInQrCodeString(eventCheckInQrCodeString);
                         for (String checkedUser: checkedInUsers) {
