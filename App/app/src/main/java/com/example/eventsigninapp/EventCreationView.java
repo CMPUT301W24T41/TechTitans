@@ -1,5 +1,6 @@
 package com.example.eventsigninapp;
 
+import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.Date;
 
@@ -22,6 +24,12 @@ public class EventCreationView {
     private final Button setCheckInButton;
     private final Button setDetailsButton;
     private final View rootView;
+
+    private DatePickerDialog datePickerDialog;
+    private View.OnClickListener dateButtonClickListener;
+
+    private final EditText dateButton;
+    private String date;
     private Uri posterUri;
 
     public EventCreationView(LayoutInflater inflater, ViewGroup parent) {
@@ -37,7 +45,26 @@ public class EventCreationView {
         confirmButton = rootView.findViewById(R.id.createEventConfirmButton);
         locationPickerButton = rootView.findViewById(R.id.locationPickerButton);
         locationPickerText = rootView.findViewById(R.id.locationPickerText);
+
+
+        dateButton = rootView.findViewById(R.id.datePicker);
+
+        // Set up OnClickListener for dateButton
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dateButtonClickListener != null) {
+                    dateButtonClickListener.onClick(v);
+                }
+            }
+        });
     }
+
+    public void setDateButtonClickListener(View.OnClickListener listener) {
+        dateButton.setOnClickListener(listener);
+
+    }
+
 
     public void setPickLocationListener(PickLocationListener listener) {
         locationPickerButton.setOnClickListener(v -> listener.onPickLocationClick());
@@ -81,6 +108,16 @@ public class EventCreationView {
 
     public void clearLocation() {
         locationPickerText.setText("");
+    }
+
+
+    public void setDate(String date) {
+        this.date = date;
+        dateButton.setText(date);
+    }
+
+    public String getDate() {
+        return date;
     }
 
     interface EventCreationListener {

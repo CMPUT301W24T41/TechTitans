@@ -33,7 +33,7 @@ public class Event implements Serializable {
     private Uri descriptionQRCodeUri;
     private GeoPoint location;
 
-    private final Date date;
+    private  String date;
     private String creatorUUID;
     private String description;
     private String eventCheckInQrCodeString;
@@ -105,6 +105,11 @@ public class Event implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
 
