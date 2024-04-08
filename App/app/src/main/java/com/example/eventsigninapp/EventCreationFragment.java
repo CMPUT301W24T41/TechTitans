@@ -69,6 +69,10 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         return eventCreationView.getRootView();
     }
 
+    /**
+     * Creates the image picker launcher for selecting images for event posters.
+     */
+
     private void createImagePickerLauncher() {
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             int resultCode = result.getResultCode();
@@ -85,12 +89,20 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         });
     }
 
+    /**
+     * Processes the result of the QR code scan for event details.
+     * @param result the result of the QR code scan
+     */
     private void processDetailsResult(ScanIntentResult result) {
         if (result != null) {
             eventDetailsQrCodeString = result.getContents();
         }
     }
 
+    /**
+     * Processes the result of the QR code scan for event check-in.
+     * @param result the result of the QR code scan
+     */
     private void processCheckInResult(ScanIntentResult result) {
         if (result != null) {
             eventCheckInQrCodeString = result.getContents();
@@ -173,6 +185,10 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         setDetailsLauncher.launch(options);
     }
 
+    /**
+     * Subscribes to a topic for the event.
+     * @param topic the topic to subscribe to
+     */
     private void subscribeToTopic(String topic) {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
             .addOnCompleteListener(task -> {
