@@ -744,7 +744,7 @@ public class DatabaseController {
                         String name = document.getString("name");
                         String creatorUUID = document.getString("creatorUUID");
                         int capacity = document.getLong("capacity").intValue();
-                        Date date =  document.getDate("date");
+//                        Date date =  document.getDate("date");
                         Object location = document.getString("location");
                         String eventDetailsQrCodeString = document.getString("eventDetailsQrCodeString");
                         String eventCheckInQrCodeString = document.getString("eventCheckInQrCodeString");
