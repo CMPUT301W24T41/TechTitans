@@ -38,9 +38,10 @@
         android:id="@+id/checked_in_users_count"
         android:layout_width="750dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/checked_in_users_title"
         android:layout_alignParentStart="true"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="187dp"
+        android:layout_marginTop="38dp"
         android:layout_marginEnd="28dp"
         android:text="@string/checked_in_count"
         android:textColor="@color/black"
@@ -49,7 +50,7 @@
     <ListView
         android:id="@+id/checked_in_list"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="474dp"
         android:layout_alignParentBottom="true" />
 
     <Button
