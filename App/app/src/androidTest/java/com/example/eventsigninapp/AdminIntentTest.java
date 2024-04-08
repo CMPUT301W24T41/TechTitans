@@ -174,6 +174,8 @@ public class AdminIntentTest {
 
     @Test
     public void testDeleteUser() throws InterruptedException {
+        dealWithNotificationPopUp();
+
 
         onView(withText("USERS")).check(matches(isDisplayed()));
         onView(withText("USERS")).perform(click());
@@ -207,6 +209,8 @@ public class AdminIntentTest {
 
     @Test
     public void testGenerateCode() throws InterruptedException{
+        dealWithNotificationPopUp();
+
 
         onView(withText("ADMIN")).check(matches(isDisplayed()));
         onView(withText("ADMIN")).perform(click());
@@ -227,11 +231,26 @@ public class AdminIntentTest {
 
     @Test
     public void testReturn(){
+        dealWithNotificationPopUp();
         onView(withText("RETURN")).perform(click());
 
         // Check if the main activity is started
         intended(hasComponent(MainActivity.class.getName()));
 
+    }
+
+    public void dealWithNotificationPopUp(){
+        UiDevice device = UiDevice.getInstance(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation());
+
+        // Click on "Allow" button in the system dialog
+        try {
+            UiObject allowButton = device.findObject(new UiSelector().text("Allow"));
+            if (allowButton.exists() && allowButton.isEnabled()) {
+                allowButton.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 

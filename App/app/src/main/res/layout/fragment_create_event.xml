@@ -44,7 +44,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_percent=".5"
+            app:layout_constraintGuide_end="189dp"
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText

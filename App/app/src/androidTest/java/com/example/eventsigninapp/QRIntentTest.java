@@ -10,13 +10,18 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+
+import android.widget.DatePicker;
 
 import androidx.core.widget.TextViewCompat;
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -34,6 +39,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -86,12 +92,40 @@ public class QRIntentTest {
         closeSoftKeyboard();
         Thread.sleep(2000);
 
+
+
         onView(withId(R.id.createEventCapacityEditText)).perform(typeText("1000"));
 
 
         //keyboard keeps getting in the way, sleeping to deal with it
         closeSoftKeyboard();
         Thread.sleep(5000);
+
+        onView(withId(R.id.datePicker)).perform(click());
+
+
+        onView(withClassName(equalTo(DatePicker.class.getName()))).check(matches(isDisplayed()));
+        // Get the current date
+        Calendar currentDate = Calendar.getInstance();
+        int currentYear = currentDate.get(Calendar.YEAR);
+        int currentMonth = currentDate.get(Calendar.MONTH);
+        int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
+
+        // Set the chosen date (e.g., one day ahead of the current date)
+
+        // Perform actions on the date picker dialog
+        onView(withClassName(equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(currentYear, currentMonth, currentDay), click());
+
+
+
+        onView(withId(android.R.id.button1)).perform(click());
+        Thread.sleep(3000);
+
+        // Verify that the chosen date is displayed in the eventCreationView
+        onView(withId(R.id.datePicker))
+                .check(matches(isDisplayed()))
+                .check(matches(withText(equalTo((currentMonth) + "-" + currentDay + "-" + currentYear))));
 
         onView(withId(R.id.createEventConfirmButton)).perform(click());
 
