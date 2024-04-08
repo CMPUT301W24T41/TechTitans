@@ -794,11 +794,13 @@ public class DatabaseController {
                             ArrayList<String> checkedInUsers = (ArrayList<String>) doc.get("checkedInUsers");
                             ArrayList<String> signedUpUsers = (ArrayList<String>) doc.get("signedUpUsers");
 
+                            String eventCheckInQrCodeString = doc.getString("eventCheckInQrCodeString");
 
                             // Create Event object using constructor
                             Event event = new Event(uuid, name, creatorUUID, capacity);
                             event.setDescription(description);
                             event.setEventDetailsQrCodeString(eventDetailsQrCodeString);
+                            event.setEventCheckInQrCodeString(eventCheckInQrCodeString);
                             // Set other fields as needed
                             event.setCheckedInUsersUUIDs(checkedInUsers);
                             event.setSignedUpUsersUUIDs(signedUpUsers);
