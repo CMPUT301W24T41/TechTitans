@@ -150,6 +150,10 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     public void onPickLocationClick() {
         Bundle bundle = new Bundle();
         String locationQuery = eventCreationView.getLocationQuery();
+        if (locationQuery.equals("")) {
+            Toast.makeText(getContext(), "Please enter a valid location.", Toast.LENGTH_LONG).show();
+            return;
+        }
         bundle.putString("query", locationQuery);
         LocationPickerDialog pickLocation = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
