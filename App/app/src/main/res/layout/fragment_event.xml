@@ -94,6 +94,27 @@
         </androidx.cardview.widget.CardView>
 
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <TextView
+                android:id="@+id/datePickerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="20sp"
+                android:layout_margin="3dp"
+                android:padding="5dp"
+                android:gravity="top"
+                android:textColorHint="#827717"
+                android:hint="@string/pick_date" />
+        </androidx.cardview.widget.CardView>
+
+
         <!-- Image Section -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

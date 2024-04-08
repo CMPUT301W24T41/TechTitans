@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,36 +23,35 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 
 import kotlin.Unit;
 
-/**
- * A simple {@link Fragment} subclass for managing event creation.
- * Allows users to input event details, select images, and generate QR codes for events.
- */
 public class EventCreationFragment extends Fragment implements EventCreationView.ConfirmButtonListener, EventCreationView.ImageButtonListener {
     private EventCreationView eventCreationView;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private DatePickerDialog datePickerDialog;
 
-    /**
-     * Required empty public constructor for the fragment.
-     */
     public EventCreationFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Called to create the view for the fragment.
-     * Initializes UI components and sets listeners for image selection and event confirmation.
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        eventCreationView = new EventCreationView(inflater, container);
+        eventCreationView = new EventCreationView(inflater, container, getContext());
         eventCreationView.setImageButtonListener(this);
         eventCreationView.setConfirmButtonListener(this);
 
         createImagePickerLauncher();
+
+        // Set up OnClickListener for dateButton
+        eventCreationView.setDateButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
 
         return eventCreationView.getRootView();
     }
@@ -69,6 +70,25 @@ public class EventCreationFragment extends Fragment implements EventCreationView
                 Toast.makeText(requireContext(), "Image picker was cancelled", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showDatePickerDialog() {
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        if (datePickerDialog == null) {
+            datePickerDialog = new DatePickerDialog(requireContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            String chosenDate = (monthOfYear + 1) + "-" + dayOfMonth + "-" + year;
+                            eventCreationView.setDate(chosenDate);
+                        }
+                    }, year, month, day);
+        }
+        datePickerDialog.show();
     }
 
     @Override
@@ -93,7 +113,6 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         subscribeToTopic(event.getUuid()+"-Reminders");
         subscribeToTopic(event.getUuid()+"-Promotions");
 
-
         if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
@@ -113,8 +132,8 @@ public class EventCreationFragment extends Fragment implements EventCreationView
             UserController userController = new UserController();
             event.setCreatorUUID(userController.getUserID(requireContext()));
 
-            DatabaseController DatabaseController = new DatabaseController();
-            DatabaseController.pushEventToFirestore(event);
+            DatabaseController databaseController = new DatabaseController();
+            databaseController.pushEventToFirestore(event);
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("event", event);
@@ -139,7 +158,4 @@ public class EventCreationFragment extends Fragment implements EventCreationView
                 Log.d("FCM", msg);
             });
     }
-
-
-
 }

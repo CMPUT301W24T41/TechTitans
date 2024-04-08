@@ -20,8 +20,8 @@ public class Event implements Serializable {
 
     // The capacity of the event, 0 if uncapped
     private int capacity;
-    private final ArrayList<String> signedUpUsersUUIDs; // collection of signed up users
-    private final ArrayList<String> checkedInUsersUUIDs; // collection of checked in users
+    private ArrayList<String> signedUpUsersUUIDs; // collection of signed up users
+    private ArrayList<String> checkedInUsersUUIDs; // collection of checked in users
     private Uri posterUri;
     private Uri checkInQRCodeUri;
     private Uri descriptionQRCodeUri;
