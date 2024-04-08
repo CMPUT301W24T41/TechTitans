@@ -37,6 +37,7 @@ public class Event implements Serializable {
     private String description;
     private String eventCheckInQrCodeString;
     private String eventDetailsQrCodeString;
+    private HashMap<String, Integer> checkedInEventCount;
 
     public Event() {
         //TODO: generate a unique id on creation
@@ -51,6 +52,7 @@ public class Event implements Serializable {
         location = null;
         date = null;
         capacity = 0;
+        checkedInEventCount = new HashMap<>();
     }
 
     public Event(String creatorUUID) {
@@ -181,6 +183,24 @@ public class Event implements Serializable {
         return checkedInUsersUUIDs.contains(uuid);
     }
 
+    public void increaseCheckedInCount(String uuid) {
+        if (checkedInEventCount.containsKey(uuid)) {
+            Integer count = checkedInEventCount.get(uuid);
+            checkedInEventCount.put(uuid, count + 1);
+        }
+        else {
+            checkedInEventCount.put(uuid, 1);
+        }
+    }
+
+    public void addCheckedInCount(String uuid, Integer count) {
+        checkedInEventCount.put(uuid, count);
+    }
+
+    public Integer getCheckedInCount(String uuid) {
+        return checkedInEventCount.get(uuid);
+    }
+
     /**
      * This method should be used to add a user to the signed up users list
      * @param uuid the uuid of the user to sign up
@@ -218,6 +238,7 @@ public class Event implements Serializable {
         eventMap.put("checkedInUsers", checkedInUsersUUIDs);
         eventMap.put("signedUpUsers", signedUpUsersUUIDs);
         eventMap.put("description", description);
+        eventMap.put("checkedInEventCount", checkedInEventCount);
         return eventMap;
     }
 

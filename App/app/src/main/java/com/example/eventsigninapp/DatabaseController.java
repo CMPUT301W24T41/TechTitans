@@ -29,9 +29,14 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.lang.reflect.Field;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
+
+import java.lang.reflect.Field;
 import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -541,6 +546,25 @@ public class DatabaseController {
         });
     }
 
+    public void getCheckedInUserCountFromFirestore(Event event, GetCheckedInUserCountCallback callback) {
+        final HashMap<?,?>[] userCheckedInCount = new HashMap<?,?>[1]; // effectively final
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.document(event.getUuid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Log.e("db", "Called on complete");
+                DocumentSnapshot document = task.getResult();
+                userCheckedInCount[0] = (HashMap<?, ?>) document.get("checkedInEventCount");
+                if (userCheckedInCount[0] != null) {
+                    Log.e("db", "The retrieval was successful");
+                    callback.onGetCheckedInUserCountCallback(event, userCheckedInCount[0]);
+                } else {
+                    Log.e("Database", "Error retrieving checked in users");
+                }
+            }
+        });
+    }
+
     public void putEventPosterToFirestore(String eventID, Uri imageUri) {
         if (imageUri == null) {
             return;
@@ -686,13 +710,56 @@ public class DatabaseController {
     }
 
     public void findEventByQrResult(String qrResult, GetEventCallback callback) {
+        final HashMap<?,?>[] userCheckedInCount = new HashMap<?,?>[1];
         db.collection("events")
                 .whereEqualTo("eventCheckInQrCodeString", qrResult)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                        Event event = document.toObject(Event.class);
+
+                        // Getting Event manually
+                        String uuid = document.getString("uuid");
+                        String name = document.getString("name");
+                        String creatorUUID = document.getString("creatorUUID");
+                        int capacity = document.getLong("capacity").intValue();
+                        Date date =  document.getDate("date");
+                        Object location = document.getString("location");
+                        String eventDetailsQrCodeString = document.getString("eventDetailsQrCodeString");
+                        String eventCheckInQrCodeString = document.getString("eventCheckInQrCodeString");
+                        ArrayList<String> checkedInUsers = (ArrayList) document.get("checkedInUsers");
+                        ArrayList<String> signedUpUsers = (ArrayList) document.get("signedUpUsers");
+                        String description = document.getString("description");
+
+
+                        userCheckedInCount[0] = (HashMap<?, ?>) document.get("checkedInEventCount");
+                        HashMap<String, Long> checkedInUsersCountStr = (HashMap<String, Long>) userCheckedInCount[0];
+
+                        // Setting the event
+                        Event event = new Event();
+                        event.setUuid(uuid);
+                        event.setName(name);
+                        event.setCreatorUUID(creatorUUID);
+                        event.setCapacity(capacity);
+//                        event.setDate(date);
+//                        event.setLocation(location);
+                        event.setEventDetailsQrCodeString(eventDetailsQrCodeString);
+                        event.setEventCheckInQrCodeString(eventCheckInQrCodeString);
+                        for (String checkedUser: checkedInUsers) {
+                            event.addCheckedInUser(checkedUser);
+                        }
+                        for (String signedUser: signedUpUsers) {
+                            event.addSignedUpUser(signedUser);
+                        }
+                        event.setDescription(description);
+                        for (String user : checkedInUsersCountStr.keySet()) {
+                            // Firebase stores numbers (checked in count) as Long, need to convert to Integer
+                            Long value = checkedInUsersCountStr.get(user);
+                            Integer count = (int) (long) value;
+                            event.addCheckedInCount(user, count);
+                        }
+
+
                         callback.onGetEventCallback(event);
                     }
                 });
@@ -1127,6 +1194,13 @@ public class DatabaseController {
      */
     public interface GetCheckedInUsersCallback {
         void onGetCheckedInUsersCallback(Event event, ArrayList<?> users);
+    }
+
+    /**
+     * This interface allows the count of the users that checked into an event to be retrieved from the database.
+     */
+    public interface GetCheckedInUserCountCallback {
+        void onGetCheckedInUserCountCallback(Event event, HashMap<?,?> users);
     }
 
     /**

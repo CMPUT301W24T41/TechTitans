@@ -169,7 +169,7 @@ public class CheckInFragment extends Fragment implements CheckInView.ScanButtonL
         if (event != null) {
             this.event = event;
 
-            if (!Objects.equals(event.getUuid(), this.resultString)) {
+            if (!Objects.equals(event.getEventCheckInQrCodeString(), this.resultString)) {
 
                 openEventDetails();
             } else {
