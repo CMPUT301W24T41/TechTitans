@@ -46,23 +46,32 @@
             android:clipToOutline="true"
             android:focusable="true"
             android:background="@drawable/rounded_corner_profile_bg"
+
             android:src="@drawable/user" />
 
-        <TextView
+
+        <ImageView
+
             android:id="@+id/editProfileSubtext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="38dp"
+            android:layout_height="30dp"
             android:layout_below="@id/profilePicture"
-            android:layout_centerHorizontal="true"
-            android:text="click above to edit photo"
-            android:textAlignment="center" />
+            android:layout_alignEnd="@+id/profilePicture"
+            android:layout_marginTop="-45dp"
+            android:layout_marginEnd="-8dp"
+            android:background="@drawable/rounded_corner_profile_bg"
+            android:clickable="true"
+            android:focusable="true"
+
+            android:contentDescription="@string/edit_profile_picture"
+            android:src="@drawable/camera_icon" />
 
         <LinearLayout
             android:id="@+id/profileDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/editProfileSubtext"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/rounded_corner_bg"
             android:orientation="vertical">
 
@@ -88,8 +97,8 @@
                 android:id="@+id/user_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
                 android:layout_marginBottom="8dp"
+                android:padding="5dp"
                 android:text="@string/number"
                 android:textSize="20sp" />
 
@@ -107,27 +116,29 @@
 
         <Button
             android:id="@+id/editButton"
-            android:layout_width="match_parent"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profileDetailsLayout"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="38dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="199dp"
             android:background="@drawable/rounded_button_background"
             android:backgroundTint="@color/color2"
             android:text="Edit Profile"
+            android:padding="13dp"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/deleteButton"
-            android:layout_width="match_parent"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profileDetailsLayout"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="9dp"
             android:background="@drawable/rounded_button_background"
             android:backgroundTint="@color/Red"
+            android:padding="13dp"
             android:text="Delete Picture"
             android:textSize="18sp" />
 
@@ -138,10 +149,11 @@
             android:layout_below="@+id/deleteButton"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="80dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginEnd="9dp"
             android:background="@drawable/rounded_button_background"
             android:backgroundTint="@color/Red"
             android:text="Admin Controls"
+            android:padding="13dp"
             android:textSize="18sp" />
 
     </RelativeLayout>
