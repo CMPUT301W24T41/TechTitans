@@ -75,4 +75,6 @@
     <string name="set_details_qr">Set Details QR</string>
     <string name="capacity_optional">Capacity (optional):</string>
     <string name="location_icon">Location icon</string>
+    <string name="pick_date">Pick Event Date</string>
+    <string name="date_of_the_event">Date of the Event</string>
 </resources>

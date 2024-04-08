@@ -1,6 +1,7 @@
 package com.example.eventsigninapp;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,6 +28,7 @@ import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.Objects;
 
 import kotlin.Unit;
@@ -42,6 +45,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
     private String eventCheckInQrCodeString;
     private ActivityResultLauncher<ScanOptions> setDetailsLauncher;
     private ActivityResultLauncher<ScanOptions> setCheckInLauncher;
+    private DatePickerDialog datePickerDialog;
 
     /**
      * Required empty public constructor for the fragment.
@@ -63,6 +67,15 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         setDetailsLauncher = registerForActivityResult(new ScanContract(), this::processDetailsResult);
         setCheckInLauncher = registerForActivityResult(new ScanContract(), this::processCheckInResult);
         eventCreationView.setPickLocationListener(this);
+
+        // Set up OnClickListener for dateButton
+        eventCreationView.setDateButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
 
         createImagePickerLauncher();
 
@@ -109,23 +122,45 @@ public class EventCreationFragment extends Fragment implements EventCreationView
         }
     }
 
+
+    private void showDatePickerDialog() {
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        if (datePickerDialog == null) {
+            datePickerDialog = new DatePickerDialog(requireContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            String chosenDate = (monthOfYear + 1) + "-" + dayOfMonth + "-" + year;
+                            eventCreationView.setDate(chosenDate);
+                        }
+                    }, year, month, day);
+        }
+        datePickerDialog.show();
+    }
+
     @Override
     public void onConfirmButtonClick() {
         Event event = new Event();
 
         String eventNameText = eventCreationView.getEventName();
         String eventDescriptionText = eventCreationView.getEventDescription();
+        String DateString = eventCreationView.getDate();
         // Subscribe to topics ie create the 3 types of topic for this event
         subscribeToTopic(event.getUuid()+"-Important");
         subscribeToTopic(event.getUuid()+"-Reminders");
         subscribeToTopic(event.getUuid()+"-Promotions");
 
 
-        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()) {
+        if (!eventNameText.isEmpty() && !eventDescriptionText.isEmpty()&& !DateString.isEmpty()) {
             event.setName(eventNameText);
             event.setDescription(eventDescriptionText);
             event.setPosterUri(eventCreationView.getPosterUri());
             event.setLocation(eventLocation);
+            event.setDate(DateString);
 
             Bitmap bitmap = Organizer.generateQRCode(event.getEventCheckInQrCodeString());
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -154,7 +189,7 @@ public class EventCreationFragment extends Fragment implements EventCreationView
                 .addToBackStack(null)
                 .commit();
         } else {
-            Toast.makeText(getActivity(), "Please fill up both fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please fill up all non optional fields", Toast.LENGTH_SHORT).show();
         }
     }
 
