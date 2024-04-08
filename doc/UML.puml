@@ -159,8 +159,17 @@ EventController "0...*" o-- "1" Event
 'Done
 class EventCreationFragment {
     -EventCreationView view
-    -ActivityResultLauncher<Intent> imagePickerLauncher
+    -Geopoint eventLocation
+    -String eventDetailsQrCodeString;
+    -String eventCheckInQrCodeString;
+    -ActivityResultLauncher<ScanOptions> setDetailsLauncher;
+    -ActivityResultLauncher<ScanOptions> setCheckInLauncher;
+    -ActivityResultLauncher<Intent> imagePickerLauncher;
+    -DatePickerDialog datePickerDialog;
     -createImagePickerLauncher()
+    -processDetailsResult(ScanIntentResult: result)
+    -processCheckInResult(ScanIntentResult: result)
+    -showDatePickerDialog()
 }
 EventCreationFragment -- DatabaseController
 EventCreationFragment -- UserController
